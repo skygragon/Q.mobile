@@ -1,0 +1,28 @@
+<ion-view view-title="Dashboard">
+  <ion-content>
+    <div class="list card">
+      <div class="item">
+        <div class="row row-center">
+          <div class="col col-center col-70 text-center">
+            <span class="text-big">{{stat.all}}</span> questions
+          </div>
+          <div class="col col-right col-30 text-right">
+            <button class="button button-small button-positive" ng-click="update()" ng-disabled="updating">
+              Update
+            </button>
+          </div>
+        </div> <!-- end of row -->
+      </div> <!-- end of item -->
+
+      <div class="item item-divider">
+        <div class="col text-center text-small">
+          Updated at {{last_updated | date:'yyyy-MM-dd HH:mm:ss'}}
+        </div>
+      </div>
+
+      <div class="item item-body">
+        <canvas class="chart-horizontal-bar" chart-data="data" chart-labels="labels"></canvas>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

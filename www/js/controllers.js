@@ -17,14 +17,20 @@ angular.module('Controllers', [])
 
   $scope.update = function() {
     $scope.updating = true;
+    $scope.duplicated = false;
+
     C3.update(function(questions) {
       DB.updateQuestions(questions, function(e) {
+        // BulkError if questions are duplicated.
+        $scope.duplicated = e;
+
         $scope.$apply(function() {
           $scope.last_updated = Date.now();
           $scope.updating = false;
           $scope.refreshStat();
         });
       });
+      return $scope.duplicated;
     });
   };
 
@@ -112,4 +118,5 @@ angular.module('Controllers', [])
   $scope.companies = ['Apple', 'Amazon', 'Facebook', 'Google', 'Microsoft'];
 
   $scope.filter = Stat.filter;
+  $scope.update = Stat.update;
 });

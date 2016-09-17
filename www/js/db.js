@@ -30,7 +30,7 @@ DBService.updateQuestions = function(questions, cb) {
       })
       .catch(Dexie.BulkError, function (e) {
         // ignore put error of duplicate questions
-        cb(e)
+        cb(e);
       });
   });
 };
@@ -85,7 +85,7 @@ DBService.updateQuestion = function(question, cb) {
   });
 };
 
-angular.module('Services')
+angular.module('Services', [])
 .service('DB', [ 'Dexie', function(Dexie) {
   DBService.Dexie = Dexie;
   return DBService;

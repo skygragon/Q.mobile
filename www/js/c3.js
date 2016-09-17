@@ -1,10 +1,57 @@
 var C3Service = {};
 
+function onPage(ctx, e, questions) {
+  if (questions) {
+    if (questions.length === 0) {
+      console.log('no more questions found, quit now');
+      return;
+    }
+    var duplicated = ctx.cb(questions);
+
+    // quit early if questions are dedup
+    // unless we are doing a full scan
+    if (duplicated && !ctx.full) {
+      console.log('duplicated questions found, quit now');
+      return;
+    }
+  }
+
+  // push back failed page, thus try it later
+  if (e) {
+    ctx.pages.unshift(e.id);
+    console.log('collect failed page:' + e.id);
+  }
+
+  getPageWorker(ctx);
+};
+
+function getPageWorker(ctx) {
+  // scan more pages if existing pages are all done
+  if (ctx.pages.length === 0) {
+    ctx.pages = _.range(ctx.nextPage, ctx.nextPage + 100);
+    ctx.nextPage += 100;
+  }
+
+  var id = ctx.pages.shift();
+  C3Service.getPage(id, ctx.wcb);
+}
+
 C3Service.update = function(cb) {
-  this.getPage(0, cb);
+  var ctx = {
+    pages: [],
+    nextPage: 1,
+    cb: cb,
+    full: this.Stat.update.full
+  };
+  ctx.wcb = _.partial(onPage, ctx);
+
+  for (var i = 0; i < 10; ++i) {
+    getPageWorker(ctx);
+  }
 };
 
 C3Service.getPage = function(id, cb) {
+  console.log('getPage:' + id);
   this.$http.get('https://careercup.com/page?n=' + id)
     .success(function(data, status, headers, config) {
       var parser = new DOMParser();
@@ -47,17 +94,18 @@ C3Service.getPage = function(id, cb) {
         })
         .value();
 
-      return cb(questions);
+      console.log('getPage:' + id + ' = ' + questions.length);
+      return cb(null, questions);
     })
-    .error(function(data,status, headers, config){
-      // FIXME: retry it?
-      alert('error'+status);
+    .error(function(data,status, headers, config) {
+      return cb({id: id});
     });
 };
 
-angular.module('Services', [])
-.service('C3', ['$http', '_', function($http, _) {
+angular.module('Services')
+.service('C3', ['$http', '_', 'Stat', function($http, _, Stat) {
   C3Service.$http = $http;
   C3Service._ = _;
+  C3Service.Stat = Stat;
   return C3Service;
 }]);

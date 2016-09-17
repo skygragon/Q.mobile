@@ -1,8 +1,13 @@
 StatService = {
-  tags: ['Resolved','Later','Favorite'],
-  data: {All: 0},
   ctx: {tasks: 0, dirty: true},
-  filter: {status:'0', tag:'', company: ''}
+
+  // statistics
+  data: {All: 0},
+  tags: ['Resolved','Later','Favorite'],
+
+  // settings
+  filter: {status:'0', tag:'', company: ''},
+  update: {full: false}
 };
 
 StatService.init = function(DB) {

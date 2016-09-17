@@ -15,7 +15,10 @@ C3Service.getPage = function(id, cb) {
           return x.className === 'question';
         })
         .map(function(x) {
-          var q = {};
+          var q = {
+            status: 0,
+            rand: Math.random()
+          };
           _.each(x.getElementsByTagName('span'), function(x) {
             switch(x.className) {
               case 'entry':
@@ -36,7 +39,8 @@ C3Service.getPage = function(id, cb) {
             }
           });
 
-          q.link = _.last(q.link.split('/'));
+          q.time = x.getElementsByTagName('abbr')[0].title;
+          q.link = 'http://careercup.com/' + _.last(q.link.split('/'));
           q.name = _.last(q.link.split('id='));
 
           return q;
@@ -45,7 +49,10 @@ C3Service.getPage = function(id, cb) {
 
       return cb(questions);
     })
-    .error(function(data,status, headers, config){ alert('error'+status); });
+    .error(function(data,status, headers, config){
+      // FIXME: retry it?
+      alert('error'+status);
+    });
 };
 
 angular.module('Services', [])

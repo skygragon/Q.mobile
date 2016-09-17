@@ -1,4 +1,60 @@
 <ion-view view-title="Question">
   <ion-content>
+
+    <div class="list card">
+      <div class="item item-divider text-small">
+        <i class="ion-ios-paper-outline"></i>&nbsp;{{question.name}}
+        <span class="badge badge-assertive" ng-hide="question.company.length === 0">
+          {{question.company}}
+        </span>
+      </div>
+
+      <div class="item item-body item-text-wrap">
+        <pre>{{question.data}}</pre>
+      </div>
+
+      <div class="item item-divider text-small">
+        <div class="row row-center">
+          <div class="col col-50">
+            <a href="{{question.link}}">See it on careercup</a>
+          </div>
+          <div class="col col-50 text-right">
+            {{question.time | date:'yyyy-MM-dd HH:mm:ss'}}
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="list card">
+
+      <div class="item item-divider text-small">
+        <i class="ion-ios-pricetags-outline"></i>&nbsp;Tags
+      </div>
+      <div class="item-body item-text-wrap text-small" ng-hide="question.tags.length === 0">
+        <span ng-repeat="tag in question.tags">
+          <i class="badge badge-assertive badge-line" ng-click="removeTag(tag)">{{tag}}</i>&nbsp;
+        </span>
+      </div>
+
+      <div class="text-small">
+        <ion-toggle toggle-class="toggle-balanced" ng-model="tagging" ng-checked="tagging">
+          Add Tags
+        </ion-toggle>
+      </div>
+      <div class="item-body item-text-wrap text-small" ng-hide="!tagging">
+        <span ng-repeat="tag in newTags">
+          <i class="badge badge-balanced badge-line" ng-click="addTag(tag)">{{tag}}</i>&nbsp;
+        </span>
+      </div>
+
+      <div class="item">
+        <button class="button button-positive button-full" ng-click="getQuestion()" ng-disabled="updating">
+          Next Question
+        </button>
+      </div>
+
+    </div> <!-- end of card -->
+
   </ion-content>
 </ion-view>

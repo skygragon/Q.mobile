@@ -31,7 +31,19 @@
       </div> <!-- end of item -->
 
       <div class="item item-divider text-small text-right">
-        Updated: {{last_updated | date:'yyyy-MM-dd HH:mm:ss'}}
+        Updated {{last_updated | date:'yyyy-MM-dd HH:mm:ss'}}
+      </div>
+
+      <div class="item" ng-show="updating">
+        <div class="row row-bottom">
+            <div class="col col-50 text-left">Questions Found</div>
+            <div class="col col-50 text-right text-big positive">{{updated.questions}}</div>
+        </div>
+
+        <div class="row row-bottom">
+            <div class="col col-50 text-left text-dashboard">Pages Found</div>
+          <div class="col col-50 text-right text-dashboard text-big positive">{{updated.pages}}</div>
+        </div>
       </div>
 
       <div class="item">

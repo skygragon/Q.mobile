@@ -23,10 +23,24 @@
           <option ng-repeat="company in companies">{{company}}</option>
         </select>
       </label>
-      <div class="item item-divider">Question Update</div>
-      <ion-toggle toggle-class="toggle-balanced" ng-model="update.full" ng-checked="update.full">
-        Force Full Update (Careful!!)
+      <div class="item item-divider">Question Updating
+        <span class="badge badge-assertive">Careful!</span>
+      </div>
+      <ion-toggle toggle-class="toggle-balanced" ng-model="updated.full" ng-checked="updated.full">
+        Force Full Update
       </ion-toggle>
+      <label class="item item-input item-select">
+        <div class="input-label">Workers Concurrency</div>
+        <select ng-model="updated.workers">
+          <option>1</option>
+          <option>2</option>
+          <option>4</option>
+          <option>8</option>
+          <option>16</option>
+          <option>24</option>
+          <option>32</option>
+        </select>
+      </label>
     </div>
   </ion-content>
 </ion-view>

@@ -7,7 +7,7 @@ StatService = {
 
   // settings
   filter: {status:'0', tag:'', company: ''},
-  update: {full: false}
+  updated: {full: false, workers: '16', questions: 0, pages: 0}
 };
 
 StatService.init = function(DB) {

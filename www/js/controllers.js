@@ -18,15 +18,24 @@ angular.module('Controllers', [])
   $scope.update = function() {
     $scope.updating = true;
     $scope.duplicated = false;
+    Stat.updated.questions = 0;
+    Stat.updated.pages = 0;
 
     C3.update(function(questions) {
+      if (!questions) {
+        $scope.updating = false;
+        return;
+      }
+
+      Stat.updated.questions += questions.length;
+      Stat.updated.pages++;
+
       DB.updateQuestions(questions, function(e) {
         // BulkError if questions are duplicated.
         $scope.duplicated = e;
 
         $scope.$apply(function() {
           $scope.last_updated = Date.now();
-          $scope.updating = false;
           $scope.refreshStat();
         });
       });
@@ -36,6 +45,7 @@ angular.module('Controllers', [])
 
   $scope.updating = false;
   $scope.stat = Stat.data;
+  $scope.updated = Stat.updated;
   $scope.refreshStat();
 })
 .controller('QuestionController', function($scope, $rootScope, DB, Stat) {
@@ -63,7 +73,7 @@ angular.module('Controllers', [])
 
       if (!question) {
         console.log('cannot find question with filter:', Stat.filter);
-        if (++$scope.retries > 10) {
+        if (++$scope.retries > 20) {
           // too many times, maybe there is no such question??
           errored = true;
         } else {
@@ -118,5 +128,5 @@ angular.module('Controllers', [])
   $scope.companies = ['Apple', 'Amazon', 'Facebook', 'Google', 'Microsoft'];
 
   $scope.filter = Stat.filter;
-  $scope.update = Stat.update;
+  $scope.updated = Stat.updated;
 });

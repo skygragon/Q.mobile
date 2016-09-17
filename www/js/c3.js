@@ -1,25 +1,29 @@
 var C3Service = {};
 
-function onPage(ctx, e, questions) {
+function onWorkerDone(ctx, msg) {
+  console.log(msg);
+  // all workers quit, notify caller
+  if (--ctx.workers === 0)
+    ctx.cb();
+}
+
+function onPageDone(ctx, e, questions) {
   if (questions) {
-    if (questions.length === 0) {
-      console.log('no more questions found, quit now');
-      return;
-    }
+    if (questions.length === 0)
+      return onWorkerDone(ctx, 'no more questions found, quit now');
+
     var duplicated = ctx.cb(questions);
 
     // quit early if questions are dedup
     // unless we are doing a full scan
-    if (duplicated && !ctx.full) {
-      console.log('duplicated questions found, quit now');
-      return;
-    }
+    if (duplicated && !ctx.full)
+      return onWorkerDone(ctx, 'duplicated questions found, quit now');
   }
 
   // push back failed page, thus try it later
   if (e) {
     ctx.pages.unshift(e.id);
-    console.log('collect failed page:' + e.id);
+    console.log('recollect failed page:' + e.id);
   }
 
   getPageWorker(ctx);
@@ -37,15 +41,17 @@ function getPageWorker(ctx) {
 }
 
 C3Service.update = function(cb) {
+  var workers = parseInt(this.Stat.updated.workers);
   var ctx = {
-    pages: [],
+    pages:    [],
     nextPage: 1,
-    cb: cb,
-    full: this.Stat.update.full
+    workers:  workers,
+    cb:       cb,
+    full:     this.Stat.updated.full
   };
-  ctx.wcb = _.partial(onPage, ctx);
+  ctx.wcb = _.partial(onPageDone, ctx);
 
-  for (var i = 0; i < 10; ++i) {
+  for (var i = 0; i < workers; ++i) {
     getPageWorker(ctx);
   }
 };

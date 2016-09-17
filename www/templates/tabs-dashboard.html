@@ -6,26 +6,35 @@
         <span class="text-small">Achievements</span>
       </div>
       <div class="item">
-        <div class="row row-center">
-          <div class="col col-center col-70 text-center">
-            <span class="text-big">{{stat.all}}</span> questions
-          </div>
-          <div class="col col-right col-30 text-right">
-            <button class="button button-small button-positive" ng-click="update()" ng-disabled="updating">
-              Update
-            </button>
-          </div>
-        </div> <!-- end of row -->
+        <div class="row row-bottom">
+            <div class="col col-50 text-left">Total Questions</div>
+            <div class="col col-50 text-right text-big assertive">{{stat.all}}</div>
+        </div>
+
+        <div class="row row-bottom">
+          <div class="col col-50 text-left text-dashboard">Resolved</div>
+          <div class="col col-50 text-right text-dashboard text-big positive">{{stat.Resolved}}</div>
+        </div>
+
+        <div class="row row-bottom">
+          <div class="col col-50 text-left text-dashboard">Later (to do)</div>
+          <div class="col col-50 text-right text-dashboard text-big">{{stat.Later}}</div>
+        </div>
+
+        <div class="row row-bottom">
+          <div class="col col-50 text-left text-dashboard">Favorite</div>
+          <div class="col col-50 text-right text-dashboard text-big">{{stat.Favorite}}</div>
+        </div>
       </div> <!-- end of item -->
 
-      <div class="item item-divider">
-        <div class="col text-center text-small">
-          Updated at {{last_updated | date:'yyyy-MM-dd HH:mm:ss'}}
-        </div>
+      <div class="item item-divider text-small text-right">
+        Updated: {{last_updated | date:'yyyy-MM-dd HH:mm:ss'}}
       </div>
 
-      <div class="item item-body">
-        <canvas class="chart-horizontal-bar" chart-data="data" chart-labels="labels"></canvas>
+      <div class="item">
+        <button class="button button-full button-positive" ng-click="update()" ng-disabled="updating">
+          Update new questions
+        </button>
       </div>
     </div>
   </ion-content>

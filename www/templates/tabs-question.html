@@ -2,8 +2,9 @@
   <ion-content>
 
     <div class="list card">
-      <div class="item item-divider text-small">
-        <i class="ion-ios-paper-outline"></i>&nbsp;{{question.name}}
+      <div class="item item-divider">
+        <i class="ion-ios-paper-outline"></i>&nbsp;
+        <span class="text-small">{{question.name}}</span>
         <span class="badge badge-assertive" ng-hide="question.company.length === 0">
           {{question.company}}
         </span>
@@ -28,8 +29,9 @@
 
     <div class="list card">
 
-      <div class="item item-divider text-small">
-        <i class="ion-ios-pricetags-outline"></i>&nbsp;Tags
+      <div class="item item-divider">
+        <i class="ion-ios-pricetags-outline"></i>&nbsp;
+        <span class="text-small">Tags</span>
       </div>
       <div class="item-body item-text-wrap text-small" ng-hide="question.tags.length === 0">
         <span ng-repeat="tag in question.tags">

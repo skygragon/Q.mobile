@@ -1,34 +1,38 @@
 angular.module('Controllers', [])
-.controller('DashboardController', function($scope, C3, DB) {
+.controller('DashboardController', function($scope, $rootScope, C3, DB, Stat) {
 
-  DB.countQuestions(function(count) {
-    $scope.$apply(function() {
-      $scope.stat.all = count;
-      $scope.last_updated = Date.now();
-      $scope.labels = ['1','2','3'];
-      $scope.data = [[10,20,30]];
+  $rootScope.$on('$stateChangeSuccess',
+    function(event, toState, toParams, fromState, fromParams) {
+      if (toState.name === 'tabs.dashboard' && Stat.ctx.dirty)
+        $scope.refreshStat();
     });
-  });
+
+  $scope.refreshStat = function() {
+    Stat.refresh(function() {
+      $scope.$apply(function() {
+        $scope.stat = Stat.data;
+      });
+    });
+  };
 
   $scope.update = function() {
     $scope.updating = true;
     C3.update(function(questions) {
       DB.updateQuestions(questions, function(e) {
-        console.log(e);
-        console.log(questions.length);
         $scope.$apply(function() {
           $scope.last_updated = Date.now();
           $scope.updating = false;
+          $scope.refreshStat();
         });
       });
     });
   };
 
   $scope.updating = false;
-  $scope.stat = {all: 0};
-  $scope.series = ['count'];
+  $scope.stat = Stat.data;
+  $scope.refreshStat();
 })
-.controller('QuestionController', function($scope, DB) {
+.controller('QuestionController', function($scope, DB, Stat) {
 
   $scope.getQuestion = function(cond) {
     $scope.updating = true;
@@ -37,6 +41,7 @@ angular.module('Controllers', [])
       DB.updateQuestion($scope.question, function(updated) {
         // console.log('updated:', updated);
         // console.log($scope.question);
+        Stat.ctx.dirty = true;
         $scope.tagged = false;
         $scope.getQuestion();
       });
@@ -79,7 +84,7 @@ angular.module('Controllers', [])
   $scope.updating = false;
   $scope.tagging = false;
   $scope.tagged = false;
-  $scope.newTags = ['Resolved', 'Later', 'Favorite'];
+  $scope.newTags = Stat.tags;
 
   if (!$scope.question)
     $scope.getQuestion();

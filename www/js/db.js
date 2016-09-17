@@ -8,11 +8,16 @@ DBService.open = function() {
   return db.open();
 };
 
-DBService.countQuestions = function(cb) {
+DBService.countQuestions = function(tag, cb) {
   this.open().then(function(db) {
-    db.questions
-      .toCollection()
-      .count(cb);
+    var questions = db.questions;
+    if (tag != 'all') {
+      questions = questions.where('tags').anyOf([tag]);
+    } else {
+      questions = questions.toCollection();
+    }
+
+    return questions.count(cb);
   });
 };
 
@@ -67,4 +72,3 @@ angular.module('Services')
   DBService.Dexie = Dexie;
   return DBService;
 }]);
-

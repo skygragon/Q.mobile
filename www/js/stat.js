@@ -1,7 +1,8 @@
 StatService = {
   tags: ['Resolved','Later','Favorite'],
-  data: {all: 0},
-  ctx: {tasks: 0, dirty: true}
+  data: {All: 0},
+  ctx: {tasks: 0, dirty: true},
+  filter: {status:'0', tag:'', company: ''}
 };
 
 StatService.init = function(DB) {
@@ -18,7 +19,7 @@ StatService.query = function(tag) {
 
   var self = this;
   this.DB.countQuestions(tag, function(count) {
-    self.data[tag] = count;
+    self.data[tag || 'All'] = count;
     self.onTaskDone();
   });
 };
@@ -32,7 +33,7 @@ StatService.onTaskDone = function() {
 
 StatService.refresh = function(cb) {
   this.ctx.cb = cb;
-  this.query('all');
+  this.query();
 
   var self = this;
   this.tags.forEach(function(tag) {

@@ -11,7 +11,7 @@ DBService.open = function() {
 DBService.countQuestions = function(tag, cb) {
   this.open().then(function(db) {
     var questions = db.questions;
-    if (tag != 'all') {
+    if (tag && tag.length > 0) {
       questions = questions.where('tags').anyOf([tag]);
     } else {
       questions = questions.toCollection();
@@ -35,11 +35,29 @@ DBService.updateQuestions = function(questions, cb) {
   });
 };
 
-DBService.getQuestion = function(cond, cb) {
+DBService.getQuestion = function(filter, cb) {
   this.open().then(function(db) {
-    var rand = Math.random();
-    var questions = db.questions.where('status').equals(0);
+    filter = filter || {};
 
+    // only get unresolved by default
+    var status = filter.status || '0';
+    var questions = db.questions
+      .where('status')
+      .belowOrEqual(parseInt(status));
+
+    if (filter.tag && filter.tag.length > 0) {
+      questions.and(function(q) {
+        return q.tags.indexOf(filter.tag) >= 0;
+      });
+    }
+
+    if (filter.company && filter.company.length > 0) {
+      questions.and(function(q) {
+        return q.company === filter.company;
+      });
+    }
+
+    var rand = Math.random();
     questions.and(function(q) {
       return q.rand >= rand;
     })

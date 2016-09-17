@@ -1,0 +1,28 @@
+<ion-view view-title="Setting">
+  <ion-content>
+    <div class="list">
+      <div class="item item-divider">Question Filters</div>
+      <label class="item item-input item-select">
+        <div class="input-label">By Status</div>
+        <select ng-model="filter.status">
+          <option value="1">All</option>
+          <option value="0">Unresolved Only</option>
+        </select>
+      </label>
+      <label class="item item-input item-select">
+        <div class="input-label">By Tag</div>
+        <select ng-model="filter.tag">
+          <option value="">All</option>
+          <option ng-repeat="tag in tags">{{tag}}</option>
+        </select>
+      </label>
+      <label class="item item-input item-select">
+        <div class="input-label">By Company</div>
+        <select ng-model="filter.company">
+          <option value="">All</option>
+          <option ng-repeat="company in companies">{{company}}</option>
+        </select>
+      </label>
+    </div>
+  </ion-content>
+</ion-view>

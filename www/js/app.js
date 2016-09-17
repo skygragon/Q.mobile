@@ -40,6 +40,15 @@ angular.module('App', ['ionic', 'Vendors', 'Controllers', 'Services'])
           controller: 'QuestionController'
         }
       }
+    })
+    .state('tabs.setting', {
+      url: '/setting',
+      views: {
+        'tabs-setting': {
+          templateUrl: 'templates/tabs-setting.html',
+          controller: 'SettingController'
+        }
+      }
     });
 
   $urlRouterProvider.otherwise('/tabs/dashboard');

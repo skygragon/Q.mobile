@@ -4,16 +4,19 @@
       <div class="item item-divider">
         <i class="ion-stats-bars"></i>&nbsp;
         <span class="text-small">Achievements</span>
+        <span class="badge badge-assertive">
+          {{stat.Resolved * 100 / stat.All | number:2 }}%
+        </span>
       </div>
       <div class="item">
         <div class="row row-bottom">
             <div class="col col-50 text-left">Total Questions</div>
-            <div class="col col-50 text-right text-big assertive">{{stat.all}}</div>
+            <div class="col col-50 text-right text-big assertive">{{stat.All}}</div>
         </div>
 
         <div class="row row-bottom">
           <div class="col col-50 text-left text-dashboard">Resolved</div>
-          <div class="col col-50 text-right text-dashboard text-big positive">{{stat.Resolved}}</div>
+          <div class="col col-50 text-right text-dashboard text-big assertive">{{stat.Resolved}}</div>
         </div>
 
         <div class="row row-bottom">

@@ -93,7 +93,7 @@ C3Service.getPage = function(id, cb) {
           });
 
           q.time = x.getElementsByTagName('abbr')[0].title;
-          q.link = 'http://careercup.com/' + _.last(q.link.split('/'));
+          q.link = 'https://careercup.com/' + _.last(q.link.split('/'));
           q.name = _.last(q.link.split('id='));
 
           return q;

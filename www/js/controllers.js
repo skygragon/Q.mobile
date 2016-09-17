@@ -48,7 +48,7 @@ angular.module('Controllers', [])
   $scope.updated = Stat.updated;
   $scope.refreshStat();
 })
-.controller('QuestionController', function($scope, $rootScope, DB, Stat) {
+.controller('QuestionController', function($scope, $rootScope, $cordovaInAppBrowser, DB, Stat) {
 
   $rootScope.$on('$stateChangeSuccess',
     function(event, toState, toParams, fromState, fromParams) {
@@ -110,6 +110,14 @@ angular.module('Controllers', [])
     question.status = (question.tags.indexOf('Resolved') >= 0) ? 1 : 0;
     $scope.question = question;
     $scope.tagged = true;
+  };
+
+  $scope.open = function(url) {
+    var opts = {
+      location: 'yes',
+      toolbar: 'yes'
+    };
+    $cordovaInAppBrowser.open(url, '_blank', opts);
   };
 
   $scope.updating = false;

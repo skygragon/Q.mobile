@@ -57,19 +57,15 @@ DBService.getQuestion = function(filter, cb) {
       });
     }
 
-    var rand = Math.random();
-    questions.and(function(q) {
-      return q.rand >= rand;
-    })
-    .last(function(q) {
-      if (q) return cb(q);
-
-      // no such question, try again
-      questions.and(function(q) {
-        return q.rand < rand;
-      })
-      .first(cb);
-    });
+    questions
+      .count(function(n) {
+        var rand = _.random(n);
+        questions.offset(rand)
+          .first(function(q) {
+            console.log(n, rand, q.rand);
+            cb(q);
+          });
+      });
   });
 };
 
@@ -86,7 +82,8 @@ DBService.updateQuestion = function(question, cb) {
 };
 
 angular.module('Services', [])
-.service('DB', [ 'Dexie', function(Dexie) {
+.service('DB', [ 'Dexie', '_', function(Dexie, _) {
   DBService.Dexie = Dexie;
+  DBService._ = _;
   return DBService;
 }]);

@@ -73,7 +73,7 @@ angular.module('Controllers', [])
 
       if (!question) {
         console.log('cannot find question with filter:', Stat.filter);
-        if (++$scope.retries > 20) {
+        if (++$scope.retries > 10) {
           // too many times, maybe there is no such question??
           errored = true;
         } else {

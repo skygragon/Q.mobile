@@ -1,7 +1,7 @@
 var C3Service = {};
 
 function onWorkerDone(ctx, msg) {
-  console.log(msg);
+  console.debug(msg);
   // all workers quit, notify caller
   if (--ctx.workers === 0)
     ctx.cb();
@@ -23,7 +23,7 @@ function onPageDone(ctx, e, questions) {
   // push back failed page, thus try it later
   if (e) {
     ctx.pages.unshift(e.id);
-    console.log('recollect failed page:' + e.id);
+    console.debug('recollect failed page:' + e.id);
   }
 
   getPageWorker(ctx);
@@ -57,7 +57,7 @@ C3Service.update = function(cb) {
 };
 
 C3Service.getPage = function(id, cb) {
-  console.log('getPage:' + id);
+  console.debug('getPage:' + id);
   this.$http.get('https://careercup.com/page?n=' + id)
     .success(function(data, status, headers, config) {
       var parser = new DOMParser();
@@ -100,7 +100,7 @@ C3Service.getPage = function(id, cb) {
         })
         .value();
 
-      console.log('getPage:' + id + ' = ' + questions.length);
+      console.debug('getPage:' + id + ' = ' + questions.length);
       return cb(null, questions);
     })
     .error(function(data,status, headers, config) {

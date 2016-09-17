@@ -60,11 +60,7 @@ DBService.getQuestion = function(filter, cb) {
     questions
       .count(function(n) {
         var rand = _.random(n);
-        questions.offset(rand)
-          .first(function(q) {
-            console.log(n, rand, q.rand);
-            cb(q);
-          });
+        questions.offset(rand).first(cb);
       });
   });
 };

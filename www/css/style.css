@@ -1,11 +1,24 @@
-/* Empty. Add your own CSS if you like */
+@font-face {
+  font-family: 'Roboto';
+  src: url('../fonts/Roboto-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Anton';
+  src: url('../fonts/Anton.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+*,button,pre,select,span { font-family: 'Roboto' }
+
 .text-left { text-align: left; }
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 
 .text-dashboard { margin-top: 25px; }
-.text-big { font-size: 52px; font-family: "HelveticaNeue-CondensedBold" }
+.text-big { font-size: 52px; font-family: 'Anton' }
 .text-normal { font-size: 20px; }
-.text-small { font-size: 0.8em; }
+.text-small { font-size: 1em; }
 
 .badge-line { margin-top: 8px; }

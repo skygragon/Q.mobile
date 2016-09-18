@@ -40,13 +40,13 @@
       </div>
 
       <div class="text-small">
-        <ion-toggle toggle-class="toggle-balanced" ng-model="tagging" ng-checked="tagging">
+        <ion-toggle toggle-class="toggle-positive" ng-model="tagging" ng-checked="tagging">
           Add Tags
         </ion-toggle>
       </div>
       <div class="item-body item-text-wrap text-small" ng-show="tagging">
         <span ng-repeat="tag in newTags">
-          <i class="badge badge-balanced badge-line" ng-click="addTag(tag)">{{tag}}</i>&nbsp;
+          <i class="badge badge-positive badge-line" ng-click="addTag(tag)">{{tag}}</i>&nbsp;
         </span>
       </div>
 

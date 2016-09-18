@@ -25,7 +25,7 @@ DBService.updateQuestions = function(questions, cb) {
   this.open().then(function(db) {
     db.questions
       .bulkPut(questions)
-      .then(function() {
+      .then(function(key) {
         cb();
       })
       .catch(Dexie.BulkError, function (e) {
@@ -74,6 +74,31 @@ DBService.updateQuestion = function(question, cb) {
         tags: question.tags
       })
       .then(cb);
+  });
+};
+
+DBService.getQuestions = function(cb) {
+  this.open().then(function(db) {
+    db.questions
+      .toCollection()
+      .toArray(cb);
+  });
+};
+
+DBService.setQuestions = function(questions, cb) {
+  this.open().then(function(db) {
+    db.questions
+      .clear()
+      .then(function() {
+        db.questions
+          .bulkPut(questions)
+          .then(function(key) {
+            cb();
+          })
+          .catch(Dexie.BulkError, function (e) {
+            cb(e);
+          });
+      });
   });
 };
 

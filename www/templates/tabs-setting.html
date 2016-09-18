@@ -32,15 +32,21 @@
       <label class="item item-input item-select">
         <div class="input-label">Workers Concurrency</div>
         <select ng-model="updated.workers">
-          <option>1</option>
-          <option>2</option>
-          <option>4</option>
-          <option>8</option>
-          <option>16</option>
-          <option>24</option>
-          <option>32</option>
+          <option ng-repeat="count in counts">{{count}}</option>
         </select>
       </label>
+      <div class="item item-divider">Data Management</div>
+      <div class="item item-text-wrap">{{fullpath}}</div>
+      <div class="item item-button-right">Backup to File
+        <button class="button button-positive" ng-click="backup()" ng-disabled="IOing">
+          <i class="icon ion-ios-upload-outline"></i>
+        </button>
+      </div>
+      <div class="item item-button-right">Restore from File
+        <button class="button button-positive" ng-click="restore()" ng-disabled="IOing">
+          <i class="icon ion-ios-download-outline"></i>
+        </button>
+      </div>
     </div>
   </ion-content>
 </ion-view>

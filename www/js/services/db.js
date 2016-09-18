@@ -100,7 +100,7 @@ DBService.selectQuestion = function(filter, cb) {
     var idx = _.random(n - 1);
     var key = ctx.keys[idx];
 
-    console.log('selected id=' + key + ', idx=' + idx + '/' + n);
+    console.debug('selected question id=' + key, idx + '/' + n);
     return db.questions.get(key).then(cb);
   });
 };

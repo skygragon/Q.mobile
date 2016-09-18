@@ -21,7 +21,7 @@ angular.module('Controllers')
 
     DB.selectQuestion(filter || Stat.filter, function(question) {
       if (!question) {
-        console.log('cannot find question with filter:', Stat.filter);
+        console.log('No question found', JSON.stringify(Stat.filter));
       }
 
       $scope.$apply(function() {

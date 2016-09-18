@@ -100,11 +100,11 @@ C3Service.getPage = function(id, cb) {
         })
         .value();
 
-      console.debug('getPage:' + id + ' = ' + questions.length);
+      console.debug('getPage:' + id, 'return ' + questions.length +' questions');
       return cb(null, questions);
     })
     .error(function(data,status, headers, config) {
-      console.log(data, status);
+      console.log('http error:' + status, data);
       return cb({id: id});
     });
 };

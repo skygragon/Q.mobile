@@ -4,7 +4,13 @@ angular.module('Controllers')
   $scope.companies = ['Apple', 'Amazon', 'Facebook', 'Google', 'Microsoft'];
   $scope.counts = ['1', '2', '4', '8', '16', '24', '32'];
 
-  var dir = cordova.file.externalDataDirectory || cordova.file.dataDirectory;
+  var dir;
+  try {
+    dir = cordova.file.externalDataDirectory || cordova.file.dataDirectory;
+  } catch (e) {
+    console.log(e.message);
+    dir = './'; // hack web test where no cordova defined...
+  }
   var name = 'c3.json';
   $scope.fullpath = dir + name;
 

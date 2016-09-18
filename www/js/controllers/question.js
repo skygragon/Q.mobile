@@ -4,36 +4,29 @@ angular.module('Controllers')
   $rootScope.$on('$stateChangeSuccess',
     function(event, toState, toParams, fromState, fromParams) {
       if (toState.name === 'tabs.question' && !$scope.question)
-        $scope.getQuestion();
+        $scope.selectQuestion();
     });
 
-  $scope.getQuestion = function(filter) {
+  $scope.selectQuestion = function(filter) {
     $scope.updating = true;
 
     if ($scope.tagged) {
       DB.updateQuestion($scope.question, function(updated) {
         Stat.ctx.dirty = true;
         $scope.tagged = false;
-        $scope.getQuestion();
+        $scope.selectQuestion();
       });
       return;
     }
 
-    DB.getQuestion(filter || Stat.filter, function(question) {
-      var errored = false;
-
+    DB.selectQuestion(filter || Stat.filter, function(question) {
       if (!question) {
         console.log('cannot find question with filter:', Stat.filter);
-        if (++$scope.retries > 10) {
-          // too many times, maybe there is no such question??
-          errored = true;
-        } else {
-          return $scope.getQuestion(filter);
-        }
       }
 
       $scope.$apply(function() {
-        $scope.errored = errored;
+        // FIXME: remove me!
+        $scope.errored = question ? false : true;
         $scope.retries = 0;
         $scope.tagged = false;
         $scope.question = question;
@@ -80,5 +73,5 @@ angular.module('Controllers')
   $scope.retries = 0;
 
   if (!$scope.question)
-    $scope.getQuestion();
+    $scope.selectQuestion();
 });

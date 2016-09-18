@@ -104,6 +104,7 @@ C3Service.getPage = function(id, cb) {
       return cb(null, questions);
     })
     .error(function(data,status, headers, config) {
+      console.log(data, status);
       return cb({id: id});
     });
 };

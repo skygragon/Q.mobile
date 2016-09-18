@@ -1,4 +1,4 @@
-angular.module('Vendors', ['chart.js'])
+angular.module('Vendors', [])
 .service('_', [ '$window', function($window) {
     return $window._;
   }

@@ -1,53 +1,4 @@
-angular.module('Controllers', [])
-.controller('DashboardController', function($scope, $rootScope, C3, DB, Stat) {
-
-  $rootScope.$on('$stateChangeSuccess',
-    function(event, toState, toParams, fromState, fromParams) {
-      if (toState.name === 'tabs.dashboard' && Stat.ctx.dirty)
-        $scope.refreshStat();
-    });
-
-  $scope.refreshStat = function() {
-    Stat.refresh(function() {
-      $scope.$apply(function() {
-        $scope.stat = Stat.data;
-      });
-    });
-  };
-
-  $scope.update = function() {
-    $scope.updating = true;
-    $scope.duplicated = false;
-    Stat.updated.questions = 0;
-    Stat.updated.pages = 0;
-
-    C3.update(function(questions) {
-      if (!questions) {
-        $scope.updating = false;
-        return;
-      }
-
-      Stat.updated.questions += questions.length;
-      Stat.updated.pages++;
-
-      DB.updateQuestions(questions, function(e) {
-        // BulkError if questions are duplicated.
-        $scope.duplicated = e;
-
-        $scope.$apply(function() {
-          $scope.last_updated = Date.now();
-          $scope.refreshStat();
-        });
-      });
-      return $scope.duplicated;
-    });
-  };
-
-  $scope.updating = false;
-  $scope.stat = Stat.data;
-  $scope.updated = Stat.updated;
-  $scope.refreshStat();
-})
+angular.module('Controllers')
 .controller('QuestionController', function($scope, $rootScope, $cordovaInAppBrowser, DB, Stat) {
 
   $rootScope.$on('$stateChangeSuccess',
@@ -130,11 +81,4 @@ angular.module('Controllers', [])
 
   if (!$scope.question)
     $scope.getQuestion();
-})
-.controller('SettingController', function($scope, DB, Stat) {
-  $scope.tags = Stat.tags;
-  $scope.companies = ['Apple', 'Amazon', 'Facebook', 'Google', 'Microsoft'];
-
-  $scope.filter = Stat.filter;
-  $scope.updated = Stat.updated;
 });

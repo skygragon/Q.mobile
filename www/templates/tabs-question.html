@@ -1,7 +1,7 @@
 <ion-view view-title="Question">
   <ion-content>
 
-    <div class="list card" ng-hide="errored">
+    <div class="list card" ng-show="question">
       <div class="item item-divider">
         <i class="ion-ios-paper-outline"></i>&nbsp;
         <span class="text-small">{{question.name}}</span>
@@ -27,7 +27,7 @@
 
     </div>
 
-    <div class="list card" ng-hide="errored">
+    <div class="list card" ng-show="question">
 
       <div class="item item-divider">
         <i class="ion-ios-pricetags-outline"></i>&nbsp;
@@ -58,7 +58,7 @@
 
     </div> <!-- end of card -->
 
-    <div class="list card" ng-show="errored">
+    <div class="list card" ng-hide="question">
       <div class="item item-text-wrap">
         Can't find any suitable questions under exitsing filter...<br>
         Please try to reselelct 'Question Filters' in 'Setting' tab?

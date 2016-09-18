@@ -25,9 +25,6 @@ angular.module('Controllers')
       }
 
       $scope.$apply(function() {
-        // FIXME: remove me!
-        $scope.errored = question ? false : true;
-        $scope.retries = 0;
         $scope.tagged = false;
         $scope.question = question;
         $scope.updating = false;
@@ -67,10 +64,8 @@ angular.module('Controllers')
   $scope.updating = false;
   $scope.tagging = false;
   $scope.tagged = false;
-  $scope.errored = false;
 
   $scope.newTags = Stat.tags;
-  $scope.retries = 0;
 
   if (!$scope.question)
     $scope.selectQuestion();

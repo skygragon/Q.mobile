@@ -20,14 +20,15 @@ angular.module('Controllers')
     }
 
     DB.selectQuestion(filter || Stat.filter, function(question) {
-      if (!question) {
-        console.log('No question found', JSON.stringify(Stat.filter));
-      }
-
       $scope.tagged = false;
       $scope.question = question;
       $scope.updating = false;
-      $scope.$apply();
+
+      if (!question) {
+        console.log('No question found', JSON.stringify(Stat.filter));
+      } else {
+        $scope.$apply();
+      }
     });
   };
 

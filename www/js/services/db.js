@@ -2,8 +2,6 @@ var DBService = {
   ctx: {keys: null, idx:0, filter: null}
 };
 
-var DB_NOT_READY = 'DB not ready yet';
-
 DBService.init = function(Dexie, _) {
   this.Dexie = Dexie;
   this._ = _;
@@ -29,7 +27,7 @@ DBService.open = function(cb) {
 DBService.countQuestions = function(tag, cb) {
   this.open(function(db) {
     var questions = db.questions;
-    if (tag && tag.length > 0) {
+    if (tag && tag != '') {
       questions = questions.where('tags').anyOf([tag]);
     } else {
       questions = questions.toCollection();
@@ -66,13 +64,13 @@ DBService.filterQuestions = function(filter, cb) {
       .where('status')
       .belowOrEqual(parseInt(filter.status));
 
-    if (filter.tag && filter.tag.length > 0) {
+    if (filter.tag != '') {
       questions.and(function(q) {
         return q.tags.indexOf(filter.tag) >= 0;
       });
     }
 
-    if (filter.company && filter.company.length > 0) {
+    if (filter.company != '') {
       questions.and(function(q) {
         return q.company === filter.company;
       });
@@ -105,7 +103,16 @@ DBService.selectQuestion = function(filter, cb) {
   });
 };
 
+function match(filter, question) {
+  return filter &&
+    parseInt(filter.status) >= question.status &&
+    (filter.company === '' || filter.company == question.company) &&
+    (filter.tag === '' || question.tags.indexOf(filter.tag) >= 0);
+}
+
 DBService.updateQuestion = function(question, cb) {
+  var ctx = this.ctx;
+
   this.open(function(db) {
     // for now only some keys will be updated
     db.questions
@@ -113,7 +120,15 @@ DBService.updateQuestion = function(question, cb) {
         status: question.status,
         tags: question.tags
       })
-      .then(cb);
+      .then(function(updated) {
+        // remove this question from cache if not fit
+        // filter any more
+        if (!match(ctx.filter, question)) {
+          var i = ctx.keys.indexOf(question.id);
+          if (i >= 0) ctx.keys.splice(i, 1);
+        }
+        cb(updated);
+      });
   });
 };
 

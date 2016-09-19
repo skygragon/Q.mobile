@@ -9,9 +9,8 @@ angular.module('Controllers', [])
 
   $scope.refreshStat = function() {
     Stat.refresh(function() {
-      $scope.$apply(function() {
-        $scope.stat = Stat.data;
-      });
+      $scope.stat = Stat.data;
+      $scope.$apply();
     });
   };
 
@@ -33,11 +32,9 @@ angular.module('Controllers', [])
       DB.updateQuestions(questions, function(e) {
         // BulkError if questions are duplicated.
         $scope.duplicated = e;
-
-        $scope.$apply(function() {
-          $scope.last_updated = Date.now();
-          $scope.refreshStat();
-        });
+        $scope.last_updated = Date.now();
+        $scope.refreshStat();
+        $scope.$apply();
       });
       return $scope.duplicated;
     });

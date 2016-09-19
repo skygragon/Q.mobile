@@ -24,11 +24,10 @@ angular.module('Controllers')
         console.log('No question found', JSON.stringify(Stat.filter));
       }
 
-      $scope.$apply(function() {
-        $scope.tagged = false;
-        $scope.question = question;
-        $scope.updating = false;
-      });
+      $scope.tagged = false;
+      $scope.question = question;
+      $scope.updating = false;
+      $scope.$apply();
     });
   };
 

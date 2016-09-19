@@ -50,9 +50,8 @@ angular.module('Controllers')
               alert('Restore ' + questions.length + ' questions: ok');
               Stat.ctx.dirty = true;
             }
-            $scope.$apply(function() {
-              $scope.IOing = false;
-            });
+            $scope.IOing = false;
+            $scope.$apply();
           });
         },
         function(e) {

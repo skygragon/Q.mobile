@@ -1,5 +1,6 @@
 angular.module('Controllers')
-.controller('QuestionController', function($scope, $rootScope, $cordovaInAppBrowser, DB, Stat) {
+.controller('QuestionController', function($scope, $rootScope,
+      $cordovaInAppBrowser, $timeout, DB, Stat) {
 
   $rootScope.$on('$stateChangeSuccess',
     function(event, toState, toParams, fromState, fromParams) {
@@ -14,6 +15,7 @@ angular.module('Controllers')
       DB.updateQuestion($scope.question, function(updated) {
         Stat.ctx.dirty = true;
         $scope.tagged = false;
+        $scope.question = null;
         $scope.selectQuestion();
       });
       return;
@@ -23,11 +25,12 @@ angular.module('Controllers')
       $scope.tagged = false;
       $scope.question = question;
       $scope.updating = false;
+      $timeout(function() {
+        $scope.$apply();
+      });
 
       if (!question) {
         console.log('No question found', JSON.stringify(Stat.filter));
-      } else {
-        $scope.$apply();
       }
     });
   };

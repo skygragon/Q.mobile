@@ -58,7 +58,13 @@
 
     </div> <!-- end of card -->
 
-    <div class="list card" ng-hide="question">
+    <div class="row" ng-show="updating">
+      <div class="col col-100 text-center">
+        <ion-spinner icon="bubbles"></ion-spinner>
+      </div>
+    </div>
+
+    <div class="list card" ng-hide="question || updating">
       <div class="item item-divider">No question found?</div>
       <div class="item item-text-wrap">
         Please goto setting tab and modify your current filter setting.

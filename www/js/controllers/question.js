@@ -22,16 +22,15 @@ angular.module('Controllers')
     }
 
     DB.selectQuestion(filter || Stat.filter, function(question) {
+      if (!question) {
+        console.log('No question found', JSON.stringify(Stat.filter));
+      }
       $scope.tagged = false;
       $scope.question = question;
       $scope.updating = false;
       $timeout(function() {
         $scope.$apply();
       });
-
-      if (!question) {
-        console.log('No question found', JSON.stringify(Stat.filter));
-      }
     });
   };
 
@@ -68,6 +67,7 @@ angular.module('Controllers')
   $scope.tagging = false;
   $scope.tagged = false;
 
+  $scope.question = null;
   $scope.newTags = Stat.tags;
 
   if (!$scope.question)

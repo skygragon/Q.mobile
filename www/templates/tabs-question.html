@@ -1,6 +1,20 @@
 <ion-view view-title="Question">
   <ion-content>
 
+    <div class="row" ng-show="updating && !question">
+      <div class="col col-100 text-center">
+        <ion-spinner icon="bubbles"></ion-spinner><br/>
+        Preparing questions...
+      </div>
+    </div>
+
+    <div class="list card" ng-hide="question || updating">
+      <div class="item item-divider">No question found?</div>
+      <div class="item item-text-wrap">
+        Please goto setting tab and modify your current filter setting.
+      </div>
+    </div>
+
     <div class="list card" ng-show="question">
       <div class="item item-divider">
         <i class="ion-ios-paper-outline"></i>&nbsp;
@@ -57,19 +71,6 @@
       </div>
 
     </div> <!-- end of card -->
-
-    <div class="row" ng-show="updating">
-      <div class="col col-100 text-center">
-        <ion-spinner icon="bubbles"></ion-spinner>
-      </div>
-    </div>
-
-    <div class="list card" ng-hide="question || updating">
-      <div class="item item-divider">No question found?</div>
-      <div class="item item-text-wrap">
-        Please goto setting tab and modify your current filter setting.
-      </div>
-    </div>
 
   </ion-content>
 </ion-view>

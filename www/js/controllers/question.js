@@ -16,7 +16,9 @@ angular.module('Controllers')
         Stat.ctx.dirty = true;
         $scope.tagged = false;
         $scope.question = null;
-        $scope.selectQuestion();
+        $timeout(function() {
+          $scope.selectQuestion();
+        }, 0);
       });
       return;
     }

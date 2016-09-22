@@ -12,28 +12,25 @@ angular.module('Controllers')
     $scope.updating = true;
 
     if ($scope.tagged) {
-      DB.updateQuestion($scope.question, function(updated) {
-        Stat.ctx.dirty = true;
-        $scope.tagged = false;
-        $scope.question = null;
-        $timeout(function() {
+      DB.updateQuestion($scope.question)
+        .then(function(updated) {
+          Stat.questions.dirty = true;
+          $scope.tagged = false;
+          $scope.question = null;
           $scope.selectQuestion();
-        }, 0);
-      });
+        });
       return;
     }
 
-    DB.selectQuestion(filter || Stat.filter, function(question) {
-      if (!question) {
-        console.log('No question found', JSON.stringify(Stat.filter));
-      }
-      $scope.tagged = false;
-      $scope.question = question;
-      $scope.updating = false;
-      $timeout(function() {
-        $scope.$apply();
+    DB.selectQuestion(filter || Stat.filter)
+      .then(function(question) {
+        if (!question) {
+          console.log('No question found', JSON.stringify(Stat.filter));
+        }
+        $scope.tagged = false;
+        $scope.question = question;
+        $scope.updating = false;
       });
-    });
   };
 
   $scope.addTag = function(tag) {

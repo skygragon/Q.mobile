@@ -1,106 +1,143 @@
-var DBService = {
-  ctx: {keys: null, idx:0, filter: null}
+var cache = {
+  db: null,     // DB connection
+  keys: null,   // DB keys of all questions that fit the current filter
+  idx: -1,      // current cursor in keys, for sequential mode only.
+  filter: null  // current query filter
 };
 
-DBService.init = function(Dexie, _) {
+var DBService = {};
+
+DBService.init = function($q, Dexie, _) {
+  this.$q = $q;
   this.Dexie = Dexie;
   this._ = _;
-  this.db = null;
 };
 
-DBService.open = function(cb) {
-  if (this.db) return cb(this.db);
+DBService.open = function() {
+  var d = this.$q.defer();
 
+  // reuse DB connection in cache
+  if (cache.db) {
+    d.resolve(cache.db);
+    return d.promise;
+  }
+
+  // otherwise, create new DB connection
   var _db = new this.Dexie("c3.db");
   _db.version(1).stores({
+    // FIXME: remove useless 'rand' column
     questions: '++id,&name,status,rand,time,company,link,data,*tags'
   });
 
-  var self = this;
   _db.open().then(function(db) {
-    // caching db instance to speedup
-    self.db = db;
-    return cb(db);
+    cache.db = db;
+    d.resolve(db);
   });
+
+  return d.promise;
 };
 
-DBService.countQuestions = function(tag, cb) {
-  this.open(function(db) {
+DBService.countQuestions = function(tag) {
+  var d = this.$q.defer();
+
+  this.open().then(function(db) {
     var questions = db.questions;
-    if (tag && tag != '') {
+
+    if (tag && tag !== '') {
+      // count by given tag
       questions = questions.where('tags').anyOf([tag]);
     } else {
+      // count all
       questions = questions.toCollection();
     }
 
-    questions.count(cb);
+    questions.count(function(n) {
+      d.resolve(n);
+    });
   });
+
+  return d.promise;
 };
 
-DBService.updateQuestions = function(questions, cb) {
-  this.open(function(db) {
+DBService.updateQuestions = function(questions) {
+  var d = this.$q.defer();
+
+  this.open().then(function(db) {
     db.questions
       .bulkPut(questions)
       .then(function(key) {
-        cb();
+        d.resolve();
       })
       .catch(Dexie.BulkError, function (e) {
         // ignore put error of duplicate questions
-        cb(e);
+        d.resolve(e);
       });
   });
+
+  return d.promise;
 };
 
-DBService.filterQuestions = function(filter, cb) {
-  var self = this;
-  this.open(function(db) {
-    if (_.isEqual(filter, self.ctx.filter)) {
-      return cb(db, self.ctx);
+DBService.filterQuestions = function(filter) {
+  var d = this.$q.defer();
+
+  this.open().then(function(db) {
+    // use cached if filter not changed
+    if (_.isEqual(filter, cache.filter)) {
+      return d.resolve(db);
     }
-    // otherwise new filter will invalidate ctx, which means we
-    // have to re-collect the questions to meet this new filter
+
+    // otherwise we have to invalidate cache and re-collect
+    // all questions that meet this new filter
 
     var questions = db.questions
       .where('status')
       .belowOrEqual(parseInt(filter.status));
 
-    if (filter.tag != '') {
+    if (filter.tag !== '') {
       questions.and(function(q) {
         return q.tags.indexOf(filter.tag) >= 0;
       });
     }
 
-    if (filter.company != '') {
+    if (filter.company !== '') {
       questions.and(function(q) {
         return q.company === filter.company;
       });
     }
 
     questions.primaryKeys(function(keys) {
-      self.ctx = {
-        keys: keys,
-        idx: 0,
-        filter: _.clone(filter)
-      };
-      return cb(db, self.ctx);
+      cache.keys = keys;
+      cache.idx = -1;
+      cache.filter = _.clone(filter);
+      d.resolve(db);
     });
   });
+
+  return d.promise;
 };
 
-DBService.selectQuestion = function(filter, cb) {
-  this.filterQuestions(filter, function(db, ctx) {
-    var n = ctx.keys.length;
-    if (n === 0) return cb(null);
+DBService.selectQuestion = function(filter) {
+  var d = this.$q.defer();
 
-    // TODO: ordered mode
+  this.filterQuestions(filter).then(function(db) {
+    var n = cache.keys.length;
+    if (n === 0) return d.resolve(null);
+
+    // TODO: sequential mode
 
     // random mode
     var idx = _.random(n - 1);
-    var key = ctx.keys[idx];
+    var key = cache.keys[idx];
 
     console.debug('selected question id=' + key, idx + '/' + n);
-    return db.questions.get(key).then(cb);
+    db.questions
+      .get(key)
+      .then(function(question) {
+        d.resolve(question);
+      });
   });
+
+  return d.promise;
 };
 
 function match(filter, question) {
@@ -110,10 +147,10 @@ function match(filter, question) {
     (filter.tag === '' || question.tags.indexOf(filter.tag) >= 0);
 }
 
-DBService.updateQuestion = function(question, cb) {
-  var ctx = this.ctx;
+DBService.updateQuestion = function(question) {
+  var d = this.$q.defer();
 
-  this.open(function(db) {
+  this.open().then(function(db) {
     // for now only some keys will be updated
     db.questions
       .update(question.id, {
@@ -121,44 +158,55 @@ DBService.updateQuestion = function(question, cb) {
         tags: question.tags
       })
       .then(function(updated) {
-        // remove this question from cache if not fit
-        // filter any more
-        if (!match(ctx.filter, question)) {
-          var i = ctx.keys.indexOf(question.id);
-          if (i >= 0) ctx.keys.splice(i, 1);
+        // remove this question from cache if not fit filter any more
+        if (!match(cache.filter, question)) {
+          var i = cache.keys.indexOf(question.id);
+          if (i >= 0) cache.keys.splice(i, 1);
         }
-        cb(updated);
+        d.resolve(updated);
       });
   });
+
+  return d.promise;
 };
 
-DBService.getQuestions = function(cb) {
-  this.open(function(db) {
+DBService.getQuestions = function() {
+  var d = this.$q.defer();
+
+  this.open().then(function(db) {
     db.questions
       .toCollection()
-      .toArray(cb);
+      .toArray(function(questions) {
+        d.resolve(questions);
+      });
   });
+
+  return d.promise;
 };
 
-DBService.setQuestions = function(questions, cb) {
-  this.open(function(db) {
+DBService.setQuestions = function(questions) {
+  var d = this.$q.defer();
+
+  this.open().then(function(db) {
     db.questions
       .clear()
       .then(function() {
         db.questions
           .bulkPut(questions)
           .then(function(key) {
-            cb();
+            d.resolve();
           })
           .catch(Dexie.BulkError, function (e) {
-            cb(e);
+            d.resolve(e);
           });
       });
   });
+
+  return d.promise;
 };
 
 angular.module('Services', [])
-.service('DB', [ 'Dexie', '_', function(Dexie, _) {
-  DBService.init(Dexie, _);
+.service('DB', [ '$q' ,'Dexie', '_', function($q, Dexie, _) {
+  DBService.init($q, Dexie, _);
   return DBService;
 }]);

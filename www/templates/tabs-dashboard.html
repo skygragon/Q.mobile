@@ -2,31 +2,31 @@
   <ion-content>
     <div class="list card">
       <div class="item item-divider">
-        <i class="ion-stats-bars"></i>&nbsp;
+        <i class="ion-counts-bars"></i>&nbsp;
         <span class="text-small">Achievements</span>
         <span class="badge badge-assertive">
-          {{stat.Resolved * 100 / stat.All | number:2 }}%
+          {{count.Resolved * 100 / count.All | number:2 }}%
         </span>
       </div>
       <div class="item">
         <div class="row row-bottom">
             <div class="col col-50 text-left">Total Questions</div>
-            <div class="col col-50 text-right text-big assertive">{{stat.All}}</div>
+            <div class="col col-50 text-right text-big assertive">{{count.All}}</div>
         </div>
 
         <div class="row row-bottom">
           <div class="col col-50 text-left text-dashboard">Resolved</div>
-          <div class="col col-50 text-right text-dashboard text-big assertive">{{stat.Resolved}}</div>
+          <div class="col col-50 text-right text-dashboard text-big assertive">{{count.Resolved}}</div>
         </div>
 
         <div class="row row-bottom">
           <div class="col col-50 text-left text-dashboard">Later (to do)</div>
-          <div class="col col-50 text-right text-dashboard text-big">{{stat.Later}}</div>
+          <div class="col col-50 text-right text-dashboard text-big">{{count.Later}}</div>
         </div>
 
         <div class="row row-bottom">
           <div class="col col-50 text-left text-dashboard">Favorite</div>
-          <div class="col col-50 text-right text-dashboard text-big">{{stat.Favorite}}</div>
+          <div class="col col-50 text-right text-dashboard text-big">{{count.Favorite}}</div>
         </div>
       </div> <!-- end of item -->
 

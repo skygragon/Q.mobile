@@ -20,21 +20,22 @@ angular.module('Controllers')
 
   $scope.backup = function() {
     $scope.IOing = true;
-    DB.getQuestions(function(questions) {
-      var data = JSON.stringify(questions);
-      var msg = 'Backup ' + questions.length + ' questions: ';
-      $cordovaFile.writeFile(dir, name, data, true)
-        .then(
-          function(ok) {
-            alert(msg + 'ok');
-            $scope.IOing = false;
-          },
-          function(e) {
-            alert(msg + 'failed because ' + e.message);
-            $scope.IOing = false;
-          }
-        );
-    });
+    DB.getQuestions()
+      .then(function(questions) {
+        var msg = 'Backup ' + questions.length + ' questions: ';
+        var data = JSON.stringify(questions);
+        $cordovaFile.writeFile(dir, name, data, true)
+          .then(
+            function(ok) {
+              alert(msg + 'ok');
+              $scope.IOing = false;
+            },
+            function(e) {
+              alert(msg + 'failed because ' + e.message);
+              $scope.IOing = false;
+            }
+          );
+      });
   };
 
   $scope.restore = function() {
@@ -43,16 +44,16 @@ angular.module('Controllers')
       .then(
         function(text) {
           var questions = JSON.parse(text);
-          DB.setQuestions(questions, function(e) {
-            if (e) {
-              alert('Failed to restore because ' + e.message);
-            } else {
-              alert('Restore ' + questions.length + ' questions: ok');
-              Stat.ctx.dirty = true;
-            }
-            $scope.IOing = false;
-            $scope.$apply();
-          });
+          DB.setQuestions(questions)
+            .then(function(e) {
+              if (e) {
+                alert('Failed to restore because ' + e.message);
+              } else {
+                alert('Restore ' + questions.length + ' questions: ok');
+                Stat.questions.dirty = true;
+              }
+              $scope.IOing = false;
+            });
         },
         function(e) {
           alert('Failed to read file because ' + e.message);

@@ -1,13 +1,6 @@
 <ion-view view-title="Question">
   <ion-content>
 
-    <div class="row" ng-show="updating && !question">
-      <div class="col col-100 text-center">
-        <ion-spinner icon="bubbles"></ion-spinner><br/>
-        Preparing questions...
-      </div>
-    </div>
-
     <div class="list card" ng-hide="question || updating">
       <div class="item item-divider">No question found?</div>
       <div class="item item-text-wrap">
@@ -71,6 +64,13 @@
       </div>
 
     </div> <!-- end of card -->
+
+    <div class="row" ng-show="updating && !question">
+      <div class="col col-100 text-center">
+        <ion-spinner icon="bubbles"></ion-spinner><br/>
+        Preparing questions...
+      </div>
+    </div>
 
   </ion-content>
 </ion-view>

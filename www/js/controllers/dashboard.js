@@ -3,15 +3,15 @@ angular.module('Controllers', [])
 
   $rootScope.$on('$stateChangeSuccess',
     function(event, toState, toParams, fromState, fromParams) {
-      if (toState.name === 'tabs.dashboard' && Stat.ctx.dirty)
-        $scope.refreshStat();
+      if (toState.name === 'tabs.dashboard' && Stat.questions.dirty)
+        $scope.refreshCount();
     });
 
-  $scope.refreshStat = function() {
-    Stat.refresh(function() {
-      $scope.stat = Stat.data;
-      $scope.$apply();
-    });
+  $scope.refreshCount = function() {
+    Stat.refresh()
+        .then(function() {
+          $scope.count = Stat.questions.count;
+        });
   };
 
   $scope.update = function() {
@@ -29,19 +29,19 @@ angular.module('Controllers', [])
       Stat.updated.questions += questions.length;
       Stat.updated.pages++;
 
-      DB.updateQuestions(questions, function(e) {
+      DB.updateQuestions(questions)
+        .then(function(e) {
         // BulkError if questions are duplicated.
         $scope.duplicated = e;
         $scope.last_updated = Date.now();
-        $scope.refreshStat();
-        $scope.$apply();
+        $scope.refreshCount();
       });
       return $scope.duplicated;
     });
   };
 
   $scope.updating = false;
-  $scope.stat = Stat.data;
+  $scope.count = Stat.questions.count;
   $scope.updated = Stat.updated;
-  $scope.refreshStat();
+  $scope.refreshCount();
 });

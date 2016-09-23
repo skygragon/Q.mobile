@@ -30,7 +30,9 @@ Inspired by [careercup-cli](https://github.com/skygragon/careercup-cli), and [le
 
 ## Install
 
-TODO
+Download latest [releases](https://github.com/skygragon/careercup-mobile/releases) and choose the proper artifact for your mobile. E.g. the apk file for Android, or the ipa file for ios.
+
+Our app is built on [ionic](http://ionicframework.com/) platform, so it should work on different platforms like Android, ios, etc. For now we only provide the Android apk in early releases. Please feel free to [build](#build) from source code to get the app for other platforms.
 
 ## Best Practice
 
@@ -38,11 +40,16 @@ TODO
 
 ## Build
 
-TODO
-
 ### Prerequisites
 
-TODO
+* [ionic platfrom](http://ionicframework.com/getting-started/)
+* [Android SDK](https://developer.android.com/index.html)
+
+### Android
+
+	$ cd careercup-mobile/
+	$ ionic build android
+
 
 ## Tips
 

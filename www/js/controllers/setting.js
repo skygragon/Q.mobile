@@ -9,7 +9,7 @@ angular.module('Controllers')
     dir = cordova.file.externalDataDirectory || cordova.file.dataDirectory;
   } catch (e) {
     console.log(e.message);
-    dir = './'; // hack web test where no cordova defined...
+    dir = './'; // FIXME: hack web test where no cordova defined...
   }
   var name = 'c3.json';
   $scope.fullpath = dir + name;
@@ -39,6 +39,10 @@ angular.module('Controllers')
   };
 
   $scope.restore = function() {
+    if (!confirm('Restore from last backup?')) {
+      return;
+    }
+    // TODO: add file selection dialog
     $scope.IOing = true;
     $cordovaFile.readAsText(dir, name)
       .then(
@@ -60,6 +64,5 @@ angular.module('Controllers')
           $scope.IOing = false;
         }
       );
-
   };
 });

@@ -1,5 +1,4 @@
 var cache = {
-  db: null,     // DB connection
   keys: null,   // DB keys of all questions that fit the current filter
   idx: -1,      // current cursor in keys, for sequential mode only.
   filter: null  // current query filter
@@ -16,22 +15,18 @@ DBService.init = function($q, Dexie, _) {
 DBService.open = function() {
   var d = this.$q.defer();
 
-  // reuse DB connection in cache
-  if (cache.db) {
-    d.resolve(cache.db);
-    return d.promise;
-  }
-
-  // otherwise, create new DB connection
-  var _db = new this.Dexie("c3.db");
-  _db.version(1).stores({
+  var db = new this.Dexie('c3.db');
+  db.version(1).stores({
     // FIXME: remove useless 'rand' column
     questions: '++id,&name,status,rand,time,company,link,data,*tags'
   });
 
-  _db.open().then(function(db) {
-    cache.db = db;
+  // otherwise, create new DB connection
+  db.open().then(function(db) {
     d.resolve(db);
+  }).catch(function(e) {
+    console.log('db open failed:', e.stack);
+    d.resolve();
   });
 
   return d.promise;
@@ -41,6 +36,8 @@ DBService.countQuestions = function(tag) {
   var d = this.$q.defer();
 
   this.open().then(function(db) {
+    if (!db) return d.resolve(0);
+
     var questions = db.questions;
 
     if (tag && tag !== '') {
@@ -52,6 +49,7 @@ DBService.countQuestions = function(tag) {
     }
 
     questions.count(function(n) {
+      console.log('found ' + tag + ' = ' + n);
       d.resolve(n);
     });
   });
@@ -63,6 +61,8 @@ DBService.updateQuestions = function(questions) {
   var d = this.$q.defer();
 
   this.open().then(function(db) {
+    if (!db) return d.resolve();
+
     db.questions
       .bulkPut(questions)
       .then(function(key) {
@@ -81,6 +81,8 @@ DBService.filterQuestions = function(filter) {
   var d = this.$q.defer();
 
   this.open().then(function(db) {
+    if (!db) return d.resolve(db);
+
     // use cached if filter not changed
     if (_.isEqual(filter, cache.filter)) {
       return d.resolve(db);
@@ -120,6 +122,8 @@ DBService.selectQuestion = function(filter) {
   var d = this.$q.defer();
 
   this.filterQuestions(filter).then(function(db) {
+    if (!db) return d.resolve(null);
+
     var n = cache.keys.length;
     if (n === 0) return d.resolve(null);
 
@@ -151,6 +155,8 @@ DBService.updateQuestion = function(question) {
   var d = this.$q.defer();
 
   this.open().then(function(db) {
+    if (!db) return d.resolve('DB Error');
+
     // for now only some keys will be updated
     db.questions
       .update(question.id, {
@@ -163,7 +169,10 @@ DBService.updateQuestion = function(question) {
           var i = cache.keys.indexOf(question.id);
           if (i >= 0) cache.keys.splice(i, 1);
         }
-        d.resolve(updated);
+        d.resolve();
+      })
+      .catch(function(e) {
+        d.resolve(e);
       });
   });
 
@@ -174,6 +183,8 @@ DBService.getQuestions = function() {
   var d = this.$q.defer();
 
   this.open().then(function(db) {
+    if (!db) return d.resolve(null);
+
     db.questions
       .toCollection()
       .toArray(function(questions) {
@@ -188,6 +199,8 @@ DBService.setQuestions = function(questions) {
   var d = this.$q.defer();
 
   this.open().then(function(db) {
+    if (!db) return d.resolve({message: 'DB Error'});
+
     db.questions
       .clear()
       .then(function() {

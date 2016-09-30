@@ -13,7 +13,11 @@ angular.module('Controllers')
 
     if ($scope.tagged) {
       DB.updateQuestion($scope.question)
-        .then(function(updated) {
+        .then(function(e) {
+          if (e) {
+            console.log('Failed to update question because ' + e.stack);
+            alert('Failed to update question because ' + e);
+          }
           Stat.questions.dirty = true;
           $scope.tagged = false;
           $scope.question = null;

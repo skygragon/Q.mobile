@@ -22,19 +22,23 @@ angular.module('Controllers')
     $scope.IOing = true;
     DB.getQuestions()
       .then(function(questions) {
-        var msg = 'Backup ' + questions.length + ' questions: ';
-        var data = JSON.stringify(questions);
-        $cordovaFile.writeFile(dir, name, data, true)
-          .then(
-            function(ok) {
-              alert(msg + 'ok');
-              $scope.IOing = false;
-            },
-            function(e) {
-              alert(msg + 'failed because ' + e.message);
-              $scope.IOing = false;
-            }
-          );
+        if (!questions) {
+          alert('Failed to backup');
+        } else {
+          var msg = 'Backup ' + questions.length + ' questions: ';
+          var data = JSON.stringify(questions);
+          $cordovaFile.writeFile(dir, name, data, true)
+            .then(
+              function(ok) {
+                alert(msg + 'ok');
+                $scope.IOing = false;
+              },
+              function(e) {
+                alert(msg + 'failed because ' + e.message);
+                $scope.IOing = false;
+              }
+            );
+        }
       });
   };
 

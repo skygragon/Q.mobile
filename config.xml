@@ -18,6 +18,10 @@
   <preference name="android-minSdkVersion" value="16"/>
   <preference name="BackupWebStorage" value="none"/>
   <preference name="SplashScreen" value="screen"/>
+  <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
+  <feature name="CDVWKWebViewEngine">
+    <param name="ios-package" value="CDVWKWebViewEngine" />
+  </feature>
   <feature name="StatusBar">
     <param name="ios-package" onload="true" value="CDVStatusBar"/>
   </feature>
@@ -27,6 +31,9 @@
   <plugin name="cordova-plugin-splashscreen" spec="~4.0.0"/>
   <plugin name="cordova-plugin-statusbar" spec="~2.2.0"/>
   <plugin name="cordova-plugin-inappbrowser" spec="~1.5.0"/>
+  <plugin name="cordova-plugin-wkwebview-engine" spec="~1.1.0" />
+  <plugin name="cordova-labs-local-webserver" spec="~2.4.0" />
+  <plugin name="cordova-labs-wkwebview-engine-localhost" spec="~0.5.0" />
   <plugin name="ionic-plugin-keyboard" spec="~2.2.1"/>
   <platform name="ios">
     <splash src="resources/ios/splash/Default-568h@2x~iphone.png" height="1136" width="640"/>

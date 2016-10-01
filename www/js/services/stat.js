@@ -3,25 +3,25 @@ StatService = {
 
   // settings
   filter: {
-    status: '0',  // by status, 0=new, 1=resolved
-    tag: '',      // by tag
+    status:  '0', // by status, 0=new, 1=resolved
+    tag:     '',  // by tag
     company: ''   // by company
   },
 
   // stat of all existing questions in DB
   questions: {
     count: {All: 0}, // statistics of questions
-    d: null,         // defer object, will be resolved when all tasks done
+    d:     null,     // defer object, will be resolved when all tasks done
     tasks: 0,        // how many tasks waiting for DB
     dirty: true      // if ture, need to recalculate stat from DB
   },
 
   // stat during updating questions
   updated: {
-    full: false,    // if true, do a full crawl on all question pages
-    workers: '16',  // how many workers to crawl questions
-    questions: 0,   // how many questions got so far
-    pages: 0        // how mant pages processed so far
+    full:      false, // if true, do a full crawl on all question pages
+    workers:   '16',  // how many workers to crawl questions
+    questions: 0,     // how many questions got so far
+    pages:     0      // how mant pages processed so far
   }
 };
 

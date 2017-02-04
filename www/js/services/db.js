@@ -6,16 +6,14 @@ var cache = {
 
 var DBService = {};
 
-DBService.init = function($q, Dexie, _) {
+DBService.init = function($q) {
   this.$q = $q;
-  this.Dexie = Dexie;
-  this._ = _;
 };
 
 DBService.open = function() {
   var d = this.$q.defer();
 
-  var db = new this.Dexie('c3.db');
+  var db = new Dexie('c3.db');
   db.version(1).stores({
     // FIXME: remove useless 'rand' column
     questions: '++id,&name,status,rand,time,company,link,data,*tags'
@@ -219,7 +217,7 @@ DBService.setQuestions = function(questions) {
 };
 
 angular.module('Services', [])
-.service('DB', [ '$q' ,'Dexie', '_', function($q, Dexie, _) {
-  DBService.init($q, Dexie, _);
+.service('DB', [ '$q' ,function($q) {
+  DBService.init($q);
   return DBService;
 }]);

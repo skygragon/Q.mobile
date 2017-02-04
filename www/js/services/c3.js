@@ -110,9 +110,8 @@ C3Service.getPage = function(id, cb) {
 };
 
 angular.module('Services')
-.service('C3', ['$http', '_', 'Stat', function($http, _, Stat) {
+.service('C3', ['$http', 'Stat', function($http, Stat) {
   C3Service.$http = $http;
-  C3Service._ = _;
   C3Service.Stat = Stat;
   return C3Service;
 }]);

@@ -31,11 +31,11 @@ angular.module('Controllers', [])
 
       DB.updateQuestions(questions)
         .then(function(e) {
-        // BulkError if questions are duplicated.
-        $scope.duplicated = e;
-        $scope.last_updated = Date.now();
-        $scope.refreshCount();
-      });
+          // BulkError if questions are duplicated.
+          $scope.duplicated = e;
+          $scope.last_updated = Date.now();
+          $scope.refreshCount();
+        });
       return $scope.duplicated;
     });
   };

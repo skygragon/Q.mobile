@@ -30,6 +30,11 @@ angular.module('App', ['ionic', 'ngCordova', 'Controllers', 'Services'])
           templateUrl: 'templates/tabs-dashboard.html',
           controller: 'DashboardController'
         }
+      },
+      resolve: {
+        Database: function(DB) {
+          return DB.open();
+        }
       }
     })
     .state('tabs.question', {

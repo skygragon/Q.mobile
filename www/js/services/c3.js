@@ -70,13 +70,12 @@ C3Service.getPage = function(id, cb) {
         .map(function(x) {
           var q = {
             status: 0,
-            rand: Math.random()
           };
           _.each(x.getElementsByTagName('span'), function(x) {
             switch(x.className) {
               case 'entry':
                 var a = x.getElementsByTagName('a')[0];
-                q.link = a.attributes['href'].value;
+                q.name = _.last(a.attributes['href'].value.split('id='));
                 q.data = a.text;
                 break;
               case 'company':
@@ -93,8 +92,6 @@ C3Service.getPage = function(id, cb) {
           });
 
           q.time = x.getElementsByTagName('abbr')[0].title;
-          q.link = 'https://careercup.com/' + _.last(q.link.split('/'));
-          q.name = _.last(q.link.split('id='));
 
           return q;
         })

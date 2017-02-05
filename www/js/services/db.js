@@ -13,8 +13,7 @@ DB.open = function() {
 
   var db = new Dexie('c3.db');
   db.version(1).stores({
-    // FIXME: remove useless 'rand' column
-    questions: '++id,&name,status,rand,time,company,link,data,*tags'
+    questions: '++id,&name,status,time,company,data,*tags'
   });
 
   db.open()
@@ -115,6 +114,7 @@ DB.selectQuestion = function(filter) {
       DB.db.questions
         .get(id)
         .then(function(question) {
+          question.link = 'https://careercup.com/question?id=' + question.name;
           d.resolve(question);
         });
     });
@@ -157,6 +157,10 @@ DB.getQuestions = function() {
 
 DB.setQuestions = function(questions) {
   var d = this.$q.defer();
+
+  questions = questions.map(function(q) {
+    return _.omit(q, 'rand', 'link');
+  });
 
   this.db.questions
     .clear()

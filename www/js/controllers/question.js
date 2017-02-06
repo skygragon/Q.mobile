@@ -53,7 +53,11 @@ angular.module('Controllers')
 
         $scope.oldTags = _.clone(question.tags);
         $scope.newTags = _.difference(_.clone(Stat.tags), question.tags);
+
         $scope.question = question;
+        $scope.idx = DB.idx + 1;
+        $scope.count = DB.keys.length;
+
         $scope.updating = false;
       });
   };
@@ -78,7 +82,10 @@ angular.module('Controllers')
 
   $scope.updating = false;
   $scope.tagging = false;
+
   $scope.question = null;
+  $scope.idx = 0;
+  $scope.count = 0;
 
   if (!$scope.question)
     $scope.selectQuestion();

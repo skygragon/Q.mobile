@@ -4,6 +4,7 @@ DB.init = function($q) {
   this.$q = $q;
   this.db = null;
 
+  this.idx = null;
   this.keys = null;    // keys of all questions that fit the current filter
   this.filter = null;  // current query filter
 };
@@ -114,6 +115,7 @@ DB.selectQuestion = function(filter) {
       DB.db.questions
         .get(id)
         .then(function(question) {
+          DB.idx = i;
           question.link = 'https://careercup.com/question?id=' + question.name;
           d.resolve(question);
         });

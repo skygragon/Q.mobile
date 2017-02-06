@@ -13,7 +13,7 @@ DB.open = function() {
 
   var db = new Dexie('c3.db');
   db.version(1).stores({
-    questions: '++id,&name,status,time,company,data,*tags'
+    questions: '++id,&name,status,company,*tags'
   });
 
   db.open()

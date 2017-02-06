@@ -1,3 +1,21 @@
+function add(a, v) {
+  if (a.indexOf(v) < 0) a.push(v);
+}
+
+function remove(a, v) {
+  var i = a.indexOf(v);
+  if (i >= 0) a.splice(i, 1);
+}
+
+function has(a, v) {
+  return a.indexOf(v) >= 0;
+}
+
+function isSame(a1, a2) {
+  return _.difference(a1, a2).length === 0 &&
+         _.difference(a2, a1).length === 0;
+}
+
 angular.module('Controllers')
 .controller('QuestionController', function($scope, $rootScope,
       $cordovaInAppBrowser, $timeout, DB, Stat) {
@@ -10,16 +28,17 @@ angular.module('Controllers')
 
   $scope.selectQuestion = function(filter) {
     $scope.updating = true;
+    var q = $scope.question;
 
-    if ($scope.tagged) {
-      DB.updateQuestion($scope.question)
+    if (q && !isSame(q.tags, $scope.oldTags)) {
+      q.status = has(q.tags, 'Resolved') ? 1 : 0;
+      DB.updateQuestion(q)
         .then(function(e) {
           if (e) {
             console.log('Failed to update question because ' + e.stack);
             alert('Failed to update question because ' + e);
           }
           Stat.questions.dirty = true;
-          $scope.tagged = false;
           $scope.question = null;
           $scope.selectQuestion();
         });
@@ -31,31 +50,22 @@ angular.module('Controllers')
         if (!question) {
           console.log('No question found', JSON.stringify(Stat.filter));
         }
-        $scope.tagged = false;
+
+        $scope.oldTags = _.clone(question.tags);
+        $scope.newTags = _.difference(_.clone(Stat.tags), question.tags);
         $scope.question = question;
         $scope.updating = false;
       });
   };
 
   $scope.addTag = function(tag) {
-    var question = $scope.question;
-    if (question.tags.indexOf(tag) >= 0) return;
-
-    question.tags.push(tag);
-    question.status = (question.tags.indexOf('Resolved') >= 0) ? 1 : 0;
-    $scope.question = question;
-    $scope.tagged = true;
+    add($scope.question.tags, tag);
+    remove($scope.newTags, tag);
   };
 
   $scope.removeTag = function(tag) {
-    var question = $scope.question;
-    var i = question.tags.indexOf(tag);
-    if (i < 0) return;
-
-    question.tags.splice(i, 1);
-    question.status = (question.tags.indexOf('Resolved') >= 0) ? 1 : 0;
-    $scope.question = question;
-    $scope.tagged = true;
+    add($scope.newTags, tag);
+    remove($scope.question.tags, tag);
   };
 
   $scope.open = function(url) {
@@ -68,10 +78,7 @@ angular.module('Controllers')
 
   $scope.updating = false;
   $scope.tagging = false;
-  $scope.tagged = false;
-
   $scope.question = null;
-  $scope.newTags = Stat.tags;
 
   if (!$scope.question)
     $scope.selectQuestion();

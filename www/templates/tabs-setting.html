@@ -1,7 +1,9 @@
 <ion-view view-title="Setting">
   <ion-content>
-    <div class="list">
-      <div class="item item-divider">Question Filters</div>
+    <div class="list card">
+      <div class="item item-divider">
+        Advanced Filters
+      </div>
       <label class="item item-input item-select">
         <div class="input-label">By Status</div>
         <select ng-model="filter.status">
@@ -23,7 +25,10 @@
           <option ng-repeat="company in companies">{{company}}</option>
         </select>
       </label>
-      <div class="item item-divider">Question Updating</div>
+    </div>
+
+    <div class="list card">
+        <div class="item item-divider">Questions Updating</div>
       <ion-toggle toggle-class="toggle-balanced" ng-model="updated.full" ng-checked="updated.full">
         Force Full Update
         <i class="ion-alert-circled energized"></i>
@@ -36,6 +41,9 @@
           <option ng-repeat="count in counts">{{count}}</option>
         </select>
       </label>
+    </div>
+
+    <div class="list card">
       <div class="item item-divider item-icon-right">Data Management
         <ion-spinner icon="bubbles" ng-show="IOing"></ion-spinner>
       </div>
@@ -50,6 +58,14 @@
         <button class="button button-positive" ng-click="restore()" ng-disabled="IOing">
           <i class="icon ion-ios-download-outline"></i>
         </button>
+      </div>
+    </div>
+
+    <div class="list card">
+      <div class="item item-divider item-icon-right">About</div>
+      <div class="item item-text-wrap">
+        <p>v1.0.0</p>
+        <p><i class="ion-social-github"></i>&nbsp;https://github.com/skygragon/careercup-mobile</p>
       </div>
     </div>
   </ion-content>

@@ -11,25 +11,18 @@
     <div class="list card" ng-show="question">
       <div class="item item-divider">
         <i class="ion-ios-chatboxes-outline"></i>&nbsp;
-        <span class="text-small">{{idx}} / {{count}}</span>
-        <span class="badge badge-assertive" ng-hide="question.company.length === 0">
-          {{question.company}}
-        </span>
+        {{question.name}}
+        <p class="float-right">{{idx}}/{{count}}</p>
       </div>
 
       <div class="item item-body item-text-wrap">
+        <p>{{question.company}}</p>
         <pre>{{question.data}}</pre>
       </div>
 
       <div class="item item-divider text-small">
-        <div class="row row-center">
-          <div class="col col-50">
-            <a ng-click="open(question.link)">See it on careercup</a>
-          </div>
-          <div class="col col-50 text-right">
-            {{question.time | date:'yyyy-MM-dd HH:mm:ss'}}
-          </div>
-        </div>
+        <a ng-click="open(question.link)">See careercup</a>
+        <span class="float-right">{{question.time | date:'yyyy-MM-dd HH:mm:ss'}}</span>
       </div>
 
     </div>
@@ -48,7 +41,7 @@
 
       <div class="text-small">
         <ion-toggle toggle-class="toggle-positive" ng-model="tagging" ng-checked="tagging">
-          Add Tags
+          <p>Add Tags</p>
         </ion-toggle>
       </div>
       <div class="item-body item-text-wrap text-small" ng-show="tagging">

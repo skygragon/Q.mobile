@@ -2,16 +2,15 @@
   <ion-content>
     <div class="list card">
       <div class="item item-divider">
-        <i class="ion-counts-bars"></i>&nbsp;
-        <span class="text-small">Achievements</span>
+        <span>Achievements</span>
         <span class="badge badge-assertive">
           {{count.Resolved * 100 / count.All | number:2 }}%
         </span>
       </div>
       <div class="item">
         <div class="row row-bottom">
-            <div class="col col-50 text-left">Total Questions</div>
-            <div class="col col-50 text-right text-big assertive">{{count.All}}</div>
+          <div class="col col-50 text-left">Total Questions</div>
+          <div class="col col-50 text-right text-big assertive">{{count.All}}</div>
         </div>
 
         <div class="row row-bottom">
@@ -30,8 +29,8 @@
         </div>
       </div> <!-- end of item -->
 
-      <div class="item item-divider text-small text-right">
-        Updated {{last_updated | date:'yyyy-MM-dd HH:mm:ss'}}
+      <div class="item item-divider text-right">
+        <p>Updated {{last_updated | date:'yyyy-MM-dd HH:mm:ss'}}</p>
       </div>
 
       <div class="item" ng-show="updating">

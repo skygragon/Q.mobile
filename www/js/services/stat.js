@@ -3,9 +3,10 @@ StatService = {
 
   // settings
   filter: {
-    status:  '0', // by status, 0=new, 1=resolved
-    tag:     '',  // by tag
-    company: ''   // by company
+    algo:    'Random', // selection algo
+    status:  '0',      // by status, 0=new, 1=resolved
+    tag:     '',       // by tag
+    company: ''        // by company
   },
 
   // stat of all existing questions in DB

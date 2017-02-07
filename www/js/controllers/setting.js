@@ -1,5 +1,6 @@
 angular.module('Controllers')
 .controller('SettingController', function($scope, $cordovaFile, DB, Stat) {
+  $scope.algos = ['Random', 'Sequential'];
   $scope.tags = Stat.tags;
   $scope.companies = ['Apple', 'Amazon', 'Facebook', 'Google', 'Microsoft'];
   $scope.counts = ['1', '2', '4', '8', '16', '24', '32'];

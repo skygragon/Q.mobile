@@ -1,9 +1,13 @@
 <ion-view view-title="Setting">
   <ion-content>
     <div class="list card">
-      <div class="item item-divider">
-        Advanced Filters
-      </div>
+      <div class="item item-divider">Custom Filters</div>
+      <label class="item item-input item-select">
+        <div class="input-label">Selection</div>
+        <select ng-model="filter.algo">
+          <option ng-repeat="algo in algos">{{algo}}</option>
+        </select>
+      </label>
       <label class="item item-input item-select">
         <div class="input-label">By Status</div>
         <select ng-model="filter.status">
@@ -28,7 +32,7 @@
     </div>
 
     <div class="list card">
-        <div class="item item-divider">Questions Updating</div>
+      <div class="item item-divider">Questions Updating</div>
       <ion-toggle toggle-class="toggle-balanced" ng-model="updated.full" ng-checked="updated.full">
         Force Full Update
         <i class="ion-alert-circled energized"></i>

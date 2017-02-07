@@ -4,7 +4,7 @@ DB.init = function($q) {
   this.$q = $q;
   this.db = null;
 
-  this.idx = null;
+  this.idx = -1;
   this.keys = null;    // keys of all questions that fit the current filter
   this.filter = null;  // current query filter
 };
@@ -105,10 +105,12 @@ DB.selectQuestion = function(filter) {
       var n = DB.keys.length;
       if (n === 0) return d.resolve(null);
 
-      // TODO: sequential mode
-
-      // random mode
-      var i = _.random(n - 1);
+      var i = DB.idx;
+      if (filter.algo === 'Random') {
+        i = _.random(n - 1);
+      } else {
+        i = (i + 1) % n;
+      }
       var id = DB.keys[i];
 
       console.debug('selected question id=' + id, i + '-th of ' + n);

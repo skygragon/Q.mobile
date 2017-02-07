@@ -100,7 +100,7 @@ DB.filterQuestions = function(filter) {
 DB.selectQuestion = function(filter) {
   var d = this.$q.defer();
 
-  this.filterQuestions(filter)
+  this.filterQuestions(_.omit(filter, 'algo'))
     .then(function() {
       var n = DB.keys.length;
       if (n === 0) return d.resolve(null);

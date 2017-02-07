@@ -48,15 +48,16 @@ angular.module('Controllers')
     DB.selectQuestion(filter || Stat.filter)
       .then(function(question) {
         if (!question) {
+          $scope.question = null;
           console.log('No question found', JSON.stringify(Stat.filter));
+        } else {
+          $scope.oldTags = _.clone(question.tags);
+          $scope.newTags = _.difference(_.clone(Stat.tags), question.tags);
+
+          $scope.question = question;
+          $scope.idx = DB.idx + 1;
+          $scope.count = DB.keys.length;
         }
-
-        $scope.oldTags = _.clone(question.tags);
-        $scope.newTags = _.difference(_.clone(Stat.tags), question.tags);
-
-        $scope.question = question;
-        $scope.idx = DB.idx + 1;
-        $scope.count = DB.keys.length;
 
         $scope.updating = false;
       });

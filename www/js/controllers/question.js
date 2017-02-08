@@ -16,9 +16,12 @@ function isSame(a1, a2) {
          _.difference(a2, a1).length === 0;
 }
 
+var LOADING = '<ion-spinner class="spinner-positive" icon="bubbles">' +
+              '</ion-spinner><br/>Preparing questions...';
+
 angular.module('Controllers')
-.controller('QuestionController', function($scope, $rootScope,
-      $cordovaInAppBrowser, $timeout, DB, Stat) {
+.controller('QuestionController', function($scope, $rootScope, $ionicLoading,
+      $cordovaInAppBrowser, DB, Stat) {
 
   $rootScope.$on('$stateChangeSuccess',
     function(event, toState, toParams, fromState, fromParams) {
@@ -28,8 +31,9 @@ angular.module('Controllers')
 
   $scope.selectQuestion = function(filter) {
     $scope.updating = true;
-    var q = $scope.question;
+    $ionicLoading.show({template: LOADING});
 
+    var q = $scope.question;
     if (q && !isSame(q.tags, $scope.oldTags)) {
       q.status = has(q.tags, 'Resolved') ? 1 : 0;
       DB.updateQuestion(q)
@@ -59,6 +63,7 @@ angular.module('Controllers')
           $scope.count = DB.keys.length;
         }
 
+        $ionicLoading.hide();
         $scope.updating = false;
       });
   };

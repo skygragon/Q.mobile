@@ -1,13 +1,12 @@
 <ion-view view-title="Setting">
   <ion-content>
     <div class="list card">
-      <div class="item item-divider">Custom Filters</div>
-      <label class="item item-input item-select">
-        <div class="input-label">Selection</div>
-        <select ng-model="filter.algo">
-          <option ng-repeat="algo in algos">{{algo}}</option>
-        </select>
-      </label>
+      <div class="item item-divider">Questions Filter</div>
+      <div class="item-body">
+        <span ng-repeat="f in filters">
+          <i class="badge badge-positive badge-line" ng-click="setFilter(f)">{{f.name}}</i>&nbsp;
+        </span>
+      </div>
       <label class="item item-input item-select">
         <div class="input-label">By Status</div>
         <select ng-model="filter.status">
@@ -27,6 +26,13 @@
         <select ng-model="filter.company">
           <option value="">All</option>
           <option ng-repeat="company in companies">{{company}}</option>
+        </select>
+      </label>
+
+      <label class="item item-input item-select">
+        <div class="input-label">Selection</div>
+        <select ng-model="filter.algo">
+          <option ng-repeat="algo in algos">{{algo}}</option>
         </select>
       </label>
     </div>
@@ -51,7 +57,7 @@
       <div class="item item-divider item-icon-right">Data Management
         <ion-spinner icon="bubbles" ng-show="IOing"></ion-spinner>
       </div>
-      <div class="item item-text-wrap">{{fullpath}}</div>
+      <div class="item item-text-wrap">{{filepath}}</div>
       <div class="item item-button-right">Backup to File
         <button class="button button-positive" ng-click="backup()" ng-disabled="IOing">
           <i class="icon ion-ios-upload-outline"></i>

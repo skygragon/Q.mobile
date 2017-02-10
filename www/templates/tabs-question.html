@@ -14,21 +14,17 @@
         {{question.name}}
         <p class="float-right">{{idx}}/{{count}}</p>
       </div>
-
       <div class="item item-body item-text-wrap">
         <p>{{question.company}}</p>
         <pre>{{question.data}}</pre>
       </div>
-
       <div class="item item-divider text-small">
         <a ng-click="open(question.link)">See careercup</a>
         <span class="float-right">{{question.time | date:'yyyy-MM-dd HH:mm:ss'}}</span>
       </div>
-
     </div>
 
     <div class="list card" ng-show="question">
-
       <div class="item item-divider">
         <i class="ion-ios-pricetags-outline"></i>&nbsp;
         <span class="text-small">Tags</span>
@@ -62,7 +58,7 @@
           </button>
         </div>
       </div>
+    </div>
 
-    </div> <!-- end of card -->
   </ion-content>
 </ion-view>

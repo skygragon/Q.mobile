@@ -1,6 +1,5 @@
 angular.module('Controllers')
-.controller('SettingController', function($scope, $ionicLoading,
-      $cordovaFile, DB, Stat) {
+.controller('SettingController', function($scope, $cordovaFile, DB, Stat, H) {
   $scope.IOing = false;
   $scope.algos = ['Random', 'Sequential'];
   $scope.companies = ['Apple', 'Amazon', 'Facebook', 'Google', 'Microsoft'];
@@ -9,8 +8,6 @@ angular.module('Controllers')
     {name: 'All', status: '1', tag: '', company: ''},
     {name: 'UnResolved', status: '0', tag: '', company: ''}
   ];
-
-  var LOADING = '<ion-spinner class="spinner-positive" icon="bubbles"></ion-spinner>';
 
   $scope.init = function() {
     var filedir = './'; // FIXME: hack web test where no cordova defined...
@@ -35,27 +32,33 @@ angular.module('Controllers')
     _.extendOwn($scope.filter, _.omit(f, 'name'));
   };
 
+  function prettyNumber(n) {
+    return '<span class="text-big stable">' + n + '</span>';
+  }
+
   $scope.backup = function() {
     $scope.IOing = true;
-    $ionicLoading.show({template: LOADING});
+    H.loading('Preparing questions');
 
     DB.getQuestions()
       .then(function(questions) {
         if (!questions) {
-          alert('Failed to backup');
+          H.error('Backup Failed!', 'No questions found?');
         } else {
-          var msg = 'Backup ' + questions.length + ' questions: ';
+          var n = prettyNumber(questions.length);
+          H.loading('<br/>Backuping ' + n + ' questions');
+
           var data = JSON.stringify(questions);
           $cordovaFile.writeFile($scope.filedir, $scope.filename, data, true)
             .then(
               function(ok) {
-                alert(msg + 'ok');
-                $ionicLoading.hide();
+                H.loading();
+                H.ok('Backup Succeed!', '<br/>Backuped ' + n + ' questions');
                 $scope.IOing = false;
               },
               function(e) {
-                alert(msg + 'failed because ' + e.message);
-                $ionicLoading.hide();
+                H.loading();
+                H.error('Backup Failed!', e.message);
                 $scope.IOing = false;
               }
             );
@@ -64,36 +67,41 @@ angular.module('Controllers')
   };
 
   $scope.restore = function() {
-    if (!confirm('Restore from last backup?')) {
-      return;
-    }
+    H.yesOrNo(null, 'Are you sure to restore from last backup?')
+      .then(function(yes) {
+        if (!yes) return;
 
-    // TODO: add file selection dialog
-    $scope.IOing = true;
-    $ionicLoading.show({template: LOADING});
+        // TODO: add file selection dialog
+        $scope.IOing = true;
+        H.loading('Preparing questions');
 
-    $cordovaFile.readAsText($scope.filedir, $scope.filename)
-      .then(
-        function(text) {
-          var questions = JSON.parse(text);
-          DB.setQuestions(questions)
-            .then(function(e) {
-              if (e) {
-                alert('Failed to restore because ' + e.message);
-              } else {
-                alert('Restore ' + questions.length + ' questions: ok');
-                Stat.questions.dirty = true;
-              }
-              $ionicLoading.hide();
+        $cordovaFile.readAsText($scope.filedir, $scope.filename)
+          .then(
+            function(text) {
+              var questions = JSON.parse(text);
+
+              var n = prettyNumber(questions.length);
+              H.loading('<br/>Restoring ' + n + ' questions');
+
+              DB.setQuestions(questions)
+                .then(function(e) {
+                  H.loading();
+                  if (e) {
+                    H.error('Resote Failed!', e.message);
+                  } else {
+                    H.ok('Restore Succeed!', '<br/>Restored ' + n + ' questions');
+                    Stat.questions.dirty = true;
+                  }
+                  $scope.IOing = false;
+                });
+            },
+            function(e) {
+              H.loading();
+              H.error('Resote Failed!', e.message);
               $scope.IOing = false;
-            });
-        },
-        function(e) {
-          alert('Failed to read file because ' + e.message);
-          $ionicLoading.hide();
-          $scope.IOing = false;
-        }
-      );
+            }
+          );
+      });
   };
 
   $scope.init();

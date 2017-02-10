@@ -100,7 +100,7 @@ DB.filterQuestions = function(filter) {
 DB.selectQuestion = function(filter) {
   var d = this.$q.defer();
 
-  this.filterQuestions(_.omit(filter, 'algo'))
+  this.filterQuestions(_.omit(filter, 'algo', 'reversed'))
     .then(function() {
       var n = DB.keys.length;
       if (n === 0) return d.resolve(null);
@@ -109,7 +109,8 @@ DB.selectQuestion = function(filter) {
       if (filter.algo === 'Random') {
         i = _.random(n - 1);
       } else {
-        i = (i + 1) % n;
+        var step = filter.reversed ? -1 : 1;
+        i = (i + step) % n;
       }
       var id = DB.keys[i];
 

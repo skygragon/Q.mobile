@@ -49,11 +49,14 @@ angular.module('Controllers')
       return;
     }
 
-    DB.selectQuestion(filter || Stat.filter)
+    filter = filter || {};
+    _.extendOwn(filter, Stat.filter);
+
+    DB.selectQuestion(filter)
       .then(function(question) {
         if (!question) {
           $scope.question = null;
-          console.log('No question found', JSON.stringify(Stat.filter));
+          console.log('No question found', JSON.stringify(filter));
         } else {
           $scope.oldTags = _.clone(question.tags);
           $scope.newTags = _.difference(_.clone(Stat.tags), question.tags);
@@ -61,6 +64,7 @@ angular.module('Controllers')
           $scope.question = question;
           $scope.idx = DB.idx + 1;
           $scope.count = DB.keys.length;
+          $scope.sequential = filter.algo === 'Sequential';
         }
 
         $ionicLoading.hide();

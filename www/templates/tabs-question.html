@@ -46,14 +46,21 @@
       </div>
       <div class="item-body item-text-wrap text-small" ng-show="tagging">
         <span ng-repeat="tag in newTags">
-          <i class="badge badge-positive badge-line" ng-click="addTag(tag)">{{tag}}</i>&nbsp;
+          <i class="badge badge-positive" ng-click="addTag(tag)">{{tag}}</i>&nbsp;
         </span>
       </div>
 
       <div class="item">
-        <button class="button button-positive button-full" ng-click="selectQuestion()" ng-disabled="updating">
-          Next Question
-        </button>
+        <div class="button-bar">
+          <button style="border: 1px solid;" class="button button-positive"
+            ng-click="selectQuestion({reversed: true})" ng-disabled="updating" ng-show="sequential">
+            Prev
+          </button>
+          <button style="border: 1px solid;" class="button button-positive"
+            ng-click="selectQuestion()" ng-disabled="updating">
+            Next
+          </button>
+        </div>
       </div>
 
     </div> <!-- end of card -->

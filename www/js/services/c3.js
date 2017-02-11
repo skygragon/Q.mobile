@@ -63,6 +63,7 @@ C3Service.update = function(cb) {
     maxPage:  -1,
     workers:  workers,
     cb:       cb,
+    full:     this.Stat.updated.full,
 
     onPageEnd: function(id) {
       this.maxPage = this.maxPage < 0 ? id : Math.min(this.maxPage, id);

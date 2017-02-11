@@ -1,11 +1,11 @@
 var C3Service = {};
 
-function onPageDone(gctx, wctx, e, id, questions) {
+function onWorkerPageDone(gctx, wctx, e, id, questions) {
   if (questions) {
     if (questions.length === 0) {
       // hit last page, no need to get higher pages.
       console.log('No more questions after page=' + id);
-      gctx.setMax(id);
+      gctx.onPageEnd(id);
     } else {
       var duplicated = gctx.cb(questions);
 
@@ -13,15 +13,17 @@ function onPageDone(gctx, wctx, e, id, questions) {
       // unless we are doing a full scan
       if (duplicated && !gctx.full) {
         console.log('All duplicated on page=' + id);
-        gctx.setMax(id);
+        gctx.onPageEnd(id);
       }
     }
   }
 
   // push back failed page, thus try it later
   if (e) {
-    gctx.pages.unshift(id);
+    gctx.onPageFail(id);
     console.log('recollect failed page:' + id);
+  } else {
+    gctx.onPageDone(id);
   }
 
   workerRun(gctx, wctx);
@@ -40,8 +42,14 @@ function workerRun(gctx, wctx) {
   }
 
   var id = gctx.pages.shift();
-  console.log('start getPage=' + id + ', worker=' + wctx.id);
-  C3Service.getPage(id, wctx.cb);
+  var opts = {
+    // linear timeout on retry, 60 seconds at most
+    timeout: Math.min((gctx.badPages[id] || 1) * 5000, 60 * 1000)
+  };
+  console.log('start getPage=' + id +
+              ', worker=' + wctx.id +
+              ', timeout=' + opts.timeout);
+  C3Service.getPage(id, opts, wctx.cb);
 }
 
 C3Service.update = function(cb) {
@@ -49,17 +57,27 @@ C3Service.update = function(cb) {
 
   // global shared context
   var gctx = {
-    pages:    [],
+    pages:    [],       // id of new pages to do
+    badPages: {},       // failed count of each page
     nextPage: 1,
     maxPage:  -1,
     workers:  workers,
     cb:       cb,
 
-    setMax: function(id) {
+    onPageEnd: function(id) {
       this.maxPage = this.maxPage < 0 ? id : Math.min(this.maxPage, id);
       this.pages = _.reject(this.pages, function(x) {
         return x >= id;
       });
+    },
+
+    onPageFail: function(id) {
+      this.pages.unshift(id);
+      this.badPages[id] = (this.badPages[id] || 0) + 1;
+    },
+
+    onPageDone: function(id) {
+      delete this.badPages[id];
     },
 
     advance: function(n) {
@@ -75,13 +93,13 @@ C3Service.update = function(cb) {
   for (var i = 0; i < workers; ++i) {
     // worker individual context
     var wctx = {id: i};
-    wctx.cb = _.partial(onPageDone, gctx, wctx)
+    wctx.cb = _.partial(onWorkerPageDone, gctx, wctx)
     workerRun(gctx, wctx);
   }
 };
 
-C3Service.getPage = function(id, cb) {
-  this.$http.get('https://careercup.com/page?n=' + id, {timeout: 5000})
+C3Service.getPage = function(id, opts, cb) {
+  this.$http.get('https://careercup.com/page?n=' + id, opts)
     .success(function(data, status, headers, config) {
       var parser = new DOMParser();
       var doc = parser.parseFromString(data, 'text/html');
@@ -124,7 +142,9 @@ C3Service.getPage = function(id, cb) {
       return cb(null, id, questions);
     })
     .error(function(data, status, headers, config) {
-      console.log('✘ getPage=' + id + ', error=' + status + '/' + data);
+      console.log('✘ getPage=' + id +
+                  ', error=' + status + '/' + data +
+                  ', timeout=' + opts.timeout);
       return cb('HTTP:' + status, id);
     });
 };

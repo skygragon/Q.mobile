@@ -10,10 +10,11 @@ angular.module('Controllers')
   ];
 
   $scope.init = function() {
-    var filedir = './'; // FIXME: hack web test where no cordova defined...
+    var filedir = './';
     try {
       filedir = cordova.file.externalDataDirectory || cordova.file.dataDirectory;
     } catch (e) {
+      // FIXME: hack web test where no cordova defined...
       console.log(e.message);
     }
     $scope.filedir = filedir;

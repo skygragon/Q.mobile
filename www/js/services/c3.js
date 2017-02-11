@@ -1,64 +1,87 @@
 var C3Service = {};
 
-function onWorkerDone(ctx, msg) {
-  console.log(msg);
-  // all workers quit, notify caller
-  if (--ctx.workers === 0)
-    ctx.cb();
-}
-
-function onPageDone(ctx, e, questions) {
+function onPageDone(gctx, wctx, e, id, questions) {
   if (questions) {
-    if (questions.length === 0)
-      return onWorkerDone(ctx, 'no more questions found, quit now');
+    if (questions.length === 0) {
+      // hit last page, no need to get higher pages.
+      console.log('No more questions after page=' + id);
+      gctx.setMax(id);
+    } else {
+      var duplicated = gctx.cb(questions);
 
-    var duplicated = ctx.cb(questions);
-
-    // quit early if questions are dedup
-    // unless we are doing a full scan
-    if (duplicated && !ctx.full)
-      return onWorkerDone(ctx, 'duplicated questions found, quit now');
+      // quit early if questions are dedup
+      // unless we are doing a full scan
+      if (duplicated && !gctx.full) {
+        console.log('All duplicated on page=' + id);
+        gctx.setMax(id);
+      }
+    }
   }
 
   // push back failed page, thus try it later
   if (e) {
-    ctx.pages.unshift(e.id);
-    console.log('recollect failed page:' + e.id);
+    gctx.pages.unshift(id);
+    console.log('recollect failed page:' + id);
   }
 
-  getPageWorker(ctx);
+  workerRun(gctx, wctx);
 };
 
-function getPageWorker(ctx) {
-  // scan more pages if existing pages are all done
-  if (ctx.pages.length === 0) {
-    ctx.pages = _.range(ctx.nextPage, ctx.nextPage + 100);
-    ctx.nextPage += 100;
+function workerRun(gctx, wctx) {
+  if (gctx.pages.length === 0) {
+    if (gctx.maxPage > 0) {
+      // no more pages to do, let worker quit
+      console.log('No more works to do, quit now, id=', wctx.id);
+      return gctx.onWorkerDone(wctx.id);
+    } else {
+      // scan more pages if existing pages are all done
+      gctx.advance(100);
+    }
   }
 
-  var id = ctx.pages.shift();
-  C3Service.getPage(id, ctx.wcb);
+  var id = gctx.pages.shift();
+  console.log('start getPage=' + id + ', worker=' + wctx.id);
+  C3Service.getPage(id, wctx.cb);
 }
 
 C3Service.update = function(cb) {
   var workers = parseInt(this.Stat.updated.workers);
-  var ctx = {
+
+  // global shared context
+  var gctx = {
     pages:    [],
     nextPage: 1,
+    maxPage:  -1,
     workers:  workers,
     cb:       cb,
-    full:     this.Stat.updated.full
+
+    setMax: function(id) {
+      this.maxPage = this.maxPage < 0 ? id : Math.min(this.maxPage, id);
+      this.pages = _.reject(this.pages, function(x) {
+        return x >= id;
+      });
+    },
+
+    advance: function(n) {
+      this.pages = _.range(this.nextPage, this.nextPage + n);
+      this.nextPage += n;
+    },
+
+    onWorkerDone: function(id) {
+      if (--this.workers === 0) this.cb();
+    }
   };
-  ctx.wcb = _.partial(onPageDone, ctx);
 
   for (var i = 0; i < workers; ++i) {
-    getPageWorker(ctx);
+    // worker individual context
+    var wctx = {id: i};
+    wctx.cb = _.partial(onPageDone, gctx, wctx)
+    workerRun(gctx, wctx);
   }
 };
 
 C3Service.getPage = function(id, cb) {
-  console.log('getPage:' + id);
-  this.$http.get('https://careercup.com/page?n=' + id)
+  this.$http.get('https://careercup.com/page?n=' + id, {timeout: 5000})
     .success(function(data, status, headers, config) {
       var parser = new DOMParser();
       var doc = parser.parseFromString(data, 'text/html');
@@ -97,12 +120,12 @@ C3Service.getPage = function(id, cb) {
         })
         .value();
 
-      console.log('getPage:' + id, 'return ' + questions.length +' questions');
-      return cb(null, questions);
+      console.log('✔ getPage=' + id + ', questions=' + questions.length);
+      return cb(null, id, questions);
     })
-    .error(function(data,status, headers, config) {
-      console.log('http error:' + status, data);
-      return cb({id: id});
+    .error(function(data, status, headers, config) {
+      console.log('✘ getPage=' + id + ', error=' + status + '/' + data);
+      return cb('HTTP:' + status, id);
     });
 };
 

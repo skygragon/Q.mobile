@@ -16,15 +16,20 @@ angular.module('Controllers', [])
   };
 
   $scope.update = function() {
-    if (!$cordovaNetwork.isOnline()) {
-      H.error('Update Failed!', 'No available networking connection?');
-      return;
+    try {
+      if (!$cordovaNetwork.isOnline()) {
+        H.error('Update Failed!', 'No available networking connection?');
+        return;
+      }
+      if (($cordovaNetwork.getNetwork() !== Connection.WIFI) && Stat.updated.wifiOnly) {
+        H.error('Update Failed!',
+            'You might need WiFi connection to update new questions from careercup.com.');
+        return;
+      };
+    } catch(e) {
+      // FIXME: hack web test where no cordova defined...
+      console.log(e.message);
     }
-    if (($cordovaNetwork.getNetwork() !== Connection.WIFI) && Stat.updated.wifiOnly) {
-      H.error('Update Failed!',
-          'You might need WiFi connection to update new questions from careercup.com.');
-      return;
-    };
 
     $scope.updating = true;
     $scope.duplicated = false;
@@ -42,8 +47,9 @@ angular.module('Controllers', [])
 
       DB.updateQuestions(questions)
         .then(function(e) {
-          // BulkError if questions are duplicated.
-          $scope.duplicated = e;
+          // BulkError if any questions are duplicated.
+          // Here we keep trying until all questions are duplicated
+          $scope.duplicated = (e && e.failures.length === questions.length);
           $scope.last_updated = Date.now();
           $scope.refreshCount();
         });

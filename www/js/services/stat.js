@@ -19,6 +19,7 @@ StatService = {
 
   // stat during updating questions
   updated: {
+    wifiOnly:  true,  // if true, only updaing in wifi mode.
     full:      false, // if true, do a full crawl on all question pages
     workers:   '16',  // how many workers to crawl questions
     questions: 0,     // how many questions got so far

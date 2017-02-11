@@ -1,7 +1,7 @@
 <ion-view view-title="Setting">
   <ion-content>
     <div class="list card">
-      <div class="item item-divider">Questions Filter</div>
+      <div class="item item-divider">Question Filters</div>
       <div class="item-body">
         <span ng-repeat="f in filters">
           <i class="badge badge-positive badge-line" ng-click="setFilter(f)">{{f.name}}</i>&nbsp;
@@ -11,7 +11,7 @@
         <div class="input-label">By Status</div>
         <select ng-model="filter.status">
           <option value="1">All</option>
-          <option value="0">Unresolved Only</option>
+          <option value="0">UnResolved Only</option>
         </select>
       </label>
       <label class="item item-input item-select">
@@ -30,7 +30,7 @@
       </label>
 
       <label class="item item-input item-select">
-        <div class="input-label">Selection</div>
+        <div class="input-label">Selection Strategy</div>
         <select ng-model="filter.algo">
           <option ng-repeat="algo in algos">{{algo}}</option>
         </select>
@@ -38,7 +38,11 @@
     </div>
 
     <div class="list card">
-      <div class="item item-divider">Questions Updating</div>
+      <div class="item item-divider">Data Updating</div>
+      <ion-toggle toggle-class="toggle-positive" ng-model="updated.wifiOnly" ng-checked="updated.wifiOnly">
+        Force WiFi Only
+        <i class="ion-alert-circled energized"></i>
+      </ion-toggle>
       <ion-toggle toggle-class="toggle-positive" ng-model="updated.full" ng-checked="updated.full">
         Force Full Update
         <i class="ion-alert-circled energized"></i>
@@ -54,7 +58,7 @@
     </div>
 
     <div class="list card">
-      <div class="item item-divider item-icon-right">Data Management</div>
+      <div class="item item-divider item-icon-right">Backup/Restore</div>
       <div class="item item-text-wrap">{{filepath}}</div>
       <div class="item item-button-right">Backup to File
         <button class="button button-positive" ng-click="backup()" ng-disabled="IOing">
@@ -71,11 +75,11 @@
 
     <div class="list card">
       <div class="item item-divider item-icon-right">About</div>
+      <div class="item item-button-right">Q.Careercup
+        <div class="button button-clear button-dark">v1.0.0</div>
+      </div>
       <div class="item item-text-wrap">
-        <p>Q.Careercup</p>
-        <p>v1.0.0</p>
-        <br/>
-        <p><i class="ion-social-github"></i>&nbsp;https://github.com/skygragon/careercup-mobile</p>
+        <i class="ion-social-github"></i>&nbsp;https://github.com/skygragon/careercup-mobile
       </div>
     </div>
   </ion-content>

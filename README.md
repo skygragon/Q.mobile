@@ -6,10 +6,12 @@ Inspired by [careercup-cli](https://github.com/skygragon/careercup-cli), and [le
 
 ## Features
 
-* Cache careercup.com interview questions locally on your phone.
-* Manage questions with different tags.
-* One-click update to the latest questions.
-* Backup and restore questions to local file.
+* View careercup.com interview questions on your phone.
+* Download questions and saved locally.
+* Customized `filters` to view questions by tags, companies, etc.
+* Manage questions by tagging them as `Resolved`/`Favorite`/`Later`.
+* One-click `update` to sync with the latest questions.
+* Support `backup` and `restore` personal data to local file.
 
 ## Screenshots
 
@@ -19,15 +21,22 @@ Inspired by [careercup-cli](https://github.com/skygragon/careercup-cli), and [le
 
 ## Install
 
-Download the app here [releases](https://github.com/skygragon/careercup-mobile/releases).
+Download the latest app [here](https://github.com/skygragon/careercup-mobile/releases).
 
-## Tips
+## Questions Update
 
-### First Update
+For the 1st time you need download all the questions (16k+) from careercup.com, please make sure your phone is using **WiFi** network!! (P.S. Later updates will only download those new questions since last update)
 
-* For the 1st time you need update all the questions (16k+) from careercup.com, please make sure you are using WiFi network!!
-* If the updaing progress is too slow, you can instead import the questions directly from local storage.
+If this fresh updating progress cost too much time, you can instead import the questions directly from local storage.
 
-### Build From Source
+1. download the latest `c3.json` file from [here](https://github.com/skygragon/careercup-mobile/releases).
+2. copy to the phone in the right folder, see `Setting`->`Backup/Restore` in the app to get the path.
+3. choose restore and wait for completion.
 
-[See here](https://github.com/skygragon/careercup-mobile/blob/master/docs/build.md)
+Please note that this `restore` operation will wipe existing questions saved in the app, so be careful to not lose your data by mistake in future use. Also note that it's always a good practice to regularly `backup` the questions to local file for disaster recover.
+
+## Advanced Topics
+
+* [Build from source code](https://github.com/skygragon/careercup-mobile/blob/master/docs/build.md)
+
+

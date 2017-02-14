@@ -4,23 +4,12 @@ A mobile app to enjoy interview questions from careercup.com.
 
 Inspired by [careercup-cli](https://github.com/skygragon/careercup-cli), and [leetcode-cli](https://github.com/skygragon/leetcode-cli).
 
-## Why this?
+## Features
 
-* A very **EFFICIENT** way to reading questions from careercup.com.
-* **CACHING** questions locally thus you can easily scan & think it offline, any where, any time.
-* Very easy to manage questions by personal **TAG**s.
-* **RANDOM** select unresolved question for you, or you can customize own question **FILTER**.
-* One-click to **UPDATE** the latest published questions.
-* One-click to **BACKUP**/**RESTORE** questions data to file.
-
-## Table of Contents
-
-* [Screenshots](#screenshots)
-* [Install](#install)
-* [Best Practice](#best-practice)
-* [Build](#build)
-	* [Prerequisites](#prerequisites)
-* [Tips](#tips)
+* Cache careercup.com interview questions locally on your phone.
+* Manage questions with different tags.
+* One-click update to the latest questions.
+* Backup and restore questions to local file.
 
 ## Screenshots
 
@@ -30,27 +19,15 @@ Inspired by [careercup-cli](https://github.com/skygragon/careercup-cli), and [le
 
 ## Install
 
-Download latest [releases](https://github.com/skygragon/careercup-mobile/releases) and choose the proper artifact for your mobile. E.g. the apk file for Android, or the ipa file for ios.
-
-Our app is built on [ionic](http://ionicframework.com/) platform, so it should work on different platforms like Android, ios, etc. For now we only provide the Android apk in early releases. Please feel free to [build](#build) from source code to get the app for other platforms.
-
-## Best Practice
-
-TODO
-
-## Build
-
-### Prerequisites
-
-* [ionic platfrom](http://ionicframework.com/getting-started/)
-* [Android SDK](https://developer.android.com/index.html)
-
-### Android
-
-	$ cd careercup-mobile/
-	$ ionic build android
-
+Download the app here [releases](https://github.com/skygragon/careercup-mobile/releases).
 
 ## Tips
 
-TODO
+### First Update
+
+* For the 1st time you need update all the questions (16k+) from careercup.com, please make sure you are using WiFi network!!
+* If the updaing progress is too slow, you can instead import the questions directly from local storage.
+
+### Build From Source
+
+[See here](https://github.com/skygragon/careercup-mobile/blob/master/docs/build.md)

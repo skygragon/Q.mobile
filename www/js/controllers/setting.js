@@ -1,5 +1,5 @@
 angular.module('Controllers')
-.controller('SettingController', function($scope, $cordovaFile, DB, Stat, H) {
+.controller('SettingController', function($scope, $cordovaFile, DB, Stat, H, Config) {
   $scope.IOing = false;
   $scope.algos = ['Random', 'Sequential'];
   $scope.companies = ['Apple', 'Amazon', 'Facebook', 'Google', 'Microsoft'];
@@ -8,6 +8,7 @@ angular.module('Controllers')
     {name: 'All', status: '1', tag: '', company: ''},
     {name: 'UnResolved', status: '0', tag: '', company: ''}
   ];
+  $scope.Config = Config;
 
   $scope.init = function() {
     var filedir = './';
@@ -18,7 +19,7 @@ angular.module('Controllers')
       console.log(e.message);
     }
     $scope.filedir = filedir;
-    $scope.filename = 'c3.json';
+    $scope.filename = Config.filename + '.json';
     $scope.filepath = filedir + $scope.filename;
 
     $scope.filter = Stat.filter;

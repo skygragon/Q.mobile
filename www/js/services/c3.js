@@ -150,6 +150,10 @@ C3Service.getPage = function(id, opts, cb) {
     });
 };
 
+C3Service.fixupQuestion = function(question) {
+  question.link = 'https://careercup.com/question?id=' + question.name;
+};
+
 angular.module('Services')
 .service('C3', ['$http', 'Stat', function($http, Stat) {
   C3Service.$http = $http;

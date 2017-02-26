@@ -18,7 +18,7 @@ function isSame(a1, a2) {
 
 angular.module('Controllers')
 .controller('QuestionController', function($scope, $rootScope,
-      $cordovaInAppBrowser, DB, Stat, H, Config) {
+      $cordovaInAppBrowser, DB, Stat, H, Config, Fetcher) {
 
   $rootScope.$on('$stateChangeSuccess',
     function(event, toState, toParams, fromState, fromParams) {
@@ -55,6 +55,8 @@ angular.module('Controllers')
           $scope.question = null;
           console.log('No question found', JSON.stringify(filter));
         } else {
+          Fetcher.fixupQuestion(question);
+
           $scope.oldTags = _.clone(question.tags);
           $scope.newTags = _.difference(_.clone(Stat.tags), question.tags);
 

@@ -1,6 +1,6 @@
 angular.module('Controllers', [])
 .controller('DashboardController', function($scope, $rootScope,
-      $cordovaNetwork, C3, DB, Stat, H, Config) {
+      $cordovaNetwork, Fetcher, DB, Stat, H, Config) {
 
   $rootScope.$on('$stateChangeSuccess',
     function(event, toState, toParams, fromState, fromParams) {
@@ -36,7 +36,7 @@ angular.module('Controllers', [])
     Stat.updated.questions = 0;
     Stat.updated.pages = 0;
 
-    C3.update(function(questions) {
+    Fetcher.update(function(questions) {
       if (!questions) {
         $scope.updating = false;
         return;

@@ -1,4 +1,4 @@
-ConfigService = {
+var CAREERCUP = {
   version:  '1.2.1',
   name:     'Q.careercup',
   type:     'careercup',
@@ -8,5 +8,5 @@ ConfigService = {
 
 angular.module('Services', [])
 .service('Config', [ function() {
-  return ConfigService;
+  return CAREERCUP;
 }]);

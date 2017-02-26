@@ -1,7 +1,8 @@
 var DB = {};  // singleton
 
-DB.init = function($q) {
+DB.init = function($q, Config) {
   this.$q = $q;
+  this.Config = Config;
   this.db = null;
 
   this.idx = -1;
@@ -12,7 +13,7 @@ DB.init = function($q) {
 DB.open = function() {
   var d = this.$q.defer();
 
-  var db = new Dexie('c3.db');
+  var db = new Dexie(this.Config.database);
   db.version(1).stores({
     questions: '++id,&name,status,company,*tags'
   });
@@ -119,7 +120,6 @@ DB.selectQuestion = function(filter) {
         .get(id)
         .then(function(question) {
           DB.idx = i;
-          question.link = 'https://careercup.com/question?id=' + question.name;
           d.resolve(question);
         });
     });
@@ -184,7 +184,7 @@ DB.setQuestions = function(questions) {
 };
 
 angular.module('Services')
-.service('DB', [ '$q' ,function($q) {
-  DB.init($q);
+.service('DB', [ '$q', 'Config' ,function($q, Config) {
+  DB.init($q, Config);
   return DB;
 }]);

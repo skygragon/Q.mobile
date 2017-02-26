@@ -16,6 +16,6 @@ var LEETCODE = {
 
 angular.module('Services', [])
 .service('Config', [ function() {
-  //return LEETCODE;
-  return CAREERCUP;
+  return LEETCODE;
+  //return CAREERCUP;
 }]);

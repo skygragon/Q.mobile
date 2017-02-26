@@ -88,6 +88,12 @@ DB.filterQuestions = function(filter) {
     });
   }
 
+  if (filter.level !== '') {
+    questions.and(function(q) {
+      return q.level === +filter.level;
+    });
+  }
+
   questions.primaryKeys(function(keys) {
     DB.keys = keys;
     DB.filter = _.clone(filter);

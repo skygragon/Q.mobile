@@ -21,11 +21,20 @@
           <option ng-repeat="tag in tags">{{tag}}</option>
         </select>
       </label>
-      <label class="item item-input item-select">
+      <label class="item item-input item-select" ng-show="Config.type == 'careercup'">
         <div class="input-label">By Company</div>
         <select ng-model="filter.company">
           <option value="">All</option>
           <option ng-repeat="company in companies">{{company}}</option>
+        </select>
+      </label>
+      <label class="item item-input item-select" ng-show="Config.type == 'leetcode'">
+        <div class="input-label">By Level</div>
+        <select ng-model="filter.level">
+          <option value="">All</option>
+          <option value="1">Easy</option>
+          <option value="2">Medium</option>
+          <option value="3">Hard</option>
         </select>
       </label>
 

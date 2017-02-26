@@ -6,7 +6,8 @@ StatService = {
     algo:    'Random', // selection algo
     status:  '0',      // by status, 0=new, 1=resolved
     tag:     '',       // by tag
-    company: ''        // by company
+    company: '',       // by company
+    level:   '',       // by level
   },
 
   // stat of all existing questions in DB

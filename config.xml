@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="com.skygragon.Q.careercup" version="1.2.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>Q.careercup</name>
+<widget id="com.skygragon.Q.leetcode" version="1.2.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <name>Q.leetcode</name>
   <description>
-    Questions of careercup.com
+    Questions of leetcode.com
   </description>
   <author email="skygragon@gmail.com" href="">
     Eric Wang

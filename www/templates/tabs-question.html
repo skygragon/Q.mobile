@@ -15,7 +15,8 @@
         <p class="float-right">{{idx}}/{{count}}</p>
       </div>
       <div class="item item-body item-text-wrap">
-        <p>{{question.company}}</p>
+        <div class="text-title" ng-show="question.title">{{question.title}}</div>
+        <p ng-show="question.company">{{question.company}}</p>
         <pre>{{question.data}}</pre>
       </div>
       <div class="item item-divider text-small">

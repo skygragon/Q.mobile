@@ -19,7 +19,7 @@ angular.module('Controllers')
       console.log(e.message);
     }
     $scope.filedir = filedir;
-    $scope.filename = 'c3.json';
+    $scope.filename = Config.filename + '.json';
     $scope.filepath = filedir + $scope.filename;
 
     $scope.filter = Stat.filter;

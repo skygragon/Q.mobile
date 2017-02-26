@@ -13,7 +13,7 @@ DB.init = function($q, Config) {
 DB.open = function() {
   var d = this.$q.defer();
 
-  var db = new Dexie(this.Config.database);
+  var db = new Dexie(this.Config.filename + '.db');
   db.version(1).stores({
     questions: '++id,&name,status,company,*tags'
   });

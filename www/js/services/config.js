@@ -3,7 +3,7 @@ var CAREERCUP = {
   name:     'Q.careercup',
   type:     'careercup',
   website:  'careercup.com',
-  database: 'c3.db'
+  filename: 'c3'
 };
 
 angular.module('Services', [])

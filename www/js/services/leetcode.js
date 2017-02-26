@@ -48,7 +48,7 @@ LeetcodeService.update = function(cb) {
       var questions = _.chain(data.stat_status_pairs)
           .filter(function(p) { return !p.stat.question__hide; })
           .map(function(p) {
-            return {
+            var question = {
               status:  0,
               name:    p.stat.question_id,
               title:   p.stat.question__title,
@@ -59,6 +59,13 @@ LeetcodeService.update = function(cb) {
               submits: p.stat.total_submitted,
               level:   p.difficulty.level
             };
+
+            // set id will make db bulkPut always succeed
+            // thus to skip dedup check.
+            if (gctx.full)
+              question.id = question.name;
+
+            return question;
           })
           .value();
 
@@ -77,6 +84,14 @@ LeetcodeService.update = function(cb) {
 };
 
 LeetcodeService.getQuestion = function(question, cb) {
+  // TODO: show locked?
+  if (question.locked) {
+    console.log('skip locked question=' + question.name);
+    question.data = 'Question Locked';
+    question.tags = [];
+    return cb(null, question);
+  }
+
   this.$http.get(question.link)
     .success(function(data, status, headers, config) {
       var parser = new DOMParser();

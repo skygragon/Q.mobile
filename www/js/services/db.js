@@ -183,7 +183,7 @@ DB.setQuestions = function(questions) {
   return d.promise;
 };
 
-angular.module('Services', [])
+angular.module('Services')
 .service('DB', [ '$q' ,function($q) {
   DB.init($q);
   return DB;

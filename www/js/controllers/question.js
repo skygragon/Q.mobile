@@ -18,7 +18,7 @@ function isSame(a1, a2) {
 
 angular.module('Controllers')
 .controller('QuestionController', function($scope, $rootScope,
-      $cordovaInAppBrowser, DB, Stat, H) {
+      $cordovaInAppBrowser, DB, Stat, H, Config) {
 
   $rootScope.$on('$stateChangeSuccess',
     function(event, toState, toParams, fromState, fromParams) {
@@ -93,6 +93,7 @@ angular.module('Controllers')
   $scope.question = null;
   $scope.idx = 0;
   $scope.count = 0;
+  $scope.Config = Config;
 
   if (!$scope.question)
     $scope.selectQuestion();

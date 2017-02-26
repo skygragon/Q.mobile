@@ -1,6 +1,6 @@
 angular.module('Controllers', [])
 .controller('DashboardController', function($scope, $rootScope,
-      $cordovaNetwork, C3, DB, Stat, H) {
+      $cordovaNetwork, C3, DB, Stat, H, Config) {
 
   $rootScope.$on('$stateChangeSuccess',
     function(event, toState, toParams, fromState, fromParams) {
@@ -23,7 +23,7 @@ angular.module('Controllers', [])
       }
       if (($cordovaNetwork.getNetwork() !== Connection.WIFI) && Stat.updated.wifiOnly) {
         H.error('Update Failed!',
-            'You might need WiFi connection to update new questions from careercup.com.');
+            'You might need WiFi connection to update new questions from ' + Config.website);
         return;
       };
     } catch(e) {

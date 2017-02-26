@@ -15,8 +15,18 @@
         <p class="float-right">{{idx}}/{{count}}</p>
       </div>
       <div class="item item-body item-text-wrap">
-        <div class="text-title" ng-show="question.title">{{question.title}}</div>
+        <div class="text-title" ng-show="question.title">
+          {{question.title}}
+          &nbsp;
+          <i class="ion-android-star" ng-repeat="i in rangeLevel(question) track by $index"></i>
+        </div>
         <p ng-show="question.company">{{question.company}}</p>
+        <p ng-show="question.accepts">
+          {{showLevel(question)}}
+          &nbsp;
+          <b>{{question.accepts * 100 / question.submits | number: 2}}%</b>
+          <span class="float-right">{{question.accepts}} / {{question.submits}}</span>
+        </p>
         <pre>{{question.data}}</pre>
       </div>
       <div class="item item-divider text-small">

@@ -1,6 +1,6 @@
 {
   "name": "careercup-mobile",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "careercup-mobile: An Ionic project",
   "dependencies": {
     "gulp": "^3.5.6",

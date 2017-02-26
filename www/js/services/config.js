@@ -1,5 +1,5 @@
 var CAREERCUP = {
-  version:  '1.2.1',
+  version:  '1.2.2',
   name:     'Q.careercup',
   type:     'careercup',
   website:  'careercup.com',
@@ -7,7 +7,7 @@ var CAREERCUP = {
 };
 
 var LEETCODE = {
-  version:  '1.2.1',
+  version:  '1.2.2',
   name:     'Q.leetcode',
   type:     'leetcode',
   website:  'leetcode.com',

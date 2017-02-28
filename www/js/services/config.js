@@ -14,8 +14,17 @@ var LEETCODE = {
   filename: 'leetcode'
 };
 
+var LINTCODE = {
+  version:  '1.2.2',
+  name:     'Q.lintcode',
+  type:     'lintcode',
+  website:  'lintcode.com',
+  filename: 'lintcode'
+};
+
 angular.module('Services', [])
 .service('Config', [ function() {
+  //return LINTCODE;
   //return LEETCODE;
   return CAREERCUP;
 }]);

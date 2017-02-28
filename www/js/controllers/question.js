@@ -89,12 +89,9 @@ angular.module('Controllers')
     $cordovaInAppBrowser.open(url, '_blank', opts);
   };
 
-  $scope.rangeLevel = function(q) {
-    return q ? new Array(q.level) : [];
-  };
-
-  $scope.showLevel = function(q) {
-    return q ? ['','Easy','Medium','Hard'][q.level] : '';
+  $scope.range = function(question) {
+    var n = question ? question.levelIndex : 0;
+    return new Array(n);
   };
 
   $scope.updating = false;

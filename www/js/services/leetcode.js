@@ -4,7 +4,7 @@ function onQuestionDone(gctx, wctx, e, question) {
   if (e) {
     // push back failed question, thus try it later
     gctx.questions.unshift(question);
-    console.log('recollect failed page:' + question.name);
+    console.log('recollect failed question=' + question.name);
   } else {
     var duplicated = gctx.cb([question]);
 
@@ -121,7 +121,12 @@ LeetcodeService.getQuestion = function(question, cb) {
     });
 };
 
+var LEVELS = ['', 'Easy', 'Medium', 'Hard'];
+
 LeetcodeService.fixupQuestion = function(question) {
+  question.rate = question.accepts * 100 / question.submits;
+  question.levelName = LEVELS[question.level];
+  question.levelIndex = question.level;
 };
 
 angular.module('Services')

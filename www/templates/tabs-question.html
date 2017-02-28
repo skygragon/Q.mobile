@@ -18,14 +18,16 @@
         <div class="text-title" ng-show="question.title">
           {{question.title}}
           &nbsp;
-          <i class="ion-android-star" ng-repeat="i in rangeLevel(question) track by $index"></i>
+          <i class="ion-android-star" ng-repeat="i in range(question) track by $index"></i>
         </div>
         <p ng-show="question.company">{{question.company}}</p>
-        <p ng-show="question.accepts">
-          {{showLevel(question)}}
+        <p ng-show="question.levelIndex">
+          {{question.levelName}}
           &nbsp;
-          <b>{{question.accepts * 100 / question.submits | number: 2}}%</b>
-          <span class="float-right">{{question.accepts}} / {{question.submits}}</span>
+          <b ng-show="question.rate">{{question.rate | number: 2}}%</b>
+          <span class="float-right" ng-show="question.accepts">
+            {{question.accepts}} / {{question.submits}}
+          </span>
         </p>
         <pre>{{question.data}}</pre>
       </div>

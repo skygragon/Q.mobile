@@ -1,12 +1,12 @@
 angular.module('Services')
-.service('Fetcher', [ 'Config', 'C3', 'LeetCode',
-    function(Config, C3, LeetCode) {
+.service('Fetcher', [ 'Config', 'C3', 'LeetCode', 'LintCode',
+    function(Config, C3, LeetCode, LintCode) {
   var fetcher;
   switch(Config.type) {
     case 'careercup': fetcher = C3;       break;
     case 'leetcode':  fetcher = LeetCode; break;
+    case 'lintcode':  fetcher = LintCode; break;
   }
 
-  // TODO: support more sources like lintcode
   return fetcher;
 }]);

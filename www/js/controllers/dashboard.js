@@ -60,5 +60,7 @@ angular.module('Controllers', [])
   $scope.updating = false;
   $scope.count = Stat.questions.count;
   $scope.updated = Stat.updated;
+  $scope.Config = Config;
+
   $scope.refreshCount();
 });

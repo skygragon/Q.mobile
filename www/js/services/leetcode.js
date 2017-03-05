@@ -1,6 +1,6 @@
 var LeetcodeService = {};
 
-function onQuestionDone(gctx, wctx, e, question) {
+function onLeetcodeQuestionDone(gctx, wctx, e, question) {
   if (e) {
     // push back failed question, thus try it later
     gctx.questions.unshift(question);
@@ -17,10 +17,10 @@ function onQuestionDone(gctx, wctx, e, question) {
     }
   }
 
-  workerRun(gctx, wctx);
+  leetcodeWorkerRun(gctx, wctx);
 };
 
-function workerRun(gctx, wctx) {
+function leetcodeWorkerRun(gctx, wctx) {
   if (gctx.questions.length === 0) {
     console.log('Quit now, worker=' + wctx.id);
     if (--gctx.workers === 0) gctx.cb();
@@ -73,8 +73,8 @@ LeetcodeService.update = function(cb) {
       for (var i = 0; i < workers; ++i) {
         // worker individual context
         var wctx = {id: i};
-        wctx.cb = _.partial(onQuestionDone, gctx, wctx)
-        workerRun(gctx, wctx);
+        wctx.cb = _.partial(onLeetcodeQuestionDone, gctx, wctx)
+        leetcodeWorkerRun(gctx, wctx);
       }
     })
     .error(function(data, status, headers, config) {

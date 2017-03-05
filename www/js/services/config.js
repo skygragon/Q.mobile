@@ -25,6 +25,6 @@ var LINTCODE = {
 angular.module('Services', [])
 .service('Config', [ function() {
   //return LINTCODE;
-  //return LEETCODE;
-  return CAREERCUP;
+  return LEETCODE;
+  //return CAREERCUP;
 }]);

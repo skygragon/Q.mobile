@@ -1,6 +1,6 @@
 var C3Service = {};
 
-function onWorkerPageDone(gctx, wctx, e, id, questions) {
+function onC3PageDone(gctx, wctx, e, id, questions) {
   if (questions) {
     if (questions.length === 0) {
       // hit last page, no need to get higher pages.
@@ -26,10 +26,10 @@ function onWorkerPageDone(gctx, wctx, e, id, questions) {
     gctx.onPageDone(id);
   }
 
-  workerRun(gctx, wctx);
+  c3WorkerRun(gctx, wctx);
 };
 
-function workerRun(gctx, wctx) {
+function c3WorkerRun(gctx, wctx) {
   if (gctx.pages.length === 0) {
     if (gctx.maxPage > 0) {
       // no more pages to do, let worker quit
@@ -94,8 +94,8 @@ C3Service.update = function(cb) {
   for (var i = 0; i < workers; ++i) {
     // worker individual context
     var wctx = {id: i};
-    wctx.cb = _.partial(onWorkerPageDone, gctx, wctx)
-    workerRun(gctx, wctx);
+    wctx.cb = _.partial(onC3PageDone, gctx, wctx)
+    c3WorkerRun(gctx, wctx);
   }
 };
 

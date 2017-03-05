@@ -1,6 +1,6 @@
 var LintcodeService = {};
 
-function onPageDone(gctx, wctx, e, id, questions) {
+function onLintcodePageDone(gctx, wctx, e, id, questions) {
   if (e) {
     gctx.pages.unshift(id);
     console.log('recollect failed page=' + id);
@@ -17,10 +17,10 @@ function onPageDone(gctx, wctx, e, id, questions) {
     gctx.questions = gctx.questions.concat(questions);
   }
 
-  workerRun(gctx, wctx);
+  lintcodeWorkerRun(gctx, wctx);
 }
 
-function onQuestionDone(gctx, wctx, e, question) {
+function onLintcodeQuestionDone(gctx, wctx, e, question) {
   if (e) {
     // push back failed question, thus try it later
     gctx.questions.unshift(question);
@@ -29,10 +29,10 @@ function onQuestionDone(gctx, wctx, e, question) {
     gctx.cb([question]);
   }
 
-  workerRun(gctx, wctx);
+  lintcodeWorkerRun(gctx, wctx);
 };
 
-function workerRun(gctx, wctx) {
+function lintcodeWorkerRun(gctx, wctx) {
   if (gctx.pages.length > 0) {
     var id = gctx.pages.shift();
     console.log('start getPage=' + id + ', worker=' + wctx.id);
@@ -67,9 +67,9 @@ LintcodeService.update = function(cb) {
   for (var i = 0; i < workers; ++i) {
     // worker individual context
     var wctx = {id: i};
-    wctx.pageCB = _.partial(onPageDone, gctx, wctx);
-    wctx.questionCB = _.partial(onQuestionDone, gctx, wctx);
-    workerRun(gctx, wctx);
+    wctx.pageCB = _.partial(onLintcodePageDone, gctx, wctx);
+    wctx.questionCB = _.partial(onLintcodeQuestionDone, gctx, wctx);
+    lintcodeWorkerRun(gctx, wctx);
   }
 };
 

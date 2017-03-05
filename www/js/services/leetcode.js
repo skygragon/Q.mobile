@@ -60,11 +60,6 @@ LeetcodeService.update = function(cb) {
               level:   p.difficulty.level
             };
 
-            // set id will make db bulkPut always succeed
-            // thus to skip dedup check.
-            if (gctx.full)
-              question.id = question.name;
-
             return question;
           })
           .value();

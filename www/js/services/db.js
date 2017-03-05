@@ -94,11 +94,17 @@ DB.filterQuestions = function(filter) {
     });
   }
 
-  questions.primaryKeys(function(keys) {
-    DB.keys = keys;
-    DB.filter = _.clone(filter);
+  // FIXME: will this be slow??
+  questions.sortBy('name')
+    .then(function(sortedQuestions) {
+      var keys = _.map(sortedQuestions, function(question) {
+        return question.id;
+      });
+      // console.log(JSON.stringify(keys));
+      DB.keys = keys;
+      DB.filter = _.clone(filter);
 
-    d.resolve();
+      d.resolve();
   });
 
   return d.promise;

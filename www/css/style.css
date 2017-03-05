@@ -23,5 +23,5 @@
 .text-title { font-size: 22px; font-family: 'Anton'; margin-bottom: 20px; }
 
 .badge-line { margin-top: 8px; }
-
 .float-right { float: right; }
+.stamp { position: absolute; right: 10px; top: 10px; }

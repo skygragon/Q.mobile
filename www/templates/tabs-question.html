@@ -23,11 +23,8 @@
         <p ng-show="question.company">{{question.company}}</p>
         <p ng-show="question.levelIndex">
           {{question.levelName}}
-          &nbsp;
           <b ng-show="question.rate">{{question.rate | number: 2}}%</b>
-          <span class="float-right" ng-show="question.accepts">
-            {{question.accepts}} / {{question.submits}}
-          </span>
+          <span class="float-right">{{question.accepts}}/{{question.submits}}</span>
         </p>
         <pre>{{question.data}}</pre>
       </div>

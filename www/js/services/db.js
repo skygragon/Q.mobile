@@ -127,7 +127,7 @@ DB.selectQuestion = function(filter) {
       }
       var id = DB.keys[i];
 
-      console.debug('selected question id=' + id, i + '-th of ' + n);
+      console.debug('selected question id=' + id + ',' + i + '-th of ' + n);
       DB.db.questions
         .get(id)
         .then(function(question) {

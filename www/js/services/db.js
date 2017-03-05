@@ -117,7 +117,7 @@ DB.selectQuestion = function(filter) {
         i = _.random(n - 1);
       } else {
         var step = filter.reversed ? -1 : 1;
-        i = (i + step) % n;
+        i = (i + step + n) % n;
       }
       var id = DB.keys[i];
 

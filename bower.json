@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "underscore": "^1.8.3",
-    "dexie": "^1.5.1"
+    "dexie": "^1.5.1",
+    "he": "^1.1.1"
   }
 }

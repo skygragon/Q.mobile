@@ -152,6 +152,7 @@ C3Service.getPage = function(id, opts, cb) {
 
 C3Service.fixupQuestion = function(question) {
   question.link = 'https://careercup.com/question?id=' + question.name;
+  question.data = he.decode(question.data);
 };
 
 angular.module('Services')

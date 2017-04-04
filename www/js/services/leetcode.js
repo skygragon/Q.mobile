@@ -122,6 +122,7 @@ LeetcodeService.fixupQuestion = function(question) {
   question.rate = question.accepts * 100 / question.submits;
   question.levelName = LEVELS[question.level];
   question.levelIndex = question.level;
+  question.link = 'https://leetcode.com/problems/' + question.key;
   question.data = he.decode(question.data);
 };
 

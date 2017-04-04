@@ -170,6 +170,7 @@ var LEVELS = ['', 'Easy', 'Medium', 'Hard'];
 LintcodeService.fixupQuestion = function(question) {
   question.levelName = question.level;
   question.levelIndex = LEVELS.indexOf(question.level);
+  // FIXME: link
   question.data = he.decode(question.data);
 };
 

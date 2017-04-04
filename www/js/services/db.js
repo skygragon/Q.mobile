@@ -94,11 +94,17 @@ DB.filterQuestions = function(filter) {
     });
   }
 
-  questions.primaryKeys(function(keys) {
-    DB.keys = keys;
-    DB.filter = _.clone(filter);
+  // FIXME: will this be slow??
+  questions.sortBy('name')
+    .then(function(sortedQuestions) {
+      var keys = _.map(sortedQuestions, function(question) {
+        return question.id;
+      });
+      // console.log(JSON.stringify(keys));
+      DB.keys = keys;
+      DB.filter = _.clone(filter);
 
-    d.resolve();
+      d.resolve();
   });
 
   return d.promise;
@@ -117,11 +123,11 @@ DB.selectQuestion = function(filter) {
         i = _.random(n - 1);
       } else {
         var step = filter.reversed ? -1 : 1;
-        i = (i + step) % n;
+        i = (i + step + n) % n;
       }
       var id = DB.keys[i];
 
-      console.debug('selected question id=' + id, i + '-th of ' + n);
+      console.debug('selected question id=' + id + ',' + i + '-th of ' + n);
       DB.db.questions
         .get(id)
         .then(function(question) {

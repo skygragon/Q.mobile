@@ -30,7 +30,8 @@
         <pre>{{question.data}}</pre>
       </div>
       <div class="item item-divider text-small">
-        <a ng-click="open(question.link)">See {{Config.type}}</a>
+        <a ng-click="open(question.link)">website</a> -
+        <a ng-click="copy(question)">copy</a>
         <span class="float-right">{{question.time | date:'yyyy-MM-dd HH:mm:ss'}}</span>
       </div>
     </div>

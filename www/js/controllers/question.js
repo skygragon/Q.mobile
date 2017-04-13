@@ -18,7 +18,8 @@ function isSame(a1, a2) {
 
 angular.module('Controllers')
 .controller('QuestionController', function($scope, $rootScope,
-      $cordovaInAppBrowser, DB, Stat, H, Config, Fetcher) {
+      $cordovaInAppBrowser, $cordovaClipboard,
+      DB, Stat, H, Config, Fetcher) {
 
   $rootScope.$on('$stateChangeSuccess',
     function(event, toState, toParams, fromState, fromParams) {
@@ -87,6 +88,13 @@ angular.module('Controllers')
       toolbar: 'yes'
     };
     $cordovaInAppBrowser.open(url, '_blank', opts);
+  };
+
+  $scope.copy = function(question) {
+    $cordovaClipboard.copy(question.data)
+      .then(function() {
+        H.ok('Question copied to clipboard!');
+      });
   };
 
   $scope.range = function(question) {

@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.skygragon.Q.careercup" version="1.2.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Q.careercup</name>
+<widget id="com.skygragon.Q.lintcode" version="1.2.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Q.lintcode</name>
     <description>
-    Questions of careercup.com
+    Questions of lintcode.com
   </description>
     <author email="skygragon@gmail.com" href="">
     Eric Wang

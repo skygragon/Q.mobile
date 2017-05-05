@@ -39,19 +39,19 @@ There are two ways to fetch questions in the app: download via WIFI, or restore 
 
 **Download via WIFI**
 
-* click `Check update from leetcode.com` button in dashboard page, that's all!
-* for the 1st time it will download all the questions form website, while later syncs will only try to download those new questions since last sync.
+* Click `Check update from leetcode.com` button in dashboard page, that's all!
+* For the 1st time it will download all the questions form website, while later syncs will only try to download those new questions since last sync.
 
 :exclamation:NOTE:exclamation:
 * :exclamation: PLEASE make sure your phone is using WiFi networking!
-* :exclamation: if WIFI is too slow, try restore from file instead (only for the 1st time sync!!)
+* :exclamation: If WIFI is too slow, try restore from file instead (only for the 1st time sync!!)
 
 **Restore from File**
 
-* download questions file `c3.json` listed above.
-* copy to the phone to the right path thus Q.leetcode could find it.
+* Download questions file `leetcode.json` listed above.
+* Copy to the right path on the phone, thus Q.leetcode could find it.
   * check `Setting` page, you can find the right path under `Backup/Restore` section.
-* click `restore` button and wait for completion.
+* Click `restore` button and wait for completion.
 
 :exclamation:NOTE:exclamation:
 * :exclamation: `restore` operation is dangerous! It will fully wipe existing questions saved on the phone, make sure you understand what you are doing before kickoff!

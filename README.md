@@ -2,13 +2,13 @@
 
 A mobile app to enjoy interview questions from popular websites like:
 
-* [careercup.com](https://careercup.com/page)
-* [leetcode.com](https://leetcode.com/problemset/algorithms/)
-* [lintcode.com](http://www.lintcode.com/en/problem/)
+⦙  [careercup.com](https://careercup.com/page)
+⦙  [leetcode.com](https://leetcode.com/problemset/algorithms/)
+⦙  [lintcode.com](http://www.lintcode.com/en/problem/) ⦙ 
 
-Inspired by [careercup-cli](https://github.com/skygragon/careercup-cli), and [leetcode-cli](https://github.com/skygragon/leetcode-cli).
+*Inspired by [careercup-cli](https://github.com/skygragon/careercup-cli), and [leetcode-cli](https://github.com/skygragon/leetcode-cli).*
 
-## It's ...
+## It is ...
 
 A tool to utilize your fragmentation times to think those questions any time, any where.
 
@@ -23,19 +23,23 @@ A tool to actually write code with.
 * Customized `filters` to view questions by tags, companies, etc.
 * Manage questions by tagging them as `Resolved`/`Favorite`/`Later`.
 * One-click `update` to sync with the latest questions.
-* Support `backup` and `restore` personal data to local file.
+* Support `backup` and `restore` personal progress to local file.
+
+## Installations
+
+For the time being those releases are for Android only.
+
+|App|Name    |Android|Questions File|
+|---|--------|-------|--------------|
+|![Q.leetcode](https://github.com/skygragon/Q.mobile/raw/master/screenshots/Q.leetcode.64.png)|Q.leetcode |[1.3.0.apk](https://github.com/skygragon/Q.mobile/releases/download/1.3.0/Q.leetcode-1.3.0-android-3fdc208.apk) ||
+|![Q.lintcode](https://github.com/skygragon/Q.mobile/raw/master/screenshots/Q.lintcode.64.png)|Q.lintcode |[1.3.0.apk](https://github.com/skygragon/Q.mobile/releases/download/1.3.0/Q.lintcode-1.3.0-android-08a7dfa.apk) ||
+|![Q.careercup](https://github.com/skygragon/Q.mobile/raw/master/screenshots/Q.careercup.64.png)|Q.careercup|[1.3.0.apk](https://github.com/skygragon/Q.mobile/releases/download/1.3.0/Q.careercup-1.3.0-android-1ee2d2c.apk)|[c3.json](https://github.com/skygragon/Q.mobile/releases/download/1.2.0/c3.json) (16k+, 2017-02-11)|
 
 ## Screenshots
 
 <kbd><img src="https://github.com/skygragon/Q.mobile/blob/master/screenshots/dashboard.png" width="275" /></kbd>
 <kbd><img src="https://github.com/skygragon/Q.mobile/blob/master/screenshots/question.png" width="275" /></kbd>
 <kbd><img src="https://github.com/skygragon/Q.mobile/blob/master/screenshots/setting.png" width="275" /></kbd>
-
-## Install
-
-Download the latest apps [here](https://github.com/skygragon/Q.mobile/releases).
-
-For the time being those releases are for Android only.
 
 ## About Questions Update
 

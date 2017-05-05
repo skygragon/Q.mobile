@@ -73,6 +73,9 @@ LintcodeService.update = function(cb) {
   }
 };
 
+function attr(dom, key) { return (dom.attributes[key] && dom.attributes[key].value) || ''; }
+function child(dom) { return angular.element(dom).children(); }
+
 LintcodeService.getPage = function(id, cb) {
   this.$http.get('http://www.lintcode.com/en/problem/?page=' + id)
     .success(function(data, status, headers, config) {
@@ -81,22 +84,14 @@ LintcodeService.getPage = function(id, cb) {
 
       var questions = _.chain(doc.getElementsByTagName('a'))
         .filter(function(a) {
-          return a.attributes['class'] &&
-                 a.attributes['class'].value.indexOf('problem-panel') >= 0 &&
-                 a.attributes['href'] &&
-                 a.attributes['href'].value.indexOf('/problem/') === 0;
+          return attr(a, 'class').indexOf('problem-panel') >= 0 &&
+                 attr(a, 'href').indexOf('/problem/') === 0;
         })
         .map(function(a) {
-          var question = {
-            status: 0,
-            name: '',
-            title: '',
-            link: 'http://www.lintcode.com/en' + a.attributes['href'].value,
-            level: '',
-            rate: ''
-          };
+          var question = { status: 0, name: '', title: '', level: '', rate: '' };
+
           _.each(a.getElementsByTagName('span'), function(span) {
-            var s = span.attributes['class'].value;
+            var s = attr(span, 'class');
             var v = span.innerText.trim();
 
             if (s.indexOf('title') >= 0) {
@@ -106,18 +101,11 @@ LintcodeService.getPage = function(id, cb) {
               question.rate = v.split(' ')[0];
             else if (s.indexOf('difficulty') >= 0)
               question.level = v;
-
-            /*
-            _.each(span.getElementsByTagName('i'), function(i) {
-              if (i.attributes['class'].value.indexOf('fa-briefcase') >= 0) {
-                question.tags = _.map(span.attributes['title'].value.split(','), function(x) {
-                  return x.trim();
-                });
-              }
-            });*/
           });
 
           question.id = question.name;
+          question.key = attr(a, 'href');
+          question.link = 'http://www.lintcode.com/en' + question.key;
           return question;
         })
         .value();
@@ -137,22 +125,20 @@ LintcodeService.getQuestion = function(question, cb) {
       var parser = new DOMParser();
       var doc = parser.parseFromString(data, 'text/html');
 
-      _.chain(doc.getElementsByTagName('div'))
+      question.data = _.chain(doc.getElementsByTagName('div'))
+        .filter(function(div) { return attr(div, 'id') === 'description'; })
+        .map(function(div) { return Array.prototype.slice.call(child(div)); })
+        .flatten()
         .filter(function(div) {
-          return div.attributes['id'] &&
-                 div.attributes['id'].value === 'description';
+          var a = child(div)[0];
+          return a.tagName != 'A' || attr(a, 'href') === '#challenge';
         })
-        .each(function(div) {
-          var divs = angular.element(div).children();
-          question.data = divs[0].innerText.trim() + '\n\n' +
-                          divs[1].innerText.trim();
-        });
+        .map(function(div) { return div.innerText.trim(); })
+        .value()
+        .join('\n\n');
 
       question.tags = _.chain(doc.getElementsByTagName('a'))
-        .filter(function(a) {
-          return a.attributes['href'] &&
-                 a.attributes['href'].value.indexOf('/tag/') === 0;
-        })
+        .filter(function(a) { return attr(a, 'href').indexOf('/tag/') === 0; })
         .map(function(a) { return a.innerText.trim(); })
         .value();
 
@@ -170,7 +156,7 @@ var LEVELS = ['', 'Easy', 'Medium', 'Hard'];
 LintcodeService.fixupQuestion = function(question) {
   question.levelName = question.level;
   question.levelIndex = LEVELS.indexOf(question.level);
-  // FIXME: link
+  question.link = 'http://www.lintcode.com/en' + question.key;
   question.data = he.decode(question.data);
 };
 

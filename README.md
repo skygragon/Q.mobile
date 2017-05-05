@@ -6,10 +6,10 @@ A mobile app to enjoy interview questions from popular websites like:
 ⦙  [leetcode.com](https://leetcode.com/problemset/algorithms/)
 ⦙  [lintcode.com](http://www.lintcode.com/en/problem/) ⦙ 
 
-*Inspired by [careercup-cli](https://github.com/skygragon/careercup-cli), and [leetcode-cli](https://github.com/skygragon/leetcode-cli).*
+:bulb: *Inspired by [careercup-cli](https://github.com/skygragon/careercup-cli), and [leetcode-cli](https://github.com/skygragon/leetcode-cli).*
 
 * A tool to utilize your fragmentation times to think those questions any time, any where.
-* **NOT** a tool to actually write code with.
+* **NOT** a tool to actually write code with!
 * View interview questions on your mobile phone.
 * Download all questions and saved locally.
 * Customized `filters` to view questions by tags, companies, etc.
@@ -35,25 +35,28 @@ For the time being those releases are for Android only.
 
 ## Fetch Questions HOWTO
 
-There are two ways to fetch questions in the app: download via WIFI, or import from file.
+There are two ways to fetch questions in the app: download via WIFI, or restore from file. Let's take `Q.leetcode` for example.
 
 **Download via WIFI**
 
-* click `Check update from xxxx.com` in dashboard page, that's all!
-* for the 1st time it will download all the questions form website, while later syncs will try to only download those new questions since last sync.
-* !!NOTE!! that for the 1st time, PLEASE make sure your phone is using WiFi networking!
+* click `Check update from leetcode.com` button in dashboard page, that's all!
+* for the 1st time it will download all the questions form website, while later syncs will only try to download those new questions since last sync.
 
-**Import from File**
+:exclamation:NOTE:exclamation:
+* :exclamation: PLEASE make sure your phone is using WiFi networking!
+* :exclamation: if WIFI is too slow, try restore from file instead (only for the 1st time sync!!)
 
-If this fresh updating progress cost too much time, you can instead import the questions directly from local storage.
+**Restore from File**
 
-e.g. for Q.careercup, you can:
+* download questions file `c3.json` listed above.
+* copy to the phone to the right path thus Q.leetcode could find it.
+  * check `Setting` page, you can find the right path under `Backup/Restore` section.
+* click `restore` button and wait for completion.
 
-1. download the latest `c3.json` file from [here](https://github.com/skygragon/Q.mobile/releases).
-2. copy to the phone in the right folder, see `Setting`->`Backup/Restore` in the app to get the path.
-3. choose `restore` and wait for completion.
-
-Please NOTE that this `restore` operation will wipe existing questions saved in the app, so be careful to not lose your data by mistake in future use. Also note that it's always a good practice to regularly `backup` the questions to local file for disaster recover.
+:exclamation:NOTE:exclamation:
+* :exclamation: `restore` operation is dangerous! It will fully wipe existing questions saved on the phone, make sure you understand what you are doing before kickoff!
+* :exclamation: It's a good practice to regularly `backup` to the local file and copy it otherwhere.
+* :exclamation: Always `backup` before `restore`.
 
 ## Advanced Topics
 

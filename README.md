@@ -19,9 +19,7 @@ A mobile app to enjoy interview questions from popular websites like:
 
 ## Screenshots
 
-<kbd><img src="https://github.com/skygragon/Q.mobile/blob/master/screenshots/dashboard.png" width="275" /></kbd>
-<kbd><img src="https://github.com/skygragon/Q.mobile/blob/master/screenshots/question.png" width="275" /></kbd>
-<kbd><img src="https://github.com/skygragon/Q.mobile/blob/master/screenshots/setting.png" width="275" /></kbd>
+<img src="https://github.com/skygragon/Q.mobile/blob/master/screenshots/dashboard.png" width="275" /><img src="https://github.com/skygragon/Q.mobile/blob/master/screenshots/question.png" width="275" /><img src="https://github.com/skygragon/Q.mobile/blob/master/screenshots/setting.png" width="275" />
 
 ## Installations
 

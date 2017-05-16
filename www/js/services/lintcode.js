@@ -103,7 +103,6 @@ LintcodeService.getPage = function(id, cb) {
               question.level = v;
           });
 
-          question.id = question.name;
           question.key = attr(a, 'href');
           question.link = 'http://www.lintcode.com/en' + question.key;
           return question;

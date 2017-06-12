@@ -93,8 +93,8 @@ LeetcodeService.getQuestion = function(question, cb) {
       var doc = parser.parseFromString(data, 'text/html');
 
       _.each(doc.getElementsByTagName('meta'), function(meta) {
-        if (meta.attributes['property'] &&
-            meta.attributes['property'].value === 'og:description') {
+        if (meta.attributes['name'] &&
+            meta.attributes['name'].value === 'description') {
           question.data = meta.attributes['content'].value;
         }
       });

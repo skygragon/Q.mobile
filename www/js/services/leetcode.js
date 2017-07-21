@@ -107,6 +107,14 @@ LeetcodeService.getQuestion = function(question, cb) {
         .map(function(a) { return a.innerText.trim(); })
         .value();
 
+      var r = /(var pageData[^;]+;)/m;
+      var result = data.match(r);
+      if (!result) {
+        question.locked = true;
+        question.data = 'Question Locked';
+        question.tags = [];
+      }
+
       console.log('✔ getQuestion=' + question.name);
       return cb(null, question);
     })

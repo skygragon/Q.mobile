@@ -34,7 +34,7 @@ angular.module('Controllers')
     var q = $scope.question;
     if (q && !isSame(q.tags, $scope.oldTags)) {
       q.status = has(q.tags, 'Resolved') ? 1 : 0;
-      DB.updateQuestion(q)
+      DB.updateQuestion(q, ['status', 'tags'])
         .then(function(e) {
           if (e) {
             console.log('Failed to update question because ' + e.stack);
@@ -95,6 +95,27 @@ angular.module('Controllers')
       .then(function() {
         H.ok('Question copied to clipboard!');
       });
+  };
+
+  $scope.refresh = function(question) {
+    H.loading('Refreshing question');
+
+    var newQuestion = _.clone(question);
+    Fetcher.getQuestion(newQuestion, function(e, newQuestion) {
+      if (e) return H.error('Refresh Failed', e.message);
+
+      // keep existing user status
+      newQuestion.status = question.status;
+      newQuestion.tags = question.tags;
+
+      DB.updateQuestion(newQuestion)
+        .then(function(e) {
+          if (e) return H.error('Update Failed', e.message);
+
+          $scope.question = newQuestion;
+          H.loading();
+        });
+    });
   };
 
   $scope.range = function(question) {

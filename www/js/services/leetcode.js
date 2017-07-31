@@ -93,8 +93,8 @@ LeetcodeService.getQuestion = function(question, cb) {
       var doc = parser.parseFromString(data, 'text/html');
 
       _.each(doc.getElementsByTagName('meta'), function(meta) {
-        if (meta.attributes['property'] &&
-            meta.attributes['property'].value === 'og:description') {
+        if (meta.attributes['name'] &&
+            meta.attributes['name'].value === 'description') {
           question.data = meta.attributes['content'].value;
         }
       });
@@ -106,6 +106,14 @@ LeetcodeService.getQuestion = function(question, cb) {
         })
         .map(function(a) { return a.innerText.trim(); })
         .value();
+
+      var r = /(var pageData[^;]+;)/m;
+      var result = data.match(r);
+      if (!result) {
+        question.locked = true;
+        question.data = 'Question Locked';
+        question.tags = [];
+      }
 
       console.log('✔ getQuestion=' + question.name);
       return cb(null, question);

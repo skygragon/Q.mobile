@@ -146,12 +146,13 @@ function match(f, q) {
     (f.tag === '' || q.tags.indexOf(f.tag) >= 0);
 }
 
-DB.updateQuestion = function(question) {
+DB.updateQuestion = function(question, keys) {
   var d = this.$q.defer();
+  var toUpdate = keys ? _.pick(question, keys) : question;
 
-  // for now only some keys will be updated
+  // if given, only specific keys will be updated
   this.db.questions
-    .update(question.id, _.pick(question, 'status', 'tags'))
+    .update(question.id, toUpdate)
     .then(function(updated) {
       // remove this question from cache if not fit filter any more
       if (!match(DB.filter, question)) {

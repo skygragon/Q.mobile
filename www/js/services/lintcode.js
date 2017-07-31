@@ -13,8 +13,9 @@ function onLintcodePageDone(gctx, wctx, e, id, questions) {
       });
     }
   } else {
-    // FIXME: check to see if questions are deduped!
-    gctx.questions = gctx.questions.concat(questions);
+    gctx.questions = _.sortBy(gctx.questions.concat(questions), function(x) {
+      return -x.name;
+    });
   }
 
   lintcodeWorkerRun(gctx, wctx);
@@ -26,7 +27,15 @@ function onLintcodeQuestionDone(gctx, wctx, e, question) {
     gctx.questions.unshift(question);
     console.log('recollect failed question=' + question.name);
   } else {
-    gctx.cb([question]);
+    var duplicated = gctx.cb([question]);
+
+    // quit early if question is dedup unless doing a full scan
+    if (duplicated && !gctx.full) {
+      console.log('Find duplicated on question=' + question.name);
+      gctx.questions = _.reject(gctx.questions, function(x) {
+        return x.name <= question.name;
+      });
+    }
   }
 
   lintcodeWorkerRun(gctx, wctx);
@@ -103,7 +112,6 @@ LintcodeService.getPage = function(id, cb) {
               question.level = v;
           });
 
-          question.id = question.name;
           question.key = attr(a, 'href');
           question.link = 'http://www.lintcode.com/en' + question.key;
           return question;

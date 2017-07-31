@@ -27,7 +27,7 @@ For the time being those releases are for Android only.
 
 |App|Name    |Android|Questions File|#Questions|Last Updated|
 |---|--------|-------|:------------:|:--------:|:----------:|
-|![Q.leetcode](https://github.com/skygragon/Q.mobile/raw/master/screenshots/Q.leetcode.64.png)|Q.leetcode |[1.3.0.apk](https://github.com/skygragon/Q.mobile/releases/download/1.3.0/Q.leetcode-1.3.0-android-3fdc208.apk) |[leetcode.json](https://github.com/skygragon/Q.mobile/releases/download/1.3.0/leetcode.json)|523 |2017-05-05|
+|![Q.leetcode](https://github.com/skygragon/Q.mobile/raw/master/screenshots/Q.leetcode.64.png)|Q.leetcode |[1.3.1.apk](https://github.com/skygragon/Q.mobile/releases/download/1.3.1/Q.leetcode-1.3.1-android-a98e9e4.apk) |[leetcode.json](https://github.com/skygragon/Q.mobile/releases/download/1.3.0/leetcode.json)|523 |2017-05-05|
 |![Q.lintcode](https://github.com/skygragon/Q.mobile/raw/master/screenshots/Q.lintcode.64.png)|Q.lintcode |[1.3.0.apk](https://github.com/skygragon/Q.mobile/releases/download/1.3.0/Q.lintcode-1.3.0-android-08a7dfa.apk) |[lintcode.json](https://github.com/skygragon/Q.mobile/releases/download/1.3.0/lintcode.json)|296 |2017-05-05|
 |![Q.careercup](https://github.com/skygragon/Q.mobile/raw/master/screenshots/Q.careercup.64.png)|Q.careercup|[1.3.0.apk](https://github.com/skygragon/Q.mobile/releases/download/1.3.0/Q.careercup-1.3.0-android-1ee2d2c.apk)|[c3.json](https://github.com/skygragon/Q.mobile/releases/download/1.2.0/c3.json)|16k+|2017-02-11|
 

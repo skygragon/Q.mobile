@@ -7,7 +7,7 @@ var CAREERCUP = {
 };
 
 var LEETCODE = {
-  version:  '1.3.0',
+  version:  '1.3.1',
   name:     'Q.leetcode',
   type:     'leetcode',
   website:  'leetcode.com',

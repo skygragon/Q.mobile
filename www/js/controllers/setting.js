@@ -11,16 +11,18 @@ angular.module('Controllers')
   $scope.Config = Config;
 
   $scope.init = function() {
-    var filedir = './';
+    var filedir;
     try {
-      filedir = cordova.file.externalDataDirectory || cordova.file.dataDirectory;
+      filedir = cordova.file.externalRootDirectory ||
+                cordova.file.externalDataDirectory ||
+                cordova.file.dataDirectory;
     } catch (e) {
       // FIXME: hack web test where no cordova defined...
       console.log(e.message);
     }
-    $scope.filedir = filedir;
+    $scope.filedir = filedir || './';
     $scope.filename = Config.name + '.json';
-    $scope.filepath = filedir + $scope.filename;
+    $scope.filepath = $scope.filedir + $scope.filename;
 
     $scope.filter = Stat.filter;
     $scope.updated = Stat.updated;

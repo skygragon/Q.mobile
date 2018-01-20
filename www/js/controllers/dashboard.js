@@ -23,7 +23,7 @@ angular.module('Controllers', [])
       }
       if (($cordovaNetwork.getNetwork() !== Connection.WIFI) && Stat.updated.wifiOnly) {
         H.error('Update Failed!',
-            'You might need WiFi connection to update new questions from ' + Config.website);
+            'Need WiFi to update new questions from ' + Config.name + '.com');
         return;
       };
     } catch(e) {

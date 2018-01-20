@@ -21,14 +21,14 @@
           <option ng-repeat="tag in tags">{{tag}}</option>
         </select>
       </label>
-      <label class="item item-input item-select" ng-show="Config.name == 'careercup'">
+      <label class="item item-input item-select" ng-show="Fetcher.name == 'careercup'">
         <div class="input-label">By Company</div>
         <select ng-model="filter.company">
           <option value="">All</option>
           <option ng-repeat="company in companies">{{company}}</option>
         </select>
       </label>
-      <label class="item item-input item-select" ng-show="Config.name == 'leetcode'">
+      <label class="item item-input item-select" ng-show="Fetcher.name == 'leetcode'">
         <div class="input-label">By Level</div>
         <select ng-model="filter.level">
           <option value="">All</option>
@@ -86,8 +86,8 @@
       <div class="item item-divider item-icon-right">About</div>
       <div class="item item-icon-left">
         <i class="icon ion-android-phone-portrait"></i>
-        Q.{{Config.name}}
-        <p class="float-right">v{{Config.version}}</p>
+        Q.{{Fetcher.name}}
+        <p class="float-right">v{{Fetcher.version}}</p>
       </div>
       <div class="item item-icon-left">
         <i class="icon ion-social-github"></i>

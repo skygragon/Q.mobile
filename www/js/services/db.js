@@ -1,10 +1,7 @@
 var DB = {};  // singleton
 
-DB.init = function($q, Config) {
-  this.$q = $q;
-  this.Config = Config;
+DB.init = function() {
   this.db = null;
-
   this.idx = -1;
   this.keys = null;    // keys of all questions that fit the current filter
   this.filter = null;  // current query filter
@@ -13,7 +10,7 @@ DB.init = function($q, Config) {
 DB.open = function() {
   var d = this.$q.defer();
 
-  var db = new Dexie(this.Config.name + '.db');
+  var db = new Dexie(this.dbname);
   db.version(1).stores({
     questions: '++id,&name,status,company,*tags'
   });
@@ -198,6 +195,8 @@ DB.setQuestions = function(questions) {
 
 angular.module('Services')
 .service('DB', [ '$q', 'Config' ,function($q, Config) {
-  DB.init($q, Config);
+  DB.init();
+  DB.$q = $q;
+  DB.dbname = Config.name + '.db';
   return DB;
 }]);

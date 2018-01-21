@@ -12,7 +12,7 @@ DB.open = function() {
 
   var db = new Dexie(this.dbname);
   db.version(1).stores({
-    questions: '++id,&name,status,company,*tags'
+    questions: '++id,status,company,*tags'
   });
 
   db.open()

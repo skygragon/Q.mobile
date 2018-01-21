@@ -4,7 +4,6 @@ var Lintcode = {
     'id',
     'key',
     'level',
-    'name',
     'rate',
     'status',
     'tags',
@@ -33,14 +32,14 @@ function onLintcodeQuestionTask(question, q, cb) {
   Lintcode.getQuestion(question, function(e, qustions) {
     if (e) {
       q.addTask(question);
-      console.log('recollect failed question=' + question.name);
+      console.log('recollect failed question=' + question.id);
     } else {
       // if hit duplicate, skip those questions before this one
       // unless user wants a full scan
       if (q.ctx.cb([question]) && !q.ctx.full) {
-        console.log('Find duplicated on question=' + question.name);
+        console.log('Find duplicated on question=' + question.id);
         q.tasks = _.reject(q.tasks, function(x) {
-          return x.name <= question.name;
+          return x.id <= question.id;
         });
       }
     }
@@ -56,7 +55,7 @@ Lintcode.update = function(cb) {
   var n = parseInt(this.Stat.updated.workers);
   q.run(n, function(e, ctx) {
     var questions = _.sortBy(ctx.questions, function(x) {
-      return -x.name;
+      return -x.id;
     });
 
     ctx = {
@@ -83,7 +82,6 @@ Lintcode.getPage = function(id, cb) {
           level:  p.level,
           link:   'http://www.lintcode.com/problem/' + p.unique_name,
           id:     p.id,
-          name:   p.id,
           rate:   p.accepted_rate,
           status: 0,
           title:  p.title
@@ -103,7 +101,7 @@ Lintcode.getPage = function(id, cb) {
 };
 
 Lintcode.getQuestion = function(question, cb) {
-  console.log('start getQuestion=' + question.name);
+  console.log('start getQuestion=' + question.id);
   this.$http.get(question.link)
     .success(function(data, status, headers, config) {
       var parser = new DOMParser();
@@ -126,11 +124,11 @@ Lintcode.getQuestion = function(question, cb) {
         .map(function(a) { return a.innerText.trim(); })
         .value();
 
-      console.log('✔ getQuestion=' + question.name);
+      console.log('✔ getQuestion=' + question.id);
       return cb(null, question);
     })
     .error(function(data, status, headers, config) {
-      console.log('✘ getQuestion=' + question.name + ', error=' + status + '/' + data);
+      console.log('✘ getQuestion=' + question.id + ', error=' + status + '/' + data);
       return cb('HTTP:' + status, question);
     });
 };

@@ -3,7 +3,6 @@ var C3 = {
     'company',
     'data',
     'id',
-    'name',
     'status',
     'tags',
     'time'
@@ -127,7 +126,7 @@ C3.getPage = function(id, opts, cb) {
             switch(x.className) {
               case 'entry':
                 var a = x.getElementsByTagName('a')[0];
-                q.name = _.last(a.attributes['href'].value.split('id='));
+                q.id = parseInt(_.last(a.attributes['href'].value.split('id=')));
                 q.data = a.text;
                 break;
               case 'company':
@@ -161,7 +160,7 @@ C3.getPage = function(id, opts, cb) {
 };
 
 C3.fixupQuestion = function(question) {
-  question.link = 'https://careercup.com/question?id=' + question.name;
+  question.link = 'https://careercup.com/question?id=' + question.id;
   question.data = he.decode(question.data);
 };
 

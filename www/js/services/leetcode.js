@@ -6,7 +6,6 @@ var Leetcode = {
     'key',
     'level',
     'locked',
-    'name',
     'status',
     'submits',
     'tags',
@@ -18,14 +17,14 @@ function onLeetcodeQuestionTask(question, q, cb) {
   Leetcode.getQuestion(question, function(e, question) {
     if (e) {
       q.addTask(question);
-      console.log('recollect failed question=' + question.name);
+      console.log('recollect failed question=' + question.id);
     } else {
       // if hit duplicate, skip those questions before this one
       // unless user wants a full scan
       if (q.ctx.cb([question]) && !q.ctx.full) {
-        console.log('Find duplicated on question=' + question.name);
+        console.log('Find duplicated on question=' + question.id);
         q.tasks = _.reject(q.tasks, function(x) {
-          return x.name <= question.name;
+          return x.id <= question.id;
         });
       }
     }
@@ -42,7 +41,6 @@ Leetcode.update = function(cb) {
             var question = {
               status:  0,
               id:      p.stat.question_id,
-              name:    p.stat.question_id,
               title:   p.stat.question__title,
               key:     p.stat.question__title_slug,
               link:    'https://leetcode.com/problems/' + p.stat.question__title_slug,
@@ -73,10 +71,10 @@ Leetcode.update = function(cb) {
 };
 
 Leetcode.getQuestion = function(question, cb) {
-  console.log('start getQuestion=' + question.name);
+  console.log('start getQuestion=' + question.id);
   if (question.locked) {
     // TODO: show locked?
-    console.log('skip locked question=' + question.name);
+    console.log('skip locked question=' + question.id);
     question.data = 'Question Locked';
     question.tags = [];
     return cb(null, question);
@@ -110,11 +108,11 @@ Leetcode.getQuestion = function(question, cb) {
         question.tags = [];
       }
 
-      console.log('✔ getQuestion=' + question.name);
+      console.log('✔ getQuestion=' + question.id);
       return cb(null, question);
     })
     .error(function(data, status, headers, config) {
-      console.log('✘ getQuestion=' + question.name + ', error=' + status + '/' + data);
+      console.log('✘ getQuestion=' + question.id + ', error=' + status + '/' + data);
       return cb('HTTP:' + status, question);
     });
 };

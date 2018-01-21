@@ -86,42 +86,27 @@ function attr(dom, key) { return (dom.attributes[key] && dom.attributes[key].val
 function child(dom) { return angular.element(dom).children(); }
 
 Lintcode.getPage = function(id, cb) {
-  this.$http.get('http://www.lintcode.com/en/problem/?page=' + id)
+  this.$http.get('http://www.lintcode.com/api/problems/?page=' + id)
     .success(function(data, status, headers, config) {
-      var parser = new DOMParser();
-      var doc = parser.parseFromString(data, 'text/html');
-
-      var questions = _.chain(doc.getElementsByTagName('a'))
-        .filter(function(a) {
-          return attr(a, 'class').indexOf('problem-panel') >= 0 &&
-                 attr(a, 'href').indexOf('/problem/') === 0;
-        })
-        .map(function(a) {
-          var question = { status: 0, name: '', title: '', level: '', rate: '' };
-
-          _.each(a.getElementsByTagName('span'), function(span) {
-            var s = attr(span, 'class');
-            var v = span.innerText.trim();
-
-            if (s.indexOf('title') >= 0) {
-              question.name = +v.split('.')[0].trim();
-              question.title = v.split('.')[1].trim();
-            } else if (s.indexOf('rate') >= 0)
-              question.rate = v.split(' ')[0];
-            else if (s.indexOf('difficulty') >= 0)
-              question.level = v;
-          });
-
-          question.key = attr(a, 'href');
-          question.link = 'http://www.lintcode.com/en' + question.key;
-          return question;
-        })
-        .value();
-
+      var questions = (data.problems || []).map(function(p) {
+        var q = {
+          key:    p.unique_name,
+          level:  p.level,
+          link:   'http://www.lintcode.com/problem/' + p.unique_name,
+          name:   p.id,
+          rate:   p.accepted_rate,
+          status: 0,
+          title:  p.title
+        };
+        return q;
+      });
       console.log('✔ getPage=' + id + ', questions=' + questions.length);
       return cb(null, id, questions);
     })
     .error(function(data, status, headers, config) {
+      console.log('✔ getPage=' + id + ', questions=0');
+      if (status === 404) return cb(null, id, []);
+
       console.log('✘ getPage=' + id +', error=' + status + '/' +data);
       return cb('HTTP error=' + status, id);
     });
@@ -159,12 +144,11 @@ Lintcode.getQuestion = function(question, cb) {
     });
 };
 
-var LEVELS = ['', 'Easy', 'Medium', 'Hard'];
+var LEVELS = ['Naive', 'Easy', 'Medium', 'Hard', 'Super'];
 
 Lintcode.fixupQuestion = function(question) {
-  question.levelName = question.level;
-  question.levelIndex = LEVELS.indexOf(question.level);
-  question.link = 'http://www.lintcode.com/en' + question.key;
+  question.levelName = LEVELS[question.level];
+  question.levelIndex = question.level;
   question.data = he.decode(question.data);
 };
 

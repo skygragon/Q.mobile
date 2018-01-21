@@ -9,106 +9,55 @@ var C3 = {
   ]
 };
 
-function onC3PageDone(gctx, wctx, e, id, questions) {
-  if (questions) {
-    if (questions.length === 0) {
-      // hit last page, no need to get higher pages.
-      console.log('No more questions after page=' + id);
-      gctx.onPageEnd(id);
-    } else {
-      var duplicated = gctx.cb(questions);
+function onC3PageTask(id, q, cb) {
+  var ctx = q.ctx;
+  // linear timeout on retry, 90 seconds at most
+  var opts = {timeout: Math.min((ctx.failed[id] || 1) * 5000, 90 * 1000)};
 
-      // quit early if questions are dedup
-      // unless we are doing a full scan
-      if (duplicated && !gctx.full) {
-        console.log('All duplicated on page=' + id);
-        gctx.onPageEnd(id);
-      }
+  C3.getPage(id, opts, function(e, questions) {
+    // scan more pages if existing pages are all done
+    if (q.tasks.length === 0 && ctx.end === -1) {
+      q.addTasks(_.range(ctx.next, ctx.next + 50));
+      ctx.next += 50;
     }
-  }
 
-  // push back failed page, thus try it later
-  if (e) {
-    gctx.onPageFail(id);
-    console.log('recollect failed page:' + id);
-  } else {
-    gctx.onPageDone(id);
-  }
-
-  c3WorkerRun(gctx, wctx);
-};
-
-function c3WorkerRun(gctx, wctx) {
-  if (gctx.pages.length === 0) {
-    if (gctx.maxPage > 0) {
-      // no more pages to do, let worker quit
-      console.log('No more works to do, quit now, id=', wctx.id);
-      return gctx.onWorkerDone(wctx.id);
-    } else {
-      // scan more pages if existing pages are all done
-      gctx.advance(100);
+    if (e) {
+      ctx.failed[id] = (ctx.failed[id] || 0) + 1;
+      q.addTask(id);
+      console.log('recollect failed page:' + id);
+      return cb();
     }
-  }
+    delete ctx.failed[id];
 
-  var id = gctx.pages.shift();
-  var opts = {
-    // linear timeout on retry, 60 seconds at most
-    timeout: Math.min((gctx.badPages[id] || 1) * 5000, 60 * 1000)
-  };
-  console.log('start getPage=' + id +
-              ', worker=' + wctx.id +
-              ', timeout=' + opts.timeout);
-  C3.getPage(id, opts, wctx.cb);
+    // if hit duplicate, skip further pages unless user wants a full scan
+    if (questions.length === 0 || (ctx.cb(questions) && !ctx.full)) {
+      if (ctx.end === -1) ctx.end = id;
+      q.tasks = _.reject(q.tasks, function(x) {
+        return x >= id;
+      });
+    }
+    return cb();
+  });
 }
 
 C3.update = function(cb) {
-  var workers = parseInt(this.Stat.updated.workers);
+  var n = parseInt(this.Stat.updated.workers);
 
-  // global shared context
-  var gctx = {
-    pages:    [],       // id of new pages to do
-    badPages: {},       // failed count of each page
-    nextPage: 1,
-    maxPage:  -1,
-    workers:  workers,
-    cb:       cb,
-    full:     this.Stat.updated.full,
-
-    onPageEnd: function(id) {
-      this.maxPage = this.maxPage < 0 ? id : Math.min(this.maxPage, id);
-      this.pages = _.reject(this.pages, function(x) {
-        return x >= id;
-      });
-    },
-
-    onPageFail: function(id) {
-      this.pages.unshift(id);
-      this.badPages[id] = (this.badPages[id] || 0) + 1;
-    },
-
-    onPageDone: function(id) {
-      delete this.badPages[id];
-    },
-
-    advance: function(n) {
-      this.pages = _.range(this.nextPage, this.nextPage + n);
-      this.nextPage += n;
-    },
-
-    onWorkerDone: function(id) {
-      if (--this.workers === 0) this.cb();
-    }
+  var ctx = {
+    cb:     cb,
+    full:   this.Stat.updated.full,
+    next:   n,
+    end:    -1,
+    failed: {}
   };
-
-  for (var i = 0; i < workers; ++i) {
-    // worker individual context
-    var wctx = {id: i};
-    wctx.cb = _.partial(onC3PageDone, gctx, wctx)
-    c3WorkerRun(gctx, wctx);
-  }
+  var q = new this.Queue(_.range(n), ctx, onC3PageTask);
+  q.run(n, function(e, ctx) {
+    return cb();
+  });
 };
 
 C3.getPage = function(id, opts, cb) {
+  console.log('start getPage=' + id + ', timeout=' + opts.timeout);
   this.$http.get('https://careercup.com/page?n=' + id, opts)
     .success(function(data, status, headers, config) {
       var parser = new DOMParser();
@@ -149,13 +98,11 @@ C3.getPage = function(id, opts, cb) {
         .value();
 
       console.log('✔ getPage=' + id + ', questions=' + questions.length);
-      return cb(null, id, questions);
+      return cb(null, questions);
     })
     .error(function(data, status, headers, config) {
-      console.log('✘ getPage=' + id +
-                  ', error=' + status + '/' + data +
-                  ', timeout=' + opts.timeout);
-      return cb('HTTP:' + status, id);
+      console.log('✘ getPage=' + id + ', error=' + status + '/' + data + ', timeout=' + opts.timeout);
+      return cb('HTTP:' + status);
     });
 };
 
@@ -165,8 +112,9 @@ C3.fixupQuestion = function(question) {
 };
 
 angular.module('Services')
-.service('C3', ['$http', 'Stat', function($http, Stat) {
+.service('C3', ['$http', 'Stat', 'Queue', function($http, Stat, Queue) {
   C3.$http = $http;
   C3.Stat = Stat;
+  C3.Queue = Queue;
   return C3;
 }]);

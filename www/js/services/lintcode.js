@@ -96,7 +96,7 @@ Lintcode.getPage = function(id, cb) {
       if (status === 404) return cb(null, []);
 
       console.log('✘ getPage=' + id +', error=' + status + '/' +data);
-      return cb('HTTP error=' + status, id);
+      return cb('HTTP error=' + status);
     });
 };
 
@@ -129,7 +129,7 @@ Lintcode.getQuestion = function(question, cb) {
     })
     .error(function(data, status, headers, config) {
       console.log('✘ getQuestion=' + question.id + ', error=' + status + '/' + data);
-      return cb('HTTP:' + status, question);
+      return cb('HTTP:' + status);
     });
 };
 

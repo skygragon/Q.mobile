@@ -113,7 +113,7 @@ Leetcode.getQuestion = function(question, cb) {
     })
     .error(function(data, status, headers, config) {
       console.log('✘ getQuestion=' + question.id + ', error=' + status + '/' + data);
-      return cb('HTTP:' + status, question);
+      return cb('HTTP:' + status);
     });
 };
 

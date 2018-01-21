@@ -21,7 +21,7 @@ function onLeetcodeQuestionTask(question, q, cb) {
     } else {
       // if hit duplicate, skip those questions before this one
       // unless user wants a full scan
-      if (q.ctx.cb([question]) && !q.ctx.full) {
+      if (q.ctx.cb([question]) && !q.ctx.fully) {
         console.log('Find duplicated on question=' + question.id);
         q.tasks = _.reject(q.tasks, function(x) {
           return x.id <= question.id;
@@ -55,8 +55,8 @@ Leetcode.update = function(cb) {
           .value();
 
       var ctx = {
-        cb:   cb,
-        full: Leetcode.Stat.updated.full
+        cb:    cb,
+        fully: Leetcode.Stat.updated.fully
       };
       var q = new Leetcode.Queue(questions, ctx, onLeetcodeQuestionTask);
       var n = parseInt(Leetcode.Stat.updated.workers);

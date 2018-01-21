@@ -36,7 +36,7 @@ function onLintcodeQuestionTask(question, q, cb) {
     } else {
       // if hit duplicate, skip those questions before this one
       // unless user wants a full scan
-      if (q.ctx.cb([question]) && !q.ctx.full) {
+      if (q.ctx.cb([question]) && !q.ctx.fully) {
         console.log('Find duplicated on question=' + question.id);
         q.tasks = _.reject(q.tasks, function(x) {
           return x.id <= question.id;
@@ -59,8 +59,8 @@ Lintcode.update = function(cb) {
     });
 
     ctx = {
-      cb:   cb,
-      full: Lintcode.Stat.updated.full
+      cb:    cb,
+      fully: Lintcode.Stat.updated.fully
     };
     q = new Lintcode.Queue(questions, ctx, onLintcodeQuestionTask);
     q.run(n, function(e, ctx) {

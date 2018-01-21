@@ -30,7 +30,7 @@ function onC3PageTask(id, q, cb) {
     delete ctx.failed[id];
 
     // if hit duplicate, skip further pages unless user wants a full scan
-    if (questions.length === 0 || (ctx.cb(questions) && !ctx.full)) {
+    if (questions.length === 0 || (ctx.cb(questions) && !ctx.fully)) {
       if (ctx.end === -1) ctx.end = id;
       q.tasks = _.reject(q.tasks, function(x) {
         return x >= id;
@@ -45,7 +45,7 @@ C3.update = function(cb) {
 
   var ctx = {
     cb:     cb,
-    full:   this.Stat.updated.full,
+    fully:  this.Stat.updated.fully,
     next:   n,
     end:    -1,
     failed: {}

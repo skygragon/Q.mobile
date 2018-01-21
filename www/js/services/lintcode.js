@@ -1,91 +1,68 @@
 var Lintcode = {};
 
-function onLintcodePageDone(gctx, wctx, e, id, questions) {
-  if (e) {
-    gctx.pages.unshift(id);
-    console.log('recollect failed page=' + id);
-  } else if (questions.length === 0) {
-    // hit empty page, no need fetch more
-    if (gctx.maxPage < 0) {
-      gctx.maxPage = id;
-      gctx.pages = _.reject(gctx.pages, function(x) {
+function onLintcodePageTask(id, q, cb) {
+  Lintcode.getPage(id, function(e, questions) {
+    if (e) {
+      q.addTask(id);
+      console.log('recollect failed page=' + id);
+    } else if (questions.length === 0 && id > 0) {
+      // hit empty page, no need fetch more
+      q.tasks = _.reject(q.tasks, function(x) {
         return x >= id;
       });
+    } else {
+      q.ctx.questions = q.ctx.questions.concat(questions);
     }
-  } else {
-    gctx.questions = _.sortBy(gctx.questions.concat(questions), function(x) {
-      return -x.name;
-    });
-  }
-
-  lintcodeWorkerRun(gctx, wctx);
+    return cb();
+  });
 }
 
-function onLintcodeQuestionDone(gctx, wctx, e, question) {
-  if (e) {
-    // push back failed question, thus try it later
-    gctx.questions.unshift(question);
-    console.log('recollect failed question=' + question.name);
-  } else {
-    var duplicated = gctx.cb([question]);
-
-    // quit early if question is dedup unless doing a full scan
-    if (duplicated && !gctx.full) {
-      console.log('Find duplicated on question=' + question.name);
-      gctx.questions = _.reject(gctx.questions, function(x) {
-        return x.name <= question.name;
-      });
+function onLintcodeQuestionTask(question, q, cb) {
+  Lintcode.getQuestion(question, function(e, qustions) {
+    if (e) {
+      q.addTask(question);
+      console.log('recollect failed question=' + question.name);
+    } else {
+      // if hit duplicate, skip those questions before this one
+      // unless user wants a full scan
+      if (q.ctx.cb([question]) && !q.ctx.full) {
+        console.log('Find duplicated on question=' + question.name);
+        q.tasks = _.reject(q.tasks, function(x) {
+          return x.name <= question.name;
+        });
+      }
     }
-  }
-
-  lintcodeWorkerRun(gctx, wctx);
-};
-
-function lintcodeWorkerRun(gctx, wctx) {
-  if (gctx.pages.length > 0) {
-    var id = gctx.pages.shift();
-    console.log('start getPage=' + id + ', worker=' + wctx.id);
-    Lintcode.getPage(id, wctx.pageCB);
-    return;
-  }
-
-  if (gctx.questions.length > 0) {
-    var question = gctx.questions.shift();
-    console.log('start getQuestion=' + question.name + ', worker=' + wctx.id);
-    Lintcode.getQuestion(question, wctx.questionCB);
-    return;
-  }
-
-  console.log('Quit now, worker=' + wctx.id);
-  if (--gctx.workers === 0) gctx.cb();
+    return cb();
+  });
 }
 
 Lintcode.update = function(cb) {
-  var workers = parseInt(this.Stat.updated.workers);
+  var ctx = {questions: []};
+  // FIXME: dynamic page numbers
+  var q = new this.Queue(_.range(16), ctx, onLintcodePageTask);
 
-  // global shared context
-  var gctx = {
-    pages:     _.range(16), // FIXME: dynamic page numbers
-    questions: [],
-    maxPage:   -1,
-    workers:   workers,
-    cb:        cb,
-    full:      this.Stat.updated.full,
-  };
+  var n = parseInt(this.Stat.updated.workers);
+  q.run(n, function(e, ctx) {
+    var questions = _.sortBy(ctx.questions, function(x) {
+      return -x.name;
+    });
 
-  for (var i = 0; i < workers; ++i) {
-    // worker individual context
-    var wctx = {id: i};
-    wctx.pageCB = _.partial(onLintcodePageDone, gctx, wctx);
-    wctx.questionCB = _.partial(onLintcodeQuestionDone, gctx, wctx);
-    lintcodeWorkerRun(gctx, wctx);
-  }
+    ctx = {
+      cb:   cb,
+      full: Lintcode.Stat.updated.full
+    };
+    q = new Lintcode.Queue(questions, ctx, onLintcodeQuestionTask);
+    q.run(n, function(e, ctx) {
+      return cb();
+    });
+  });
 };
 
 function attr(dom, key) { return (dom.attributes[key] && dom.attributes[key].value) || ''; }
 function child(dom) { return angular.element(dom).children(); }
 
 Lintcode.getPage = function(id, cb) {
+  console.log('start getPage=' + id);
   this.$http.get('http://www.lintcode.com/api/problems/?page=' + id)
     .success(function(data, status, headers, config) {
       var questions = (data.problems || []).map(function(p) {
@@ -101,11 +78,11 @@ Lintcode.getPage = function(id, cb) {
         return q;
       });
       console.log('✔ getPage=' + id + ', questions=' + questions.length);
-      return cb(null, id, questions);
+      return cb(null, questions);
     })
     .error(function(data, status, headers, config) {
       console.log('✔ getPage=' + id + ', questions=0');
-      if (status === 404) return cb(null, id, []);
+      if (status === 404) return cb(null, []);
 
       console.log('✘ getPage=' + id +', error=' + status + '/' +data);
       return cb('HTTP error=' + status, id);
@@ -113,6 +90,7 @@ Lintcode.getPage = function(id, cb) {
 };
 
 Lintcode.getQuestion = function(question, cb) {
+  console.log('start getQuestion=' + question.name);
   this.$http.get(question.link)
     .success(function(data, status, headers, config) {
       var parser = new DOMParser();
@@ -153,8 +131,9 @@ Lintcode.fixupQuestion = function(question) {
 };
 
 angular.module('Services')
-.service('LintCode', ['$http', 'Stat', function($http, Stat) {
+.service('LintCode', ['$http', 'Stat', 'Queue', function($http, Stat, Queue) {
   Lintcode.$http = $http;
   Lintcode.Stat = Stat;
+  Lintcode.Queue = Queue;
   return Lintcode;
 }]);

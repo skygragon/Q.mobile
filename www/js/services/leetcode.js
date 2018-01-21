@@ -1,4 +1,18 @@
-var Leetcode = {};
+var Leetcode = {
+  dbkeys: [
+    'accepts',
+    'data',
+    'id',
+    'key',
+    'level',
+    'locked',
+    'name',
+    'status',
+    'submits',
+    'tags',
+    'title'
+  ]
+};
 
 function onLeetcodeQuestionTask(question, q, cb) {
   Leetcode.getQuestion(question, function(e, question) {

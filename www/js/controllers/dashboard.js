@@ -45,7 +45,7 @@ angular.module('Controllers', [])
       Stat.updated.questions += questions.length;
       Stat.updated.pages++;
 
-      DB.updateQuestions(questions)
+      DB.updateQuestions(questions, Fetcher.dbkeys)
         .then(function(e) {
           // BulkError if any questions are duplicated.
           // Here we keep trying until all questions are duplicated

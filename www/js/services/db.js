@@ -42,8 +42,11 @@ DB.countQuestions = function(tag) {
   return questions.count();
 };
 
-DB.updateQuestions = function(questions) {
+DB.updateQuestions = function(questions, keys) {
   var d = this.$q.defer();
+  if (keys) questions = questions.map(function(x) {
+    return _.pick(x, keys);
+  });
 
   this.db.questions
     .bulkPut(questions)

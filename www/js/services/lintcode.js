@@ -1,4 +1,16 @@
-var Lintcode = {};
+var Lintcode = {
+  dbkeys: [
+    'data',
+    'id',
+    'key',
+    'level',
+    'name',
+    'rate',
+    'status',
+    'tags',
+    'title'
+  ]
+};
 
 function onLintcodePageTask(id, q, cb) {
   Lintcode.getPage(id, function(e, questions) {
@@ -127,6 +139,7 @@ var LEVELS = ['Naive', 'Easy', 'Medium', 'Hard', 'Super'];
 Lintcode.fixupQuestion = function(question) {
   question.levelName = LEVELS[question.level];
   question.levelIndex = question.level;
+  question.link = 'http://www.lintcode.com/problem/' + question.key,
   question.data = he.decode(question.data);
 };
 

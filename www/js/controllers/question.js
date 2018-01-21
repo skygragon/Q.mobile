@@ -107,7 +107,7 @@ angular.module('Controllers')
       newQuestion.status = question.status;
       newQuestion.tags = question.tags;
 
-      DB.updateQuestion(newQuestion)
+      DB.updateQuestion(newQuestion, Fetcher.dbkeys)
         .then(function(e) {
           if (e) return H.error('Update Failed', e.message);
 

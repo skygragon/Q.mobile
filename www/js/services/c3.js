@@ -1,4 +1,14 @@
-var C3 = {};
+var C3 = {
+  dbkeys: [
+    'company',
+    'data',
+    'id',
+    'name',
+    'status',
+    'tags',
+    'time'
+  ]
+};
 
 function onC3PageDone(gctx, wctx, e, id, questions) {
   if (questions) {

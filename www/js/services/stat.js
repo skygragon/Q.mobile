@@ -13,8 +13,6 @@ var Stat = {
   // stat of all existing questions in DB
   questions: {
     count: {All: 0}, // statistics of questions
-    d:     null,     // defer object, will be resolved when all tasks done
-    tasks: 0,        // how many tasks waiting for DB
     dirty: true      // if ture, need to recalculate stat from DB
   },
 
@@ -29,49 +27,35 @@ var Stat = {
 };
 
 Stat.init = function() {
-  var self = this;
-  this.tags.forEach(function(tag) {
-    self.questions.count[tag] = 0;
-  });
+  for (var i = 0; i < this.tags.length; ++i)
+    this.questions.count[this.tags[i]] = 0;
 };
 
-Stat.query = function(tag) {
-  ++this.questions.tasks;
-
-  var self = this;
+Stat.query = function(tag, queue, cb) {
   this.DB
       .countQuestions(tag)
       .then(function(n) {
-        self.onTaskDone(tag, n);
+        Stat.questions.count[tag || 'All'] = n;
+        return cb();
       });
-};
-
-Stat.onTaskDone = function(tag, n) {
-  this.questions.count[tag || 'All'] = n;
-  if (--this.questions.tasks > 0) return;
-
-  this.questions.dirty = false;
-  this.questions.d.resolve();
 };
 
 Stat.refresh = function() {
   var d = this.$q.defer();
-  this.questions.d = d;
-
-  this.query();
-
-  var self = this;
-  this.tags.forEach(function(tag) {
-    self.query(tag);
+  var queue = new this.Queue(this.tags, null, _.bind(Stat.query, Stat));
+  queue.addTask('');
+  queue.run(null, function(e) {
+    Stat.questions.dirty = false;
+    d.resolve();
   });
-
   return d.promise;
 };
 
 angular.module('Services')
-.service('Stat', [ '$q', 'DB', function($q, DB) {
+.service('Stat', [ '$q', 'DB', 'Queue', function($q, DB, Queue) {
   Stat.$q = $q;
   Stat.DB = DB;
+  Stat.Queue = Queue;
 
   Stat.init();
   return Stat;

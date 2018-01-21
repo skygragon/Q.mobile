@@ -82,6 +82,7 @@ Lintcode.getPage = function(id, cb) {
           key:    p.unique_name,
           level:  p.level,
           link:   'http://www.lintcode.com/problem/' + p.unique_name,
+          id:     p.id,
           name:   p.id,
           rate:   p.accepted_rate,
           status: 0,

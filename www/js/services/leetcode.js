@@ -41,6 +41,7 @@ Leetcode.update = function(cb) {
           .map(function(p) {
             var question = {
               status:  0,
+              id:      p.stat.question_id,
               name:    p.stat.question_id,
               title:   p.stat.question__title,
               key:     p.stat.question__title_slug,

@@ -1,4 +1,4 @@
-var LeetcodeService = {};
+var Leetcode = {};
 
 function onLeetcodeQuestionDone(gctx, wctx, e, question) {
   if (e) {
@@ -29,10 +29,10 @@ function leetcodeWorkerRun(gctx, wctx) {
 
   var question = gctx.questions.shift();
   console.log('start getQuestion=' + question.name + ', worker=' + wctx.id);
-  LeetcodeService.getQuestion(question, wctx.cb);
+  Leetcode.getQuestion(question, wctx.cb);
 }
 
-LeetcodeService.update = function(cb) {
+Leetcode.update = function(cb) {
   var workers = parseInt(this.Stat.updated.workers);
 
   // global shared context
@@ -78,7 +78,7 @@ LeetcodeService.update = function(cb) {
     });
 };
 
-LeetcodeService.getQuestion = function(question, cb) {
+Leetcode.getQuestion = function(question, cb) {
   // TODO: show locked?
   if (question.locked) {
     console.log('skip locked question=' + question.name);
@@ -126,7 +126,7 @@ LeetcodeService.getQuestion = function(question, cb) {
 
 var LEVELS = ['', 'Easy', 'Medium', 'Hard'];
 
-LeetcodeService.fixupQuestion = function(question) {
+Leetcode.fixupQuestion = function(question) {
   question.rate = question.accepts * 100 / question.submits;
   question.levelName = LEVELS[question.level];
   question.levelIndex = question.level;
@@ -136,7 +136,7 @@ LeetcodeService.fixupQuestion = function(question) {
 
 angular.module('Services')
 .service('LeetCode', ['$http', 'Stat', function($http, Stat) {
-  LeetcodeService.$http = $http;
-  LeetcodeService.Stat = Stat;
-  return LeetcodeService;
+  Leetcode.$http = $http;
+  Leetcode.Stat = Stat;
+  return Leetcode;
 }]);

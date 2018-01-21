@@ -1,4 +1,4 @@
-StatService = {
+var Stat = {
   tags: ['Resolved', 'Later', 'Favorite'],
 
   // settings
@@ -28,17 +28,14 @@ StatService = {
   }
 };
 
-StatService.init = function($q, DB) {
-  this.$q = $q;
-  this.DB = DB;
-
+Stat.init = function() {
   var self = this;
   this.tags.forEach(function(tag) {
     self.questions.count[tag] = 0;
   });
 };
 
-StatService.query = function(tag) {
+Stat.query = function(tag) {
   ++this.questions.tasks;
 
   var self = this;
@@ -49,7 +46,7 @@ StatService.query = function(tag) {
       });
 };
 
-StatService.onTaskDone = function(tag, n) {
+Stat.onTaskDone = function(tag, n) {
   this.questions.count[tag || 'All'] = n;
   if (--this.questions.tasks > 0) return;
 
@@ -57,7 +54,7 @@ StatService.onTaskDone = function(tag, n) {
   this.questions.d.resolve();
 };
 
-StatService.refresh = function() {
+Stat.refresh = function() {
   var d = this.$q.defer();
   this.questions.d = d;
 
@@ -73,6 +70,9 @@ StatService.refresh = function() {
 
 angular.module('Services')
 .service('Stat', [ '$q', 'DB', function($q, DB) {
-  StatService.init($q, DB);
-  return StatService;
+  Stat.$q = $q;
+  Stat.DB = DB;
+
+  Stat.init();
+  return Stat;
 }]);

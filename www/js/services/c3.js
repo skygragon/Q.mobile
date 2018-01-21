@@ -1,4 +1,4 @@
-var C3Service = {};
+var C3 = {};
 
 function onC3PageDone(gctx, wctx, e, id, questions) {
   if (questions) {
@@ -49,10 +49,10 @@ function c3WorkerRun(gctx, wctx) {
   console.log('start getPage=' + id +
               ', worker=' + wctx.id +
               ', timeout=' + opts.timeout);
-  C3Service.getPage(id, opts, wctx.cb);
+  C3.getPage(id, opts, wctx.cb);
 }
 
-C3Service.update = function(cb) {
+C3.update = function(cb) {
   var workers = parseInt(this.Stat.updated.workers);
 
   // global shared context
@@ -99,7 +99,7 @@ C3Service.update = function(cb) {
   }
 };
 
-C3Service.getPage = function(id, opts, cb) {
+C3.getPage = function(id, opts, cb) {
   this.$http.get('https://careercup.com/page?n=' + id, opts)
     .success(function(data, status, headers, config) {
       var parser = new DOMParser();
@@ -150,14 +150,14 @@ C3Service.getPage = function(id, opts, cb) {
     });
 };
 
-C3Service.fixupQuestion = function(question) {
+C3.fixupQuestion = function(question) {
   question.link = 'https://careercup.com/question?id=' + question.name;
   question.data = he.decode(question.data);
 };
 
 angular.module('Services')
 .service('C3', ['$http', 'Stat', function($http, Stat) {
-  C3Service.$http = $http;
-  C3Service.Stat = Stat;
-  return C3Service;
+  C3.$http = $http;
+  C3.Stat = Stat;
+  return C3;
 }]);

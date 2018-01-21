@@ -1,4 +1,4 @@
-var LintcodeService = {};
+var Lintcode = {};
 
 function onLintcodePageDone(gctx, wctx, e, id, questions) {
   if (e) {
@@ -45,14 +45,14 @@ function lintcodeWorkerRun(gctx, wctx) {
   if (gctx.pages.length > 0) {
     var id = gctx.pages.shift();
     console.log('start getPage=' + id + ', worker=' + wctx.id);
-    LintcodeService.getPage(id, wctx.pageCB);
+    Lintcode.getPage(id, wctx.pageCB);
     return;
   }
 
   if (gctx.questions.length > 0) {
     var question = gctx.questions.shift();
     console.log('start getQuestion=' + question.name + ', worker=' + wctx.id);
-    LintcodeService.getQuestion(question, wctx.questionCB);
+    Lintcode.getQuestion(question, wctx.questionCB);
     return;
   }
 
@@ -60,7 +60,7 @@ function lintcodeWorkerRun(gctx, wctx) {
   if (--gctx.workers === 0) gctx.cb();
 }
 
-LintcodeService.update = function(cb) {
+Lintcode.update = function(cb) {
   var workers = parseInt(this.Stat.updated.workers);
 
   // global shared context
@@ -85,7 +85,7 @@ LintcodeService.update = function(cb) {
 function attr(dom, key) { return (dom.attributes[key] && dom.attributes[key].value) || ''; }
 function child(dom) { return angular.element(dom).children(); }
 
-LintcodeService.getPage = function(id, cb) {
+Lintcode.getPage = function(id, cb) {
   this.$http.get('http://www.lintcode.com/en/problem/?page=' + id)
     .success(function(data, status, headers, config) {
       var parser = new DOMParser();
@@ -127,7 +127,7 @@ LintcodeService.getPage = function(id, cb) {
     });
 };
 
-LintcodeService.getQuestion = function(question, cb) {
+Lintcode.getQuestion = function(question, cb) {
   this.$http.get(question.link)
     .success(function(data, status, headers, config) {
       var parser = new DOMParser();
@@ -161,7 +161,7 @@ LintcodeService.getQuestion = function(question, cb) {
 
 var LEVELS = ['', 'Easy', 'Medium', 'Hard'];
 
-LintcodeService.fixupQuestion = function(question) {
+Lintcode.fixupQuestion = function(question) {
   question.levelName = question.level;
   question.levelIndex = LEVELS.indexOf(question.level);
   question.link = 'http://www.lintcode.com/en' + question.key;
@@ -170,7 +170,7 @@ LintcodeService.fixupQuestion = function(question) {
 
 angular.module('Services')
 .service('LintCode', ['$http', 'Stat', function($http, Stat) {
-  LintcodeService.$http = $http;
-  LintcodeService.Stat = Stat;
-  return LintcodeService;
+  Lintcode.$http = $http;
+  Lintcode.Stat = Stat;
+  return Lintcode;
 }]);

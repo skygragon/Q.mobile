@@ -1,4 +1,4 @@
-var DB = {};  // singleton
+var DB = {};
 
 DB.init = function() {
   this.db = null;
@@ -195,8 +195,9 @@ DB.setQuestions = function(questions) {
 
 angular.module('Services')
 .service('DB', [ '$q', 'Config' ,function($q, Config) {
-  DB.init();
   DB.$q = $q;
   DB.dbname = Config.name + '.db';
+
+  DB.init();
   return DB;
 }]);

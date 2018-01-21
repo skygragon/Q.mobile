@@ -1,48 +1,25 @@
 var Leetcode = {};
 
-function onLeetcodeQuestionDone(gctx, wctx, e, question) {
-  if (e) {
-    // push back failed question, thus try it later
-    gctx.questions.unshift(question);
-    console.log('recollect failed question=' + question.name);
-  } else {
-    var duplicated = gctx.cb([question]);
-
-    // quit early if question is dedup unless doing a full scan
-    if (duplicated && !gctx.full) {
-      console.log('Find duplicated on question=' + question.name);
-      gctx.questions = _.reject(gctx.questions, function(x) {
-        return x.name <= question.name;
-      });
+function onLeetcodeQuestionTask(question, q, cb) {
+  Leetcode.getQuestion(question, function(e, question) {
+    if (e) {
+      q.addTask(question);
+      console.log('recollect failed question=' + question.name);
+    } else {
+      // if hit duplicate, skip those questions before this one
+      // unless user wants a full scan
+      if (q.ctx.cb([question]) && !q.ctx.full) {
+        console.log('Find duplicated on question=' + question.name);
+        q.tasks = _.reject(q.tasks, function(x) {
+          return x.name <= question.name;
+        });
+      }
     }
-  }
-
-  leetcodeWorkerRun(gctx, wctx);
-};
-
-function leetcodeWorkerRun(gctx, wctx) {
-  if (gctx.questions.length === 0) {
-    console.log('Quit now, worker=' + wctx.id);
-    if (--gctx.workers === 0) gctx.cb();
-    return;
-  }
-
-  var question = gctx.questions.shift();
-  console.log('start getQuestion=' + question.name + ', worker=' + wctx.id);
-  Leetcode.getQuestion(question, wctx.cb);
+    return cb();
+  });
 }
 
 Leetcode.update = function(cb) {
-  var workers = parseInt(this.Stat.updated.workers);
-
-  // global shared context
-  var gctx = {
-    questions: [],
-    workers:   workers,
-    cb:        cb,
-    full:      this.Stat.updated.full,
-  };
-
   this.$http.get('https://leetcode.com/api/problems/algorithms/')
     .success(function(data, status, headers, config) {
       var questions = _.chain(data.stat_status_pairs)
@@ -64,23 +41,26 @@ Leetcode.update = function(cb) {
           })
           .value();
 
-      gctx.questions = questions;
-      for (var i = 0; i < workers; ++i) {
-        // worker individual context
-        var wctx = {id: i};
-        wctx.cb = _.partial(onLeetcodeQuestionDone, gctx, wctx)
-        leetcodeWorkerRun(gctx, wctx);
-      }
+      var ctx = {
+        cb:   cb,
+        full: Leetcode.Stat.updated.full
+      };
+      var q = new Leetcode.Queue(questions, ctx, onLeetcodeQuestionTask);
+      var n = parseInt(Leetcode.Stat.updated.workers);
+      q.run(n, function(e, ctx) {
+        return cb();
+      });
     })
     .error(function(data, status, headers, config) {
       console.log('✘ getQuestions, error=' + status + '/' +data);
-      return cb(null);
+      return cb();
     });
 };
 
 Leetcode.getQuestion = function(question, cb) {
-  // TODO: show locked?
+  console.log('start getQuestion=' + question.name);
   if (question.locked) {
+    // TODO: show locked?
     console.log('skip locked question=' + question.name);
     question.data = 'Question Locked';
     question.tags = [];
@@ -135,8 +115,9 @@ Leetcode.fixupQuestion = function(question) {
 };
 
 angular.module('Services')
-.service('LeetCode', ['$http', 'Stat', function($http, Stat) {
+.service('LeetCode', ['$http', 'Stat', 'Queue', function($http, Stat, Queue) {
   Leetcode.$http = $http;
   Leetcode.Stat = Stat;
+  Leetcode.Queue = Queue;
   return Leetcode;
 }]);

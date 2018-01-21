@@ -31,8 +31,8 @@ Stat.init = function() {
     this.questions.count[this.tags[i]] = 0;
 };
 
-Stat.query = function(tag, queue, cb) {
-  this.DB
+function onStatQueryTask(tag, q, cb) {
+  Stat.DB
       .countQuestions(tag)
       .then(function(n) {
         Stat.questions.count[tag || 'All'] = n;
@@ -42,9 +42,9 @@ Stat.query = function(tag, queue, cb) {
 
 Stat.refresh = function() {
   var d = this.$q.defer();
-  var queue = new this.Queue(this.tags, null, _.bind(Stat.query, Stat));
-  queue.addTask('');
-  queue.run(null, function(e) {
+  var q = new this.Queue(this.tags, null, onStatQueryTask);
+  q.addTask('');
+  q.run(null, function(e) {
     Stat.questions.dirty = false;
     d.resolve();
   });

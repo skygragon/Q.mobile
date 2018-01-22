@@ -29,7 +29,7 @@ function onLintcodePageTask(id, q, cb) {
 }
 
 function onLintcodeQuestionTask(question, q, cb) {
-  Lintcode.getQuestion(question, function(e, qustions) {
+  Lintcode.getQuestion(question, function(e, question) {
     if (e) {
       q.addTask(question);
       console.log('recollect failed question=' + question.id);
@@ -129,7 +129,7 @@ Lintcode.getQuestion = function(question, cb) {
     })
     .error(function(data, status, headers, config) {
       console.log('✘ getQuestion=' + question.id + ', error=' + status + '/' + data);
-      return cb('HTTP:' + status);
+      return cb('HTTP:' + status, question);
     });
 };
 

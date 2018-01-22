@@ -21,14 +21,14 @@
           <option ng-repeat="tag in tags">{{tag}}</option>
         </select>
       </label>
-      <label class="item item-input item-select" ng-show="Fetcher.name == 'careercup'">
+      <label class="item item-input item-select" ng-show="Config.name == 'careercup'">
         <div class="input-label">By Company</div>
         <select ng-model="filter.company">
           <option value="">All</option>
           <option ng-repeat="company in companies">{{company}}</option>
         </select>
       </label>
-      <label class="item item-input item-select" ng-show="Fetcher.name == 'leetcode'">
+      <label class="item item-input item-select" ng-show="Config.name == 'leetcode'">
         <div class="input-label">By Level</div>
         <select ng-model="filter.level">
           <option value="">All</option>
@@ -68,7 +68,7 @@
 
     <div class="list card">
       <div class="item item-divider item-icon-right">Backup/Restore</div>
-      <div class="item item-text-wrap">{{filepath}}</div>
+      <div class="item item-text-wrap">{{FS.filepath}}</div>
       <div class="item item-button-right">Backup to File
         <button class="button button-positive" ng-click="backup()" ng-disabled="IOing">
           <i class="icon ion-log-in"></i>
@@ -86,8 +86,8 @@
       <div class="item item-divider item-icon-right">About</div>
       <div class="item item-icon-left">
         <i class="icon ion-android-phone-portrait"></i>
-        Q.{{Fetcher.name}}
-        <p class="float-right">v{{Fetcher.version}}</p>
+        Q.{{Config.name}}
+        <p class="float-right">v{{Config.version}}</p>
       </div>
       <div class="item item-icon-left">
         <i class="icon ion-social-github"></i>

@@ -2,6 +2,6 @@ angular.module('Services', [])
   .service('Config', [ function() {
     return {
       name: 'leetcode',
-      version: '1.3.1'
+      version: '1.4.0'
     };
   }]);

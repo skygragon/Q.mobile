@@ -3,6 +3,7 @@ function Queue(tasks, ctx, onTask) {
   this.ctx = ctx || {};
   this.onTask = onTask;
   this.error = null;
+  this.failed = 0;
 }
 
 Queue.prototype.addTask = function(task) {
@@ -18,6 +19,7 @@ Queue.prototype.addTasks = function(tasks) {
 Queue.prototype.run = function(concurrency, onDone) {
   this.concurrency = concurrency || this.tasks.length || 1;
   this.onDone = onDone;
+  this.failed = 0;
 
   const self = this;
   for (let i = 0; i < this.concurrency; ++i) {
@@ -35,11 +37,15 @@ Queue.prototype.workerRun = function() {
 
   const task = this.tasks.shift();
   const self = this;
-  this.onTask(task, self, function(e) {
+  this.onTask(task, self, function(e, retry) {
     if (e) self.error = e;
 
-    // TODO: could retry failed task here.
-    setTimeout(function() { self.workerRun(); }, 0);
+    self.failed += retry ? 1 : -1;
+    if (self.failed < 0) self.failed = 0;
+
+    var delay = Math.min(self.failed * 2000, 60 * 1000);
+    if (delay > 0) console.log('sleep ' + delay);
+    setTimeout(function() { self.workerRun(); }, delay);
   });
 };
 

@@ -28,7 +28,7 @@ function onLeetcodeQuestionTask(question, q, cb) {
         });
       }
     }
-    return cb();
+    return cb(null, e);
   });
 }
 
@@ -113,7 +113,7 @@ Leetcode.getQuestion = function(question, cb) {
     })
     .error(function(data, status, headers, config) {
       console.log('✘ getQuestion=' + question.id + ', error=' + status + '/' + data);
-      return cb('HTTP:' + status, question);
+      return cb(status, question);
     });
 };
 

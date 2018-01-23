@@ -36,7 +36,7 @@ function onC3PageTask(id, q, cb) {
         return x >= id;
       });
     }
-    return cb();
+    return cb(null, e);
   });
 }
 
@@ -102,7 +102,7 @@ C3.getPage = function(id, opts, cb) {
     })
     .error(function(data, status, headers, config) {
       console.log('✘ getPage=' + id + ', error=' + status + '/' + data + ', timeout=' + opts.timeout);
-      return cb('HTTP:' + status);
+      return cb(status);
     });
 };
 

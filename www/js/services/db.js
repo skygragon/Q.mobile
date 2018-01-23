@@ -12,13 +12,21 @@ DB.open = function() {
 
   var db = new Dexie(this.dbname);
   db.version(1).stores({
+    questions: '++id,&name,status,company,*tags'
+  });
+  db.version(2).stores({
     questions: '++id,status,company,*tags'
+  }).upgrade(function() {
+    console.log('found new schema v2!');
+    DB.toV2 = true;
   });
 
   db.open()
     .then(function(db) {
       DB.db = db;
-      d.resolve(db);
+      DB.fixup(function() {
+        d.resolve(db);
+      });
     })
     .catch(function(e) {
       console.log('db open failed:', e.stack);
@@ -26,6 +34,28 @@ DB.open = function() {
     });
 
   return d.promise;
+};
+
+DB.fixup = function(cb) {
+  if (!DB.toV2) return cb();
+  console.log('upgrading to v2 ...');
+  DB.getQuestions()
+    .then(function(questions) {
+      questions.forEach(function(q) {
+        q.id = q.name;
+        delete q.name;
+      });
+      return DB.setQuestions(questions);
+    })
+    .then(function(e) {
+      if (e) {
+        console.log('failed to upgrade v2: ' + e.message);
+      } else {
+        console.log('upgraded to v2!');
+        DB.toV2 = false;
+      }
+      return cb();
+    });
 };
 
 DB.countQuestions = function(tag) {
@@ -49,7 +79,7 @@ DB.updateQuestions = function(questions, keys) {
   });
 
   this.db.questions
-    .bulkPut(questions)
+    .bulkAdd(questions)
     .then(function(key) {
       d.resolve();
     })

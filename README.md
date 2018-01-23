@@ -20,11 +20,11 @@ A mobile app to enjoy interview questions from popular websites like:
 
 Android only for the time being.
 
-|App|Name    |Android|Questions File|#Questions|Last Updated|
-|---|--------|-------|:------------:|:--------:|:----------:|
-|![Q.leetcode](https://github.com/skygragon/Q.mobile/raw/master/screenshots/Q.leetcode.64.png)|Q.leetcode |[1.4.0.apk](https://github.com/skygragon/Q.mobile/releases/download/1.4.0/Q.leetcode-1.4.0-android-1411150.apk) |[leetcode.json](https://github.com/skygragon/Q.mobile/releases/download/1.4.0/leetcode.json)|685 |2018-01-22|
-|![Q.lintcode](https://github.com/skygragon/Q.mobile/raw/master/screenshots/Q.lintcode.64.png)|Q.lintcode |[1.4.0.apk](https://github.com/skygragon/Q.mobile/releases/download/1.4.0/Q.lintcode-1.4.0-android-fa56b3e.apk) |[lintcode.json](https://github.com/skygragon/Q.mobile/releases/download/1.4.0/lintcode.json)|382 |2018-01-22|
-|![Q.careercup](https://github.com/skygragon/Q.mobile/raw/master/screenshots/Q.careercup.64.png)|Q.careercup|[1.3.0.apk](https://github.com/skygragon/Q.mobile/releases/download/1.3.0/Q.careercup-1.3.0-android-1ee2d2c.apk)|[c3.json](https://github.com/skygragon/Q.mobile/releases/download/1.2.0/c3.json)|16k+|2017-02-11|
+|App|Android|Questions Data File|
+|:-:|:-----:|:-----------------:|
+|![Q.leetcode](https://github.com/skygragon/Q.mobile/raw/master/screenshots/Q.leetcode.64.png)<br/>Q.leetcode|![Q.leetcode](https://raw.githubusercontent.com/skygragon/Q.mobile/master/docs/Q.leetcode.apk.png)<br/>[1.4.0.apk](https://github.com/skygragon/Q.mobile/releases/download/1.4.0/Q.leetcode-1.4.0-android-1411150.apk)|![Q.leetcode](https://raw.githubusercontent.com/skygragon/Q.mobile/master/docs/Q.leetcode.json.png)<br/>[leetcode.json](https://github.com/skygragon/Q.mobile/releases/download/1.4.0/leetcode.json)<br/>685 questions by 2018-01-22|
+|![Q.lintcode](https://github.com/skygragon/Q.mobile/raw/master/screenshots/Q.lintcode.64.png)<br/>Q.lintcode|![Q.lintcode](https://raw.githubusercontent.com/skygragon/Q.mobile/master/docs/Q.lintcode.apk.png)<br/>[1.4.0.apk](https://github.com/skygragon/Q.mobile/releases/download/1.4.0/Q.lintcode-1.4.0-android-fa56b3e.apk)|![Q.lintcode](https://raw.githubusercontent.com/skygragon/Q.mobile/master/docs/Q.lintcode.json.png)<br/>[lintcode.json](https://github.com/skygragon/Q.mobile/releases/download/1.4.0/lintcode.json)<br/>382 questions by 2018-01-22
+|![Q.careercup](https://github.com/skygragon/Q.mobile/raw/master/screenshots/Q.careercup.64.png)<br/>Q.careercup|[1.3.0.apk](https://github.com/skygragon/Q.mobile/releases/download/1.3.0/Q.careercup-1.3.0-android-1ee2d2c.apk)|[c3.json](https://github.com/skygragon/Q.mobile/releases/download/1.2.0/c3.json)<br/>16k+ questions by 2017-02-11|
 
 ## Screenshots
 

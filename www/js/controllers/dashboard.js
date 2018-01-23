@@ -1,6 +1,6 @@
 angular.module('Controllers', [])
 .controller('DashboardController', function($scope, $rootScope,
-      $cordovaNetwork, Fetcher, DB, Stat, H, Config) {
+      $cordovaNetwork, Fetcher, DB, Stat, H) {
 
   $rootScope.$on('$stateChangeSuccess',
     function(event, toState, toParams, fromState, fromParams) {
@@ -23,7 +23,7 @@ angular.module('Controllers', [])
       }
       if (($cordovaNetwork.getNetwork() !== Connection.WIFI) && Stat.updated.wifiOnly) {
         H.error('Update Failed!',
-            'You might need WiFi connection to update new questions from ' + Config.website);
+            'Need WiFi to update new questions from ' + Fetcher.name + '.com');
         return;
       };
     } catch(e) {
@@ -45,7 +45,7 @@ angular.module('Controllers', [])
       Stat.updated.questions += questions.length;
       Stat.updated.pages++;
 
-      DB.updateQuestions(questions)
+      DB.updateQuestions(questions, Fetcher.dbkeys)
         .then(function(e) {
           // BulkError if any questions are duplicated.
           // Here we keep trying until all questions are duplicated
@@ -60,7 +60,7 @@ angular.module('Controllers', [])
   $scope.updating = false;
   $scope.count = Stat.questions.count;
   $scope.updated = Stat.updated;
-  $scope.Config = Config;
+  $scope.Fetcher = Fetcher;
 
   $scope.refreshCount();
 });

@@ -1,27 +1,17 @@
 angular.module('Controllers')
-.controller('SettingController', function($scope, $cordovaFile, DB, Stat, H, Config) {
+.controller('SettingController', function($scope, FS, DB, Stat, H, Config) {
   $scope.IOing = false;
   $scope.algos = ['Random', 'Sequential'];
   $scope.companies = ['Apple', 'Amazon', 'Facebook', 'Google', 'Microsoft'];
-  $scope.counts = ['1', '2', '4', '8', '16', '24', '32'];
+  $scope.counts = ['1', '2', '4', '8', '16'];
   $scope.filters = [
     {name: 'All', status: '1', tag: '', company: ''},
     {name: 'UnResolved', status: '0', tag: '', company: ''}
   ];
   $scope.Config = Config;
+  $scope.FS = FS;
 
   $scope.init = function() {
-    var filedir = './';
-    try {
-      filedir = cordova.file.externalDataDirectory || cordova.file.dataDirectory;
-    } catch (e) {
-      // FIXME: hack web test where no cordova defined...
-      console.log(e.message);
-    }
-    $scope.filedir = filedir;
-    $scope.filename = Config.filename + '.json';
-    $scope.filepath = filedir + $scope.filename;
-
     $scope.filter = Stat.filter;
     $scope.updated = Stat.updated;
     $scope.tags = Stat.tags;
@@ -44,27 +34,21 @@ angular.module('Controllers')
 
     DB.getQuestions()
       .then(function(questions) {
-        if (!questions) {
-          H.error('Backup Failed!', 'No questions found?');
-        } else {
-          var n = prettyNumber(questions.length);
-          H.loading('<br/>Backuping ' + n + ' questions');
+        if (!questions)
+          return H.error('Backup Failed!', 'No questions found?');
 
-          var data = JSON.stringify(questions);
-          $cordovaFile.writeFile($scope.filedir, $scope.filename, data, true)
-            .then(
-              function(ok) {
-                H.loading();
-                H.ok('Backup Succeed!', '<br/>Backuped ' + n + ' questions');
-                $scope.IOing = false;
-              },
-              function(e) {
-                H.loading();
-                H.error('Backup Failed!', e.message);
-                $scope.IOing = false;
-              }
-            );
-        }
+        var n = prettyNumber(questions.length);
+        H.loading('<br/>Backuping ' + n + ' questions');
+
+        FS.save(questions, function(e, filepath) {
+          H.loading();
+          if (e) {
+            H.error('Backup Failed!', e.message);
+          } else {
+            H.ok('Backup Succeed!', '<br/>Backuped ' + n + ' questions');
+          }
+          $scope.IOing = false;
+        });
       });
   };
 
@@ -77,32 +61,29 @@ angular.module('Controllers')
         $scope.IOing = true;
         H.loading('Preparing questions');
 
-        $cordovaFile.readAsText($scope.filedir, $scope.filename)
-          .then(
-            function(text) {
-              var questions = JSON.parse(text);
+        FS.load(function(e, questions) {
+          H.loading();
+          if (e) {
+            H.error('Resote Failed!', e.message);
+            $scope.IOing = false;
+            return;
+          }
 
-              var n = prettyNumber(questions.length);
-              H.loading('<br/>Restoring ' + n + ' questions');
+          var n = prettyNumber(questions.length);
+          H.loading('<br/>Restoring ' + n + ' questions');
 
-              DB.setQuestions(questions)
-                .then(function(e) {
-                  H.loading();
-                  if (e) {
-                    H.error('Resote Failed!', e.message);
-                  } else {
-                    H.ok('Restore Succeed!', '<br/>Restored ' + n + ' questions');
-                    Stat.questions.dirty = true;
-                  }
-                  $scope.IOing = false;
-                });
-            },
-            function(e) {
+          DB.setQuestions(questions)
+            .then(function(e) {
               H.loading();
-              H.error('Resote Failed!', e.message);
+              if (e) {
+                H.error('Resote Failed!', e.message);
+              } else {
+                H.ok('Restore Succeed!', '<br/>Restored ' + n + ' questions');
+                Stat.questions.dirty = true;
+              }
               $scope.IOing = false;
-            }
-          );
+            });
+        });
       });
   };
 

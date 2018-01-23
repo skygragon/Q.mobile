@@ -18,8 +18,7 @@ function isSame(a1, a2) {
 
 angular.module('Controllers')
 .controller('QuestionController', function($scope, $rootScope,
-      $cordovaInAppBrowser, $cordovaClipboard,
-      DB, Stat, H, Config, Fetcher) {
+      $cordovaInAppBrowser, $cordovaClipboard, DB, Stat, H, Fetcher) {
 
   $rootScope.$on('$stateChangeSuccess',
     function(event, toState, toParams, fromState, fromParams) {
@@ -34,7 +33,7 @@ angular.module('Controllers')
     var q = $scope.question;
     if (q && !isSame(q.tags, $scope.oldTags)) {
       q.status = has(q.tags, 'Resolved') ? 1 : 0;
-      DB.updateQuestion(q)
+      DB.updateQuestion(q, ['status', 'tags'])
         .then(function(e) {
           if (e) {
             console.log('Failed to update question because ' + e.stack);
@@ -97,6 +96,27 @@ angular.module('Controllers')
       });
   };
 
+  $scope.refresh = function(question) {
+    H.loading('Refreshing question');
+
+    var newQuestion = _.clone(question);
+    Fetcher.getQuestion(newQuestion, function(e, newQuestion) {
+      if (e) return H.error('Refresh Failed', e.message);
+
+      // keep existing user status
+      newQuestion.status = question.status;
+      newQuestion.tags = question.tags;
+
+      DB.updateQuestion(newQuestion, Fetcher.dbkeys)
+        .then(function(e) {
+          if (e) return H.error('Update Failed', e.message);
+
+          $scope.question = newQuestion;
+          H.loading();
+        });
+    });
+  };
+
   $scope.range = function(question) {
     var n = question ? question.levelIndex : 0;
     return new Array(n);
@@ -108,7 +128,6 @@ angular.module('Controllers')
   $scope.question = null;
   $scope.idx = 0;
   $scope.count = 0;
-  $scope.Config = Config;
 
   if (!$scope.question)
     $scope.selectQuestion();

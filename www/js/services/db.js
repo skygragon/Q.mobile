@@ -1,10 +1,7 @@
-var DB = {};  // singleton
+var DB = {};
 
-DB.init = function($q, Config) {
-  this.$q = $q;
-  this.Config = Config;
+DB.init = function() {
   this.db = null;
-
   this.idx = -1;
   this.keys = null;    // keys of all questions that fit the current filter
   this.filter = null;  // current query filter
@@ -13,15 +10,23 @@ DB.init = function($q, Config) {
 DB.open = function() {
   var d = this.$q.defer();
 
-  var db = new Dexie(this.Config.filename + '.db');
+  var db = new Dexie(this.dbname);
   db.version(1).stores({
     questions: '++id,&name,status,company,*tags'
+  });
+  db.version(2).stores({
+    questions: '++id,status,company,*tags'
+  }).upgrade(function() {
+    console.log('found new schema v2!');
+    DB.toV2 = true;
   });
 
   db.open()
     .then(function(db) {
       DB.db = db;
-      d.resolve(db);
+      DB.fixup(function() {
+        d.resolve(db);
+      });
     })
     .catch(function(e) {
       console.log('db open failed:', e.stack);
@@ -29,6 +34,28 @@ DB.open = function() {
     });
 
   return d.promise;
+};
+
+DB.fixup = function(cb) {
+  if (!DB.toV2) return cb();
+  console.log('upgrading to v2 ...');
+  DB.getQuestions()
+    .then(function(questions) {
+      questions.forEach(function(q) {
+        q.id = q.name;
+        delete q.name;
+      });
+      return DB.setQuestions(questions);
+    })
+    .then(function(e) {
+      if (e) {
+        console.log('failed to upgrade v2: ' + e.message);
+      } else {
+        console.log('upgraded to v2!');
+        DB.toV2 = false;
+      }
+      return cb();
+    });
 };
 
 DB.countQuestions = function(tag) {
@@ -45,11 +72,14 @@ DB.countQuestions = function(tag) {
   return questions.count();
 };
 
-DB.updateQuestions = function(questions) {
+DB.updateQuestions = function(questions, keys) {
   var d = this.$q.defer();
+  if (keys) questions = questions.map(function(x) {
+    return _.pick(x, keys);
+  });
 
   this.db.questions
-    .bulkPut(questions)
+    .bulkAdd(questions)
     .then(function(key) {
       d.resolve();
     })
@@ -146,12 +176,13 @@ function match(f, q) {
     (f.tag === '' || q.tags.indexOf(f.tag) >= 0);
 }
 
-DB.updateQuestion = function(question) {
+DB.updateQuestion = function(question, keys) {
   var d = this.$q.defer();
+  var toUpdate = keys ? _.pick(question, keys) : question;
 
-  // for now only some keys will be updated
+  // if given, only specific keys will be updated
   this.db.questions
-    .update(question.id, _.pick(question, 'status', 'tags'))
+    .update(question.id, toUpdate)
     .then(function(updated) {
       // remove this question from cache if not fit filter any more
       if (!match(DB.filter, question)) {
@@ -197,6 +228,9 @@ DB.setQuestions = function(questions) {
 
 angular.module('Services')
 .service('DB', [ '$q', 'Config' ,function($q, Config) {
-  DB.init($q, Config);
+  DB.$q = $q;
+  DB.dbname = Config.name + '.db';
+
+  DB.init();
   return DB;
 }]);

@@ -20,7 +20,7 @@ var Stat = {
   updated: {
     wifiOnly:  true,  // if true, only updaing in wifi mode.
     fully:     false, // if true, do a full crawl on all question pages
-    workers:   '16',  // how many workers to crawl questions
+    workers:   '4',   // how many workers to crawl questions
     questions: 0,     // how many questions got so far
     pages:     0      // how mant pages processed so far
   }

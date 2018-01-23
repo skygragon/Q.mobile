@@ -3,7 +3,7 @@ angular.module('Controllers')
   $scope.IOing = false;
   $scope.algos = ['Random', 'Sequential'];
   $scope.companies = ['Apple', 'Amazon', 'Facebook', 'Google', 'Microsoft'];
-  $scope.counts = ['1', '2', '4', '8', '16', '24', '32'];
+  $scope.counts = ['1', '2', '4', '8', '16'];
   $scope.filters = [
     {name: 'All', status: '1', tag: '', company: ''},
     {name: 'UnResolved', status: '0', tag: '', company: ''}

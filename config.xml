@@ -25,18 +25,6 @@
     <feature name="StatusBar">
         <param name="ios-package" onload="true" value="CDVStatusBar" />
     </feature>
-    <plugin name="cordova-plugin-device" spec="~1.1.3" />
-    <plugin name="cordova-plugin-console" spec="~1.0.4" />
-    <plugin name="cordova-plugin-whitelist" spec="~1.3.0" />
-    <plugin name="cordova-plugin-splashscreen" spec="~4.0.0" />
-    <plugin name="cordova-plugin-statusbar" spec="~2.2.0" />
-    <plugin name="cordova-plugin-inappbrowser" spec="~1.5.0" />
-    <plugin name="cordova-plugin-wkwebview-engine" spec="~1.1.0" />
-    <plugin name="cordova-labs-local-webserver" spec="~2.4.0" />
-    <plugin name="cordova-labs-wkwebview-engine-localhost" spec="~0.5.0" />
-    <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
-    <plugin name="cordova-plugin-file" spec="~4.3.1" />
-    <plugin name="cordova-plugin-network-information" spec="~1.3.1" />
     <platform name="ios">
         <splash height="1136" src="resources/ios/splash/Default-568h@2x~iphone.png" width="640" />
         <splash height="1334" src="resources/ios/splash/Default-667h.png" width="750" />
@@ -90,5 +78,14 @@
         <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
     </platform>
     <icon src="resources/android/icon/drawable-xhdpi-icon.png" />
-    <plugin name="com.verso.cordova.clipboard" spec="https://github.com/VersoSolutions/CordovaClipboard.git" />
+    <preference name="SplashShowOnlyFirstTime" value="false" />
+    <engine name="android" spec="6.3.0" />
+    <plugin name="cordova-plugin-console" spec="^1.1.0" />
+    <plugin name="cordova-plugin-file" spec="^6.0.1" />
+    <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />
+    <plugin name="cordova-plugin-splashscreen" spec="^5.0.1" />
+    <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
+    <plugin name="cordova-plugin-inappbrowser" spec="^2.0.1" />
+    <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
+    <plugin name="cordova-clipboard" spec="^1.1.1" />
 </widget>

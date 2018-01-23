@@ -18,8 +18,7 @@ function isSame(a1, a2) {
 
 angular.module('Controllers')
 .controller('QuestionController', function($scope, $rootScope,
-      $cordovaInAppBrowser, $cordovaClipboard,
-      DB, Stat, H, Config, Fetcher) {
+      $cordovaInAppBrowser, $cordovaClipboard, DB, Stat, H, Fetcher) {
 
   $rootScope.$on('$stateChangeSuccess',
     function(event, toState, toParams, fromState, fromParams) {
@@ -108,7 +107,7 @@ angular.module('Controllers')
       newQuestion.status = question.status;
       newQuestion.tags = question.tags;
 
-      DB.updateQuestion(newQuestion)
+      DB.updateQuestion(newQuestion, Fetcher.dbkeys)
         .then(function(e) {
           if (e) return H.error('Update Failed', e.message);
 
@@ -129,7 +128,6 @@ angular.module('Controllers')
   $scope.question = null;
   $scope.idx = 0;
   $scope.count = 0;
-  $scope.Config = Config;
 
   if (!$scope.question)
     $scope.selectQuestion();

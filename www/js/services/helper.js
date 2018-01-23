@@ -1,14 +1,14 @@
-var HelperService = {};
+var Helper = {};
 
 var LOADING = '<ion-spinner class="spinner-positive" icon="bubbles">' +
               '</ion-spinner><br/>';
 
-HelperService.loading = function(msg) {
+Helper.loading = function(msg) {
   this.closeAll();
   if (msg) this.$loading.show({template: LOADING + msg});
 };
 
-HelperService.yesOrNo = function(title, msg) {
+Helper.yesOrNo = function(title, msg) {
   return this.$popup.confirm({
     title: title || 'Please confirm?',
     template: msg
@@ -20,14 +20,14 @@ var ALERT = _.template([
     '<p class="badge-line"><%=title%></p>',
     '<p><%=msg%></p>',
     '<button class="button button-small button-outline button-light"',
-    ' onClick="HelperService.closeAll()">close</button>'
+    ' onClick="Helper.closeAll()">close</button>'
   ].join(''));
 
-HelperService.closeAll = function() {
+Helper.closeAll = function() {
   this.$loading.hide();
 };
 
-HelperService.error = function(title, msg) {
+Helper.error = function(title, msg) {
   this.closeAll();
   this.$loading.show({
     template: ALERT({
@@ -38,7 +38,7 @@ HelperService.error = function(title, msg) {
   });
 };
 
-HelperService.ok = function(title, msg) {
+Helper.ok = function(title, msg) {
   this.closeAll();
   this.$loading.show({
     template: ALERT({
@@ -52,7 +52,7 @@ HelperService.ok = function(title, msg) {
 angular.module('Services')
 .service('H', ['$ionicLoading', '$ionicPopup',
     function($loading, $popup) {
-  HelperService.$popup = $popup;
-  HelperService.$loading = $loading;
-  return HelperService;
+  Helper.$popup = $popup;
+  Helper.$loading = $loading;
+  return Helper;
 }]);

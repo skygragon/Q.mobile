@@ -1,133 +1,107 @@
-var LintcodeService = {};
-
-function onLintcodePageDone(gctx, wctx, e, id, questions) {
-  if (e) {
-    gctx.pages.unshift(id);
-    console.log('recollect failed page=' + id);
-  } else if (questions.length === 0) {
-    // hit empty page, no need fetch more
-    if (gctx.maxPage < 0) {
-      gctx.maxPage = id;
-      gctx.pages = _.reject(gctx.pages, function(x) {
-        return x >= id;
-      });
-    }
-  } else {
-    gctx.questions = _.sortBy(gctx.questions.concat(questions), function(x) {
-      return -x.name;
-    });
-  }
-
-  lintcodeWorkerRun(gctx, wctx);
-}
-
-function onLintcodeQuestionDone(gctx, wctx, e, question) {
-  if (e) {
-    // push back failed question, thus try it later
-    gctx.questions.unshift(question);
-    console.log('recollect failed question=' + question.name);
-  } else {
-    var duplicated = gctx.cb([question]);
-
-    // quit early if question is dedup unless doing a full scan
-    if (duplicated && !gctx.full) {
-      console.log('Find duplicated on question=' + question.name);
-      gctx.questions = _.reject(gctx.questions, function(x) {
-        return x.name <= question.name;
-      });
-    }
-  }
-
-  lintcodeWorkerRun(gctx, wctx);
+var Lintcode = {
+  dbkeys: [
+    'data',
+    'id',
+    'key',
+    'level',
+    'rate',
+    'status',
+    'tags',
+    'title'
+  ]
 };
 
-function lintcodeWorkerRun(gctx, wctx) {
-  if (gctx.pages.length > 0) {
-    var id = gctx.pages.shift();
-    console.log('start getPage=' + id + ', worker=' + wctx.id);
-    LintcodeService.getPage(id, wctx.pageCB);
-    return;
-  }
-
-  if (gctx.questions.length > 0) {
-    var question = gctx.questions.shift();
-    console.log('start getQuestion=' + question.name + ', worker=' + wctx.id);
-    LintcodeService.getQuestion(question, wctx.questionCB);
-    return;
-  }
-
-  console.log('Quit now, worker=' + wctx.id);
-  if (--gctx.workers === 0) gctx.cb();
+function onLintcodePageTask(id, q, cb) {
+  Lintcode.getPage(id, function(e, questions) {
+    if (e) {
+      q.addTask(id);
+      console.log('recollect failed page=' + id);
+    } else if (questions.length === 0 && id > 0) {
+      // hit empty page, no need fetch more
+      q.tasks = _.reject(q.tasks, function(x) {
+        return x >= id;
+      });
+    } else {
+      q.ctx.questions = q.ctx.questions.concat(questions);
+    }
+    return cb(null, e);
+  });
 }
 
-LintcodeService.update = function(cb) {
-  var workers = parseInt(this.Stat.updated.workers);
+function onLintcodeQuestionTask(question, q, cb) {
+  Lintcode.getQuestion(question, function(e, question) {
+    if (e) {
+      q.addTask(question);
+      console.log('recollect failed question=' + question.id);
+    } else {
+      // if hit duplicate, skip those questions before this one
+      // unless user wants a full scan
+      if (q.ctx.cb([question]) && !q.ctx.fully) {
+        console.log('Find duplicated on question=' + question.id);
+        q.tasks = _.reject(q.tasks, function(x) {
+          return x.id <= question.id;
+        });
+      }
+    }
+    return cb(null, e);
+  });
+}
 
-  // global shared context
-  var gctx = {
-    pages:     _.range(16), // FIXME: dynamic page numbers
-    questions: [],
-    maxPage:   -1,
-    workers:   workers,
-    cb:        cb,
-    full:      this.Stat.updated.full,
-  };
+Lintcode.update = function(cb) {
+  var ctx = {questions: []};
+  // FIXME: dynamic page numbers
+  var q = new this.Queue(_.range(16), ctx, onLintcodePageTask);
 
-  for (var i = 0; i < workers; ++i) {
-    // worker individual context
-    var wctx = {id: i};
-    wctx.pageCB = _.partial(onLintcodePageDone, gctx, wctx);
-    wctx.questionCB = _.partial(onLintcodeQuestionDone, gctx, wctx);
-    lintcodeWorkerRun(gctx, wctx);
-  }
+  var n = parseInt(this.Stat.updated.workers);
+  q.run(n, function(e, ctx) {
+    var questions = _.sortBy(ctx.questions, function(x) {
+      return -x.id;
+    });
+
+    ctx = {
+      cb:    cb,
+      fully: Lintcode.Stat.updated.fully
+    };
+    q = new Lintcode.Queue(questions, ctx, onLintcodeQuestionTask);
+    q.run(n, function(e, ctx) {
+      return cb();
+    });
+  });
 };
 
 function attr(dom, key) { return (dom.attributes[key] && dom.attributes[key].value) || ''; }
 function child(dom) { return angular.element(dom).children(); }
 
-LintcodeService.getPage = function(id, cb) {
-  this.$http.get('http://www.lintcode.com/en/problem/?page=' + id)
+Lintcode.getPage = function(id, cb) {
+  console.log('start getPage=' + id);
+  this.$http.get('http://www.lintcode.com/api/problems/?page=' + id)
     .success(function(data, status, headers, config) {
-      var parser = new DOMParser();
-      var doc = parser.parseFromString(data, 'text/html');
-
-      var questions = _.chain(doc.getElementsByTagName('a'))
-        .filter(function(a) {
-          return attr(a, 'class').indexOf('problem-panel') >= 0 &&
-                 attr(a, 'href').indexOf('/problem/') === 0;
-        })
-        .map(function(a) {
-          var question = { status: 0, name: '', title: '', level: '', rate: '' };
-
-          _.each(a.getElementsByTagName('span'), function(span) {
-            var s = attr(span, 'class');
-            var v = span.innerText.trim();
-
-            if (s.indexOf('title') >= 0) {
-              question.name = +v.split('.')[0].trim();
-              question.title = v.split('.')[1].trim();
-            } else if (s.indexOf('rate') >= 0)
-              question.rate = v.split(' ')[0];
-            else if (s.indexOf('difficulty') >= 0)
-              question.level = v;
-          });
-
-          question.key = attr(a, 'href');
-          question.link = 'http://www.lintcode.com/en' + question.key;
-          return question;
-        })
-        .value();
-
+      var questions = (data.problems || []).map(function(p) {
+        var q = {
+          key:    p.unique_name,
+          level:  p.level,
+          link:   'http://www.lintcode.com/problem/' + p.unique_name,
+          id:     p.id,
+          rate:   p.accepted_rate,
+          status: 0,
+          title:  p.title
+        };
+        return q;
+      });
       console.log('✔ getPage=' + id + ', questions=' + questions.length);
-      return cb(null, id, questions);
+      return cb(null, questions);
     })
     .error(function(data, status, headers, config) {
+      console.log('✔ getPage=' + id + ', questions=0');
+      if (status === 404) return cb(null, []);
+
       console.log('✘ getPage=' + id +', error=' + status + '/' +data);
-      return cb('HTTP error=' + status, id);
+      return cb(status);
     });
 };
 
-LintcodeService.getQuestion = function(question, cb) {
+Lintcode.getQuestion = function(question, cb) {
+  console.log('start getQuestion=' + question.id);
   this.$http.get(question.link)
     .success(function(data, status, headers, config) {
       var parser = new DOMParser();
@@ -150,27 +124,28 @@ LintcodeService.getQuestion = function(question, cb) {
         .map(function(a) { return a.innerText.trim(); })
         .value();
 
-      console.log('✔ getQuestion=' + question.name);
+      console.log('✔ getQuestion=' + question.id);
       return cb(null, question);
     })
     .error(function(data, status, headers, config) {
-      console.log('✘ getQuestion=' + question.name + ', error=' + status + '/' + data);
-      return cb('HTTP:' + status, question);
+      console.log('✘ getQuestion=' + question.id + ', error=' + status + '/' + data);
+      return cb(status, question);
     });
 };
 
-var LEVELS = ['', 'Easy', 'Medium', 'Hard'];
+var LEVELS = ['Naive', 'Easy', 'Medium', 'Hard', 'Super'];
 
-LintcodeService.fixupQuestion = function(question) {
-  question.levelName = question.level;
-  question.levelIndex = LEVELS.indexOf(question.level);
-  question.link = 'http://www.lintcode.com/en' + question.key;
+Lintcode.fixupQuestion = function(question) {
+  question.levelName = LEVELS[question.level];
+  question.levelIndex = question.level;
+  question.link = 'http://www.lintcode.com/problem/' + question.key,
   question.data = he.decode(question.data);
 };
 
 angular.module('Services')
-.service('LintCode', ['$http', 'Stat', function($http, Stat) {
-  LintcodeService.$http = $http;
-  LintcodeService.Stat = Stat;
-  return LintcodeService;
+.service('LintCode', ['$http', 'Stat', 'Queue', function($http, Stat, Queue) {
+  Lintcode.$http = $http;
+  Lintcode.Stat = Stat;
+  Lintcode.Queue = Queue;
+  return Lintcode;
 }]);

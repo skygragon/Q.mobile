@@ -1,48 +1,38 @@
-var LeetcodeService = {};
-
-function onLeetcodeQuestionDone(gctx, wctx, e, question) {
-  if (e) {
-    // push back failed question, thus try it later
-    gctx.questions.unshift(question);
-    console.log('recollect failed question=' + question.name);
-  } else {
-    var duplicated = gctx.cb([question]);
-
-    // quit early if question is dedup unless doing a full scan
-    if (duplicated && !gctx.full) {
-      console.log('Find duplicated on question=' + question.name);
-      gctx.questions = _.reject(gctx.questions, function(x) {
-        return x.name <= question.name;
-      });
-    }
-  }
-
-  leetcodeWorkerRun(gctx, wctx);
+var Leetcode = {
+  dbkeys: [
+    'accepts',
+    'data',
+    'id',
+    'key',
+    'level',
+    'locked',
+    'status',
+    'submits',
+    'tags',
+    'title'
+  ]
 };
 
-function leetcodeWorkerRun(gctx, wctx) {
-  if (gctx.questions.length === 0) {
-    console.log('Quit now, worker=' + wctx.id);
-    if (--gctx.workers === 0) gctx.cb();
-    return;
-  }
-
-  var question = gctx.questions.shift();
-  console.log('start getQuestion=' + question.name + ', worker=' + wctx.id);
-  LeetcodeService.getQuestion(question, wctx.cb);
+function onLeetcodeQuestionTask(question, q, cb) {
+  Leetcode.getQuestion(question, function(e, question) {
+    if (e) {
+      q.addTask(question);
+      console.log('recollect failed question=' + question.id);
+    } else {
+      // if hit duplicate, skip those questions before this one
+      // unless user wants a full scan
+      if (q.ctx.cb([question]) && !q.ctx.fully) {
+        console.log('Find duplicated on question=' + question.id);
+        q.tasks = _.reject(q.tasks, function(x) {
+          return x.id <= question.id;
+        });
+      }
+    }
+    return cb(null, e);
+  });
 }
 
-LeetcodeService.update = function(cb) {
-  var workers = parseInt(this.Stat.updated.workers);
-
-  // global shared context
-  var gctx = {
-    questions: [],
-    workers:   workers,
-    cb:        cb,
-    full:      this.Stat.updated.full,
-  };
-
+Leetcode.update = function(cb) {
   this.$http.get('https://leetcode.com/api/problems/algorithms/')
     .success(function(data, status, headers, config) {
       var questions = _.chain(data.stat_status_pairs)
@@ -50,7 +40,7 @@ LeetcodeService.update = function(cb) {
           .map(function(p) {
             var question = {
               status:  0,
-              name:    p.stat.question_id,
+              id:      p.stat.question_id,
               title:   p.stat.question__title,
               key:     p.stat.question__title_slug,
               link:    'https://leetcode.com/problems/' + p.stat.question__title_slug,
@@ -64,24 +54,27 @@ LeetcodeService.update = function(cb) {
           })
           .value();
 
-      gctx.questions = questions;
-      for (var i = 0; i < workers; ++i) {
-        // worker individual context
-        var wctx = {id: i};
-        wctx.cb = _.partial(onLeetcodeQuestionDone, gctx, wctx)
-        leetcodeWorkerRun(gctx, wctx);
-      }
+      var ctx = {
+        cb:    cb,
+        fully: Leetcode.Stat.updated.fully
+      };
+      var q = new Leetcode.Queue(questions, ctx, onLeetcodeQuestionTask);
+      var n = parseInt(Leetcode.Stat.updated.workers);
+      q.run(n, function(e, ctx) {
+        return cb();
+      });
     })
     .error(function(data, status, headers, config) {
       console.log('✘ getQuestions, error=' + status + '/' +data);
-      return cb(null);
+      return cb();
     });
 };
 
-LeetcodeService.getQuestion = function(question, cb) {
-  // TODO: show locked?
+Leetcode.getQuestion = function(question, cb) {
+  console.log('start getQuestion=' + question.id);
   if (question.locked) {
-    console.log('skip locked question=' + question.name);
+    // TODO: show locked?
+    console.log('skip locked question=' + question.id);
     question.data = 'Question Locked';
     question.tags = [];
     return cb(null, question);
@@ -115,18 +108,18 @@ LeetcodeService.getQuestion = function(question, cb) {
         question.tags = [];
       }
 
-      console.log('✔ getQuestion=' + question.name);
+      console.log('✔ getQuestion=' + question.id);
       return cb(null, question);
     })
     .error(function(data, status, headers, config) {
-      console.log('✘ getQuestion=' + question.name + ', error=' + status + '/' + data);
-      return cb('HTTP:' + status, question);
+      console.log('✘ getQuestion=' + question.id + ', error=' + status + '/' + data);
+      return cb(status, question);
     });
 };
 
 var LEVELS = ['', 'Easy', 'Medium', 'Hard'];
 
-LeetcodeService.fixupQuestion = function(question) {
+Leetcode.fixupQuestion = function(question) {
   question.rate = question.accepts * 100 / question.submits;
   question.levelName = LEVELS[question.level];
   question.levelIndex = question.level;
@@ -135,8 +128,9 @@ LeetcodeService.fixupQuestion = function(question) {
 };
 
 angular.module('Services')
-.service('LeetCode', ['$http', 'Stat', function($http, Stat) {
-  LeetcodeService.$http = $http;
-  LeetcodeService.Stat = Stat;
-  return LeetcodeService;
+.service('LeetCode', ['$http', 'Stat', 'Queue', function($http, Stat, Queue) {
+  Leetcode.$http = $http;
+  Leetcode.Stat = Stat;
+  Leetcode.Queue = Queue;
+  return Leetcode;
 }]);

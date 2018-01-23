@@ -16,10 +16,6 @@ A mobile app to enjoy interview questions from popular websites like:
 * Manage questions with `Resolved`/`Favorite`/`Later` tags.
 * Data `backup` and `restore` supported.
 
-## Install
-
-Android only for the time being.
-
 |App|Android|Questions Data File|
 |:-:|:-----:|:-----------------:|
 |![Q.leetcode](https://github.com/skygragon/Q.mobile/raw/master/screenshots/Q.leetcode.64.png)<br/>Q.leetcode|![Q.leetcode](https://raw.githubusercontent.com/skygragon/Q.mobile/master/docs/Q.leetcode.apk.png)<br/>[1.4.0.apk](https://github.com/skygragon/Q.mobile/releases/download/1.4.0/Q.leetcode-1.4.0-android-1411150.apk)|![Q.leetcode](https://raw.githubusercontent.com/skygragon/Q.mobile/master/docs/Q.leetcode.json.png)<br/>[leetcode.json](https://github.com/skygragon/Q.mobile/releases/download/1.4.0/leetcode.json)<br/>685 questions by 2018-01-22|

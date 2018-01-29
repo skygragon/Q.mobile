@@ -1,14 +1,8 @@
 {
-  "name": "careercup-mobile",
+  "name": "Q.mobile",
   "app_id": "",
+  "type": "ionic-angular",
   "integrations": {
     "cordova": {}
-  },
-  "type": "ionic1",
-  "watchPatterns": [
-    "scss/**/*",
-    "www/**/*",
-    "!www/lib/**/*",
-    "!www/**/*.map"
-  ]
+  }
 }

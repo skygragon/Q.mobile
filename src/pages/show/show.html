@@ -1,0 +1,77 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Question</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-card *ngIf="question" text-wrap>
+    <ion-grid>
+      <ion-row>
+        <ion-col col-6>
+          <ion-icon name="ios-chatboxes-outline"></ion-icon>
+          {{question.id}}
+        </ion-col>
+        <ion-col col-6 text-right>
+          <button (click)="prev()">
+            <ion-icon name="ios-arrow-back"></ion-icon>
+          </button>
+          <span>{{ctx.idx+1}}/{{ctx.ids.length}}</span>
+          <button (click)="next()">
+            <ion-icon name="ios-arrow-forward"></ion-icon>
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-item>
+      <p class="question-title">{{question.title}}</p>
+      <span *ngIf="question.levelIndex">{{question.levelName}}</span>
+      <ion-icon name="ios-star" color="danger" *ngFor="let i of stars()"></ion-icon>
+      &nbsp;
+      <span *ngIf="question.rate">{{question.rate|number:'.2-2'}}%</span>
+      <img src="assets/icon/resolved.png" class="stamp" *ngIf="question.status" />
+    </ion-item>
+    <ion-item>
+      <pre>{{question.data}}</pre>
+    </ion-item>
+
+    <ion-grid text-center>
+      <ion-row>
+        <ion-col col-4 *ngFor="let t of tags">
+          <button ion-button outline [color]="hasTag(t) ? 'primary' : 'light'" (click)="flipTag(t)">
+            {{t}}
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+
+  <ion-fab right bottom *ngIf="question">
+    <button ion-fab mini>
+      <ion-icon name="ios-arrow-dropleft"></ion-icon>
+    </button>
+    <ion-fab-list side="left">
+      <button ion-fab color="primary" (click)="copy()">
+        <ion-icon name="copy"></ion-icon>
+      </button>
+      <button ion-fab color="primary" (click)="open()">
+        <ion-icon name="link"></ion-icon>
+      </button>
+      <button ion-fab color="primary" (click)="refresh()">
+        <ion-icon name="refresh"></ion-icon>
+      </button>
+    </ion-fab-list>
+  </ion-fab>
+
+  <ion-card *ngIf="!question" text-wrap>
+    <ion-item>
+      <p class="question-title">No question found?</p>
+      <p>Please goto setting tab and modify your current filter setting.</p>
+    </ion-item>
+  </ion-card>
+</ion-content>

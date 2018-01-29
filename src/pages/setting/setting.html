@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Setting</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-item-divider color="light">Filters</ion-item-divider>
+    <ion-item>
+      <ion-label>By Status</ion-label>
+      <ion-select [(ngModel)]="config.filter.status" interface="popover">
+        <ion-option value="1">All</ion-option>
+        <ion-option value="0">UnResolved Only</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>By Tag</ion-label>
+      <ion-select [(ngModel)]="config.filter.tag" interface="popover">
+        <ion-option value="">All</ion-option>
+        <ion-option *ngFor="let tag of config.tags">{{tag}}</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>By Company</ion-label>
+      <ion-select [(ngModel)]="config.filter.company" interface="popover">
+        <ion-option value="">All</ion-option>
+        <ion-option *ngFor="let company of config.companies">{{company}}</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>By Level</ion-label>
+      <ion-select [(ngModel)]="config.filter.level" interface="popover">
+        <ion-option *ngFor="let level of config.levels">{{level}}</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Selection</ion-label>
+      <ion-select [(ngModel)]="config.filter.algo" interface="popover">
+        <ion-option *ngFor="let algo of config.algos">{{algo}}</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-card>
+
+  <ion-card>
+    <ion-item-divider color="light">Updating</ion-item-divider>
+    <ion-item>
+      <ion-label>WiFi Only</ion-label>
+      <ion-toggle [(ngModel)]="config.updated.wifiOnly"></ion-toggle>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Fully Update</ion-label>
+      <ion-toggle [(ngModel)]="config.updated.fully"></ion-toggle>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Concurrency</ion-label>
+      <ion-select [(ngModel)]="config.updated.workers" interface="popover">
+        <ion-option *ngFor="let n of config.workers">{{n}}</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-card>
+
+  <ion-card text-wrap>
+    <ion-item-divider color="light">Data File</ion-item-divider>
+    <ion-item>
+      <p>{{fs.filepath()}}</p>
+    </ion-item>
+  </ion-card>
+</ion-content>

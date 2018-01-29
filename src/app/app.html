@@ -1,0 +1,41 @@
+<ion-menu [content]="content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Q.{{config.name}}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-item-group>
+      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
+        <ion-icon [name]="p.icon" item-left></ion-icon>
+        {{p.title}}
+      </button>
+
+      <ion-item-divider color="light">Data</ion-item-divider>
+      <button menuClose ion-item (click)="backup()">
+        <ion-icon name="log-in" item-left></ion-icon>
+        Backup
+      </button>
+      <button menuClose ion-item (click)="restore()">
+        <ion-icon name="log-out" item-left></ion-icon>
+        Restore
+      </button>
+
+      <ion-item-divider color="light">About</ion-item-divider>
+      <ion-item>
+        <ion-icon name="phone-portrait" item-left></ion-icon>
+        Version
+        <span item-right class="small">v{{config.version}}</span>
+      </ion-item>
+      <ion-item>
+        <ion-icon name="logo-github" item-left></ion-icon>
+        GitHub
+        <span item-right class="small">skygragon/Q.mobile</span>
+      </ion-item>
+    </ion-item-group>
+  </ion-content>
+</ion-menu>
+
+<!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>

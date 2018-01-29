@@ -1,0 +1,66 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Dashboard</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-card text-wrap>
+    <ion-item class="dashboard">
+      <div (click)="show('')" tappable>
+        <div class="bignum">{{count.All}}</div>
+        <div>Total Questions</div>
+      </div>
+    </ion-item>
+
+    <ion-grid text-center>
+      <ion-row>
+        <ion-col col-4>
+          <div (click)="show('Resolved')" tappable>
+            <div item-right class="num primary">{{count.Resolved}}</div>
+            <p>Resolved</p>
+          </div>
+        </ion-col>
+        <ion-col col-4>
+          <div (click)="show('Later')" tappable>
+            <div item-right class="num primary">{{count.Later}}</div>
+            <p>Later</p>
+          </div>
+        </ion-col>
+        <ion-col col-4>
+          <div (click)="show('Favorite')" tappable>
+            <div item-right class="num primary">{{count.Favorite}}</div>
+            <p>Favorite</p>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card>
+
+  <ion-card>
+    <ion-grid text-center *ngIf="updated.updating">
+      <ion-row>
+        <ion-col col-4>
+          <div item-right class="num primary">{{updated.questions}}</div>
+          <p>Questions</p>
+        </ion-col>
+        <ion-col col-4>
+          <div item-right class="num primary">{{updated.pages}}</div>
+          <p>Pages</p>
+        </ion-col>
+        <ion-col col-4>
+          <div item-right class="num primary">{{updated.new}}</div>
+          <p>New</p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-item>
+      <button ion-button full (click)="update()" [disabled]="updated.updating">
+        Update from {{config.name}}.com
+      </button>
+    </ion-item>
+  </ion-card>
+</ion-content>

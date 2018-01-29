@@ -1,0 +1,51 @@
+// http://ionicframework.com/docs/theming/
+
+
+// App Global Sass
+// --------------------------------------------------
+// Put style rules here that you want to apply globally. These
+// styles are for the entire app and not just one component.
+// Additionally, this file can be also used as an entry point
+// to import other Sass files to be included in the output CSS.
+//
+// Shared Sass variables, which can be used to adjust Ionic's
+// default Sass variables, belong in "theme/variables.scss".
+//
+// To declare rules for a specific mode, create a child rule
+// for the .md, .ios, or .wp mode classes. The mode class is
+// automatically applied to the <body> element in the app.
+@font-face {
+  font-family: 'Roboto';
+  src: url('../assets/fonts/Roboto-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Anton';
+  src: url('../assets/fonts/Anton.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+*,button,pre,select,span { font-family: 'Roboto'; }
+// make pre wrap
+pre {
+  margin-top: 0px;
+  white-space: pre-wrap;       /* css-3 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+ion-item-divider { height: 35px; }
+
+.small { font-size: 90%; }
+.num { font-size: 30px; font-family: 'Anton'; }
+.bignum { font-size: 58px; font-family: 'Anton'; }
+
+.toast { text-align: center; }
+
+.danger { color: #f53d3d; }
+.primary { color: #488aff; }
+.secondary { color: #32db64; }

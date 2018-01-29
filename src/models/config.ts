@@ -7,15 +7,21 @@ export let Config = {
   companies: ['Apple', 'Amazon', 'Facebook', 'Google', 'Microsoft'],
   levels:    ['Easy', 'Medium', 'Hard'],
   tags:      ['Resolved', 'Later', 'Favorite'],
+  todayTags: ['Total', 'Unresolved'],
   workers:   ['1', '2', '4', '8', '16'],
+
+  dashboard: {
+    todayTag: 'Total'
+  },
 
   // all questions
   questions: {
-    All:      0,
-    Resolved: 0,
-    Later:    0,
-    Favorite: 0,
-    dirty:    true // ture means need refreshing count
+    Total:      0,
+    Resolved:   0,
+    Unresolved: 0,
+    Later:      0,
+    Favorite:   0,
+    dirty:      true // ture means need refreshing count
   },
 
   // filtered questions

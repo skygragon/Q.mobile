@@ -21,6 +21,9 @@ export class HomePage {
   updated: any;
   config: any;
 
+  todayTag = '';
+  todayCount = 0;
+
   constructor(
     private navCtrl: NavController,
     private network: Network,
@@ -35,15 +38,22 @@ export class HomePage {
     this.refresh();
   }
 
-  refreshTag(tag) {
+  refreshTag(tag, cb) {
     this.db.countQuestions(tag)
-      .then(n => this.count[tag || 'All'] = n);
+      .then(n => {
+        this.count[tag || 'Total'] = n;
+        return cb();
+      });
   }
 
   refresh() {
-    const q = new Queue(Config.tags, null, tag => this.refreshTag(tag));
+    const q = new Queue(Config.tags, null, (tag, queue, cb) => this.refreshTag(tag, cb));
     q.addTask('');
-    q.run();
+    q.run(0, () => {
+      this.count.Unresolved = this.count.Total - this.count.Resolved;
+      this.todayTag = this.config.dashboard.todayTag;
+      this.todayCount = this.count[this.todayTag];
+    });
   }
 
   update() {

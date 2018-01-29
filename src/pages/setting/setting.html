@@ -9,6 +9,16 @@
 
 <ion-content>
   <ion-card>
+    <ion-item-divider color="light">Dashboard</ion-item-divider>
+    <ion-item>
+      <ion-label>Today Tag</ion-label>
+      <ion-select [(ngModel)]="config.dashboard.todayTag" interface="popover">
+        <ion-option *ngFor="let tag of config.todayTags">{{tag}}</ion-option>
+      </ion-select>
+    </ion-item>
+  </ion-card>
+
+  <ion-card>
     <ion-item-divider color="light">Filters</ion-item-divider>
     <ion-item>
       <ion-label>By Status</ion-label>

@@ -8,7 +8,6 @@ import { Config } from '../models/config';
 export class DB {
   private db: any;
   private ctx: any;
-  private upgrading = false;
 
   constructor() {
     this.ctx = Config.filtered;
@@ -21,38 +20,22 @@ export class DB {
       questions: '++id,status,company,*tags'
     }).upgrade(() => {
       console.log('found new schema v2!');
-      this.upgrading = true;
+      setTimeout(() => this.upgrade(), 0);
     });
   }
 
-  open() {
-    return this.db.open()
-      .then(db => this.upgrade(db))
-      .catch(e => console.log('db open failed:', e.stack));
-  }
-
-  upgrade(db) {
-    this.db = db;
-    if (!this.upgrading) return Promise.resolve(db);
-    /*
+  upgrade() {
     console.log('upgrading to v2 ...');
     return this.getQuestions()
-      .then(function(questions) {
-        questions.forEach(function(q) {
+      .then(questions => {
+        questions.forEach(q => {
           q.id = q.name;
           delete q.name;
         });
-        return DB.setQuestions(questions);
+        return this.setQuestions(questions);
       })
-      .then(function(e) {
-        if (e) {
-          console.log('failed to upgrade v2: ' + e.message);
-        } else {
-          console.log('upgraded to v2!');
-          DB.toV2 = false;
-        }
-        return cb();
-      });*/
+      .then(n => console.log('upgraded to v2!'))
+      .catch(e => console.log('upgrade failed:' + e.stack));
   }
 
   getQuestion(id) {

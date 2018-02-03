@@ -80,7 +80,7 @@ export class Leetcode {
         .map(function(p) {
           return {
             status:  0,
-            id:      p.stat.question_id,
+            id:      p.stat.frontend_question_id,
             title:   p.stat.question__title,
             key:     p.stat.question__title_slug,
             link:    'https://leetcode.com/problems/' + p.stat.question__title_slug,
@@ -127,13 +127,3 @@ export class Leetcode {
     if (!q.tags) q.tags = [];
   };
 }
-/*
-      // if hit duplicate, skip those questions before this one
-      // unless user wants a full scan
-      if (q.ctx.cb([question]) && !q.ctx.fully) {
-        console.log('Find duplicated on question=' + question.id);
-        q.tasks = _.reject(q.tasks, function(x) {
-          return x.id <= question.id;
-        });
-      }
-*/

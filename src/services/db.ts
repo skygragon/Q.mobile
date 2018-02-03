@@ -47,8 +47,10 @@ export class DB {
     return this.getQuestion(question.id)
       .then(q => {
         if (q) {
+          const tags = _.union(q.tags, question.tags);
           question = _.omit(question, 'status', 'tags');
           question = _.extendOwn(q, question);
+          question.tags = tags;
         }
         return this.db.questions.put(question)
           .then(key => q);

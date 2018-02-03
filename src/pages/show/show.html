@@ -38,12 +38,15 @@
     </ion-item>
     <ion-item>
       <pre>{{question.data}}</pre>
+      <button ion-button clear color="dark" *ngFor="let t of showTags()">
+        <ion-icon name="ios-arrow-forward-outline">&nbsp;</ion-icon>{{t}}
+      </button>
     </ion-item>
 
     <ion-grid text-center>
       <ion-row>
         <ion-col col-4 *ngFor="let t of tags">
-          <button ion-button outline [color]="hasTag(t) ? 'primary' : 'light'" (click)="flipTag(t)">
+          <button ion-button block [outline]="!hasTag(t)" (click)="flipTag(t)">
             {{t}}
           </button>
         </ion-col>

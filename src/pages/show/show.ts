@@ -130,6 +130,12 @@ export class ShowPage {
     this.dirty = true;
   }
 
+  showTags() {
+    const q = this.question;
+    if (!q) return [];
+    return _.difference(q.tags, this.tags);
+  }
+
   save() {
     const q = this.question;
     if (!q || !this.dirty) return Promise.resolve(0);
